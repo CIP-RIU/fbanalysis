@@ -53,7 +53,10 @@ anova_server <- function(input, output, session, values){
     
   shiny::observeEvent(input$anova_button, {
     shiny::withProgress(message = "Opening Fieldbook...",value= 0,{
-      
+
+      #NOTE: To use pepa report package we need R 3.3.0 or more.
+      #NOTE Finally, we always need pandoc installer.
+            
       fieldbook <- as.data.frame(hot_bdata())
       trait <- input$trait_anova
       rep <- input$rep_anova
@@ -64,3 +67,5 @@ anova_server <- function(input, output, session, values){
   })
   
 } 
+
+
