@@ -5,12 +5,17 @@ library(shinyFiles)
 library(st4gi)
 library(pepa)
 library(readxl)
+library(purrr)
+library(knitr)
+library(data.table)
+library(traittools)
 
-tabNameS <- "analysis_aov"
+
+tabNameS <- "elston_aov"
 
 server <- function(input, output, session,values) {
   values = shiny::reactiveValues()
-  fbanalysis::anova_server(input, output, session, values = values)
+  fbanalysis::elston_server(input, output, session, values = values)
 }
 
 ui <- dashboardPage(skin = "yellow",
@@ -18,7 +23,7 @@ ui <- dashboardPage(skin = "yellow",
                     dashboardSidebar(width = 200,
                                      menuItem("Resources",
                                               sidebarMenu(id = "menu",
-                                                          menuSubItem("ANOVA", icon = icon("star"),
+                                                          menuSubItem("Elston Index", icon = icon("star"),
                                                                       tabName = tabNameS)
                                               )
                                      )
@@ -26,7 +31,7 @@ ui <- dashboardPage(skin = "yellow",
                     dashboardBody(
                       
                       tabItems(
-                        fbanalysis::anova_ui(name = tabNameS)
+                        fbanalysis::elston_ui(name = tabNameS)
                       )
                     )
 )

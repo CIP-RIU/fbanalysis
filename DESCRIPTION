@@ -11,7 +11,10 @@ Suggests:
      shinyFiles,
      pepa,
      st4gi,
-     readxl
-License: GPL (>= 2)
+     readxl,
+     knitr,
+     data.table,
+     traittools
+License: GPL (>= 2) + LICENSE
 LazyData: true
 RoxygenNote: 5.0.1
