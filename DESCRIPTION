@@ -5,16 +5,16 @@ Authors@R: person("Omar Benites", "Omar", email = "obacc07@gmail.com", role = c(
 Description: This package have all the statistical analysis in HiDAP. It includes anova, single and multi-environment analysis.
 Depends:
     R (>= 3.2.2)
+Imports:
+      shiny,
+      shinydashboard,
+      readxl,
+      data.table,
+      shinyFiles
 Suggests: 
-     shiny,
-     shinydashboard,
-     shinyFiles,
      pepa,
      st4gi,
-     readxl,
-     knitr,
-     data.table,
      traittools
-License: GPL (>= 2) + LICENSE
+License: MIT + file LICENSE
 LazyData: true
 RoxygenNote: 5.0.1

@@ -1,11 +1,14 @@
 #' Server Elston Analysis
 #' 
-#' @param input shinyserver input 
-#' @param output shinyserver output
-#' @param session shinyserver session
-#' @param values reactive values
-#' @author Omar Benites
+#' @param input elston shiny server input 
+#' @param output elston shiny server output
+#' @param session elston shiny server session
+#' @param values elston reactive values
+#' @importFrom shiny reactive tabPanel renderUI selectInput icon h2 uiOutput radioButtons actionButton br column fluidRow 
+#' @importFrom shinydashboard infoBox tabBox infoBoxOutput renderInfoBox
+#' @importFrom shinyFiles parseFilePaths
 #' @export
+#' 
 
 elston_server <- function(input, output, session, values){
   

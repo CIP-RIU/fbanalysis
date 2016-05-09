@@ -7,18 +7,15 @@
 elston_server(input, output, session, values)
 }
 \arguments{
-\item{input}{shinyserver input}
+\item{input}{elston shiny server input}
 
-\item{output}{shinyserver output}
+\item{output}{elston shiny server output}
 
-\item{session}{shinyserver session}
+\item{session}{elston shiny server session}
 
-\item{values}{reactive values}
+\item{values}{elston reactive values}
 }
 \description{
 Server Elston Analysis
-}
-\author{
-Omar Benites
 }
 
