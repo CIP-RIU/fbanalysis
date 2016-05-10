@@ -16,7 +16,7 @@ elston_server <- function(input, output, session, values){
   volumes <- shinyFiles::getVolumes()
   shinyFiles::shinyFileChoose(input, 'file_elston', roots=volumes, session=session,
                               restrictions=system.file(package='base'),filetypes=c('xlsx'))
-  
+   
   
   hot_path <- reactive ({
 
