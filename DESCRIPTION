@@ -4,7 +4,7 @@ Version: 1.0
 Authors@R: person("Omar Benites", "Omar", email = "obacc07@gmail.com", role = c("aut", "cre"))
 Description: This package have all the statistical analysis in HiDAP. It includes anova, single and multi-environment analysis.
 Depends:
-    R (>= 3.2.2)
+    R (>= 3.0.0)
 Imports:
       shiny,
       shinydashboard,
