@@ -28,8 +28,29 @@ pbaker_ui <- function(type = "tab", title = "Pesek Baker", name = "analysis_pbak
                                                      uiOutput("genotypes_pbaker"),
                                                      uiOutput("env_pbaker"),
                                                      uiOutput("rep_pbaker"),
-                                                     uiOutput("trait_pbaker"),
+                                                     
+                                                     selectInput(inputId = 'means_pbaker', label='Select type of means',
+                                                                 choices=c("single","fitted"), 
+                                                                 selected = "single", selectize = FALSE),
+                                                     
                                                      uiOutput("model_pbaker"),
+                                                     #fluidRow(
+                                                     # column(6, offset = 1, 
+                                                     uiOutput("trait_pbaker"),
+                                                     #),
+                                                     
+                                                     #column(6, offset = 1,
+                                                     uiOutput("weight_pbaker"),
+                                                     #)
+                                                     #),
+                                                     
+                                                     br(),
+                                                     
+                                                     selectInput(inputId = 'units_pbaker', label='Select type of units',
+                                                                 choices=c("actual","sdu"), 
+                                                                 selected = "sdu", selectize = FALSE),
+                                                     
+                                                     
                                                      radioButtons(inputId="format_pbaker", label="Report format", choices= c("html","word"), 
                                                                   selected = "html", inline = TRUE, width = NULL),
                                                      actionButton(inputId = "pbaker_button", label= "Analyze", icon = icon("play-circle"),

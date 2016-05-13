@@ -110,7 +110,7 @@ elston_server <- function(input, output, session, values){
       hot_file <- basename(hot_file)
       infoBox(title="GREAT!", subtitle =
                 paste(" Fieldbook Selected: ", hot_file),  icon = icon("ok", lib = "glyphicon"),
-              color = "green",fill = FALSE, width = NULL)
+              color = "green",fill = TRUE, width = NULL)
     }
   })
  
@@ -136,6 +136,11 @@ elston_server <- function(input, output, session, values){
       model <- input$model_elston
       print(input$means_elston)
       print(input$model_elston)
+      
+      if(length(trait_neg)>0){
+        fieldbook[,trait_neg] <- -fieldbook[,trait_neg]
+      }
+      
       
       #format <- paste(input$format_elston,"_document",sep="")
       format <- paste(input$format_elston,sep="")

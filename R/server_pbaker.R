@@ -80,17 +80,34 @@ pbaker_server <- function(input, output, session, values){
                 selectize=TRUE)
   })
   
-  output$trait_pbaker <- renderUI({
-    selectInput('trait_pbaker', 'Select at least 2 Trait(s)', c(Choose='', select_options(pbaker_bdata())),
-                selectize=TRUE, multiple = TRUE)
-  })
-  
   output$model_pbaker <- renderUI({
     selectInput('model_pbaker', 'Select Model', c('gxe (interaction)'='gxe', 
                                                   "g+e (no-interaction)"='g+e'),
                 selectize=TRUE, multiple = FALSE)
   })
   
+  output$trait_pbaker <- renderUI({
+    selectInput('trait_pbaker', 'Select at least 2 Trait(s)', c(Choose='', select_options(pbaker_bdata())),
+                selectize=TRUE, multiple = TRUE)
+
+  })
+
+  output$weight_pbaker <- renderUI({
+   
+     
+     trait <- as.character(input$trait_pbaker)
+    if(length(trait)>0){
+      
+      
+    lapply(1:length(trait), function(i) {
+      print(i)
+      
+      numericInput(paste0("n_input_wpb_", trait[i]), label = paste0("Desired genetic gain for ", trait[i]), value = 1)
+    })
+
+    }
+  })
+
   output$file_message_pbaker <- renderInfoBox({
     
     hot_file <- hot_path()
@@ -112,7 +129,9 @@ pbaker_server <- function(input, output, session, values){
     shiny::withProgress(message = "Opening pbaker Index Report...",value= 0,{
       
       fieldbook <- as.data.frame(pbaker_bdata())
+      print(fieldbook)
       trait <- input$trait_pbaker
+      trait <- trait[trait!=""]
       print(trait)
       env <- input$env_pbaker
       print(env)
@@ -123,10 +142,38 @@ pbaker_server <- function(input, output, session, values){
       model <- gsub(pattern = "[[:space:]]\\(.*", replacement = "", input$model_pbaker)
       print(model)
       
-      format <- paste(input$format_pbaker,"_document",sep="")
+      units <- input$units_pbaker
+      
+      means<- input$means_pbaker
+      
+      #table of weights using pbaker index
+      w_pbaker_table <- data.frame(lapply(1:length(trait), function(i) {
+        input[[paste0("n_input_wpb_", trait[i])]]
+      }))
+      
+#       res <<- w_pbaker_table
+#       #print(w_pbaker_table)
+#       a1 <<- trait
+#       names(res) <- trait
+      
+      names(w_pbaker_table) <- trait
+      
+      if(length(trait)>=2)
+      for(j in trait){
+        fieldbook[,j] <- w_pbaker_table[,j]*fieldbook[,j]
+      }
+#       
+#     fps <<- fieldbook
+#     print(fps)
+#       
+      #format <- paste(input$format_pbaker,"_document",sep="")
+      #format <- paste(input$format_pbaker,sep="")
+      
+      #TODO: Tener en cuenta cuando la matriz es singular, y no la puedes invertir.
       
       #try(pepa::pty.pesekbaker(traits = trait, geno = genotypes, env = env , model = model, data = fieldbook))
-      try(pepa::pty.pesekbaker(traits = trait, geno = genotypes, env = env, rep = rep, data = fieldbook, format= format))
+      try(pepa::pty.pesekbaker(traits = trait, geno = genotypes, env = env, rep = rep,
+                               means = means,model = model, units = units,  data = fieldbook))
       
     })
   })
