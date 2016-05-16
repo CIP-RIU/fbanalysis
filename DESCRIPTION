@@ -5,12 +5,16 @@ Authors@R: person("Omar Benites", "Omar", email = "obacc07@gmail.com", role = c(
 Description: Statistical analysis for plant breeding in potato and sweetpotato. It includes anova, single and multi-environment analysis, Pesek-Baker and Elston indexes.
 Depends:
     R (>= 3.0.0),
+    pepa,
+    st4gi
 Imports:
       shiny,
       shinydashboard,
       readxl,
       data.table,
       shinyFiles
+Suggests: 
+     traittools
 Copyright: International Potato Center (2016)     
 License: MIT + file LICENSE
 LazyData: true
