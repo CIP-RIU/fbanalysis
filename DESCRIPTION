@@ -15,6 +15,7 @@ Suggests:
      pepa,
      st4gi,
      traittools
+Copyright: International Potato Center (2015)     
 License: MIT + file LICENSE
 LazyData: true
 RoxygenNote: 5.0.1
