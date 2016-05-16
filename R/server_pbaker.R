@@ -4,7 +4,7 @@
 #' @param output shinyserver output
 #' @param session shinyserver session
 #' @param values reactive values
-#' @importFrom shiny reactive tabPanel renderUI selectInput icon h2 uiOutput radioButtons actionButton br column fluidRow 
+#' @importFrom shiny reactive tabPanel renderUI selectInput icon h2 uiOutput radioButtons actionButton br column fluidRow numericInput 
 #' @importFrom shinydashboard infoBox tabBox infoBoxOutput renderInfoBox
 #' @importFrom shinyFiles parseFilePaths
 

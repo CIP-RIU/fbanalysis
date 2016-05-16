@@ -2,7 +2,7 @@ Package: fbanalysis
 Title: Statistical Analysis for Breeding Data in HiDAP
 Version: 1.0
 Authors@R: person("Omar Benites", "Omar", email = "obacc07@gmail.com", role = c("aut", "cre"))
-Description: This package have all the statistical analysis in HiDAP. It includes anova, single and multi-environment analysis.
+Description: Statistical analysis for plant breeding in potato and sweetpotato. It includes anova, single and multi-environment analysis, Pesek-Baker and Elston indexes.
 Depends:
     R (>= 3.0.0)
 Imports:
