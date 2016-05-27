@@ -96,7 +96,7 @@ pbaker_server <- function(input, output, session, values){
   output$weight_pbaker <- renderUI({
    
      
-     trait <- as.character(input$trait_pbaker)
+    trait <- as.character(input$trait_pbaker)
     if(length(trait)>0){
       
       

@@ -62,7 +62,7 @@ met_server <- function(input, output, session, values){
       
       join_books <- data.table::rbindlist(combine,fill = TRUE)
       join_books <- as.data.frame(join_books)
-      write.csv(join_books,"join_books.csv")
+      #write.csv(join_books,"join_books.csv")
    # join_books    
       
     #met_bdata <- readxl::read_excel(path=hot_file , sheet = "Fieldbook")

@@ -5,7 +5,6 @@ library(shinyFiles)
 library(st4gi)
 library(pepa)
 library(readxl)
-library(purrr)
 library(knitr)
 
 tabNameS <- "analysis_aov"
