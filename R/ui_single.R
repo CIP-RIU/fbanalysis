@@ -7,7 +7,7 @@
 #' @export
 #' 
 
-single_ui <- function(type = "tab", title = "Single Environment", name = "analysis_single"){
+single_ui <- function(type = "tab", title = "The Statistical Analysis of Single-Environment Trial", name = "analysis_single"){
   
   shinydashboard::tabItem(tabName = name,
                           h2(title),   
@@ -17,7 +17,7 @@ single_ui <- function(type = "tab", title = "Single Environment", name = "analys
                             collapsible = TRUE, width = NULL,
                             #tabsetPanel(
                             tabBox(width = 12,
-                                   tabPanel("single", #begin tabset "CHECK"
+                                   tabPanel("Single Analysis", #begin tabset "CHECK"
                                             fluidRow( 
                                               column(width = 6,
                                               shinyFiles::shinyFilesButton('file_single', 'Select File', 'Please select a file',FALSE),

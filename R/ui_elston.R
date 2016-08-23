@@ -7,7 +7,7 @@
 #' @export
 #' 
 
-elston_ui <- function(type = "tab", title = "Elston", name = "analysis_elston"){
+elston_ui <- function(type = "tab", title = "Elston Index for Ranking and Selection", name = "analysis_elston"){
   
   shinydashboard::tabItem(tabName = name,
                 h2(title),   
@@ -17,7 +17,7 @@ elston_ui <- function(type = "tab", title = "Elston", name = "analysis_elston"){
                     collapsible = TRUE, width = NULL,
                     #tabsetPanel(
                     tabBox(width = 12,
-                          tabPanel("elston", #begin tabset "CHECK"
+                          tabPanel("Elston Index", #begin tabset "CHECK"
                                 fluidRow( 
                                 column(width = 6,
                                 shinyFiles::shinyFilesButton('file_elston', 'Select File', 'Please select your files',multiple = TRUE),

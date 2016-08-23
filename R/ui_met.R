@@ -7,7 +7,7 @@
 #' @export
 #' 
 
-met_ui <- function(type = "tab", title = "Multi-Environment", name = "analysis_met"){
+met_ui <- function(type = "tab", title = "The Statistical Analysis of Multi-Environment Trials (MET)", name = "analysis_met"){
   
   shinydashboard::tabItem(tabName = name,
                           h2(title),   
@@ -17,7 +17,7 @@ met_ui <- function(type = "tab", title = "Multi-Environment", name = "analysis_m
                       collapsible = TRUE, width = NULL,
                       #tabsetPanel(
                       tabBox(width = 12,
-                            tabPanel("MET", #begin tabset "CHECK"
+                            tabPanel("MET Analysis", #begin tabset "CHECK"
                                   fluidRow( 
                                        column(width = 6,
                                        shinyFiles::shinyFilesButton('file_met', 'Select File', 'Please select your files',multiple = TRUE),

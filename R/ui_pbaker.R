@@ -7,7 +7,7 @@
 #' @export
 #' 
 
-pbaker_ui <- function(type = "tab", title = "Pesek Baker", name = "analysis_pbaker"){
+pbaker_ui <- function(type = "tab", title = "Pesek-Baker Selection Index", name = "analysis_pbaker"){
   
   shinydashboard::tabItem(tabName = name,
                           h2(title),   
@@ -17,7 +17,7 @@ pbaker_ui <- function(type = "tab", title = "Pesek Baker", name = "analysis_pbak
                             collapsible = TRUE, width = NULL,
                             #tabsetPanel(
                             tabBox(width = 12,
-                                   tabPanel("Pesek Baker", #begin tabset "CHECK"
+                                   tabPanel("Pesek-Baker Index", #begin tabset "CHECK"
                                             fluidRow( 
                                               column(width = 6,
                                                      shinyFiles::shinyFilesButton('file_pbaker', 'Select File', 'Please select your files',multiple = TRUE),
