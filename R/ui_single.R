@@ -13,7 +13,7 @@ single_ui <- function(type = "tab", title = "Single Environment", name = "analys
                           h2(title),   
                           
                           box(
-                            title = "Analysis of Variance", status = "primary", solidHeader = TRUE,
+                            title = " ", status = "primary", solidHeader = TRUE,
                             collapsible = TRUE, width = NULL,
                             #tabsetPanel(
                             tabBox(width = 12,

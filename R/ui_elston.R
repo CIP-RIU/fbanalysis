@@ -13,7 +13,7 @@ elston_ui <- function(type = "tab", title = "Elston", name = "analysis_elston"){
                 h2(title),   
                           
                 box(
-                    title = "Elston", status = "primary", solidHeader = TRUE,
+                    title = " ", status = "primary", solidHeader = TRUE,
                     collapsible = TRUE, width = NULL,
                     #tabsetPanel(
                     tabBox(width = 12,

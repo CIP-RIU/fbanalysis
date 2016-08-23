@@ -13,7 +13,7 @@ met_ui <- function(type = "tab", title = "Multi-Environment", name = "analysis_m
                           h2(title),   
                           
                   box(
-                      title = "Multi-Environment", status = "primary", solidHeader = TRUE,
+                      title = " ", status = "primary", solidHeader = TRUE,
                       collapsible = TRUE, width = NULL,
                       #tabsetPanel(
                       tabBox(width = 12,

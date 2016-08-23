@@ -13,7 +13,7 @@ pbaker_ui <- function(type = "tab", title = "Pesek Baker", name = "analysis_pbak
                           h2(title),   
                           
                           box(
-                            title = "Pesek Baker", status = "primary", solidHeader = TRUE,
+                            title = " ", status = "primary", solidHeader = TRUE,
                             collapsible = TRUE, width = NULL,
                             #tabsetPanel(
                             tabBox(width = 12,
