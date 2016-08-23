@@ -43,7 +43,8 @@ pbaker_server <- function(input, output, session, values){
         
         Minimal <- readxl::read_excel(cropfiles_list[i], sheet = "Minimal") 
         
-        BOOK <- traittools::get_fb_param(Minimal,"Short_name")
+        #BOOK <- traittools::get_fb_param(Minimal,"Short_name")
+        BOOK <- traittools::get_fb_param(Minimal,"Trial_name")
         DATE <- traittools::get_fb_param(Minimal,"Begin_date")
         #MONTH <- traittools::get_fb_param()
         ENVIRONMENT <- traittools::get_fb_param(Minimal,"Site_short_name")
@@ -58,7 +59,7 @@ pbaker_server <- function(input, output, session, values){
       
       join_books <- data.table::rbindlist(combine,fill = TRUE)
       join_books <- as.data.frame(join_books)
-      write.csv(join_books,"join_books.csv")
+      #write.csv(join_books,"join_books.csv")
       # join_books    
       
       #pbaker_bdata <- readxl::read_excel(path=hot_file , sheet = "Fieldbook")
@@ -130,18 +131,18 @@ pbaker_server <- function(input, output, session, values){
     shiny::withProgress(message = "Opening pbaker Index Report...",value= 0,{
       
       fieldbook <- as.data.frame(pbaker_bdata())
-      print(fieldbook)
+      #print(fieldbook)
       trait <- input$trait_pbaker
       trait <- trait[trait!=""]
-      print(trait)
+      #print(trait)
       env <- input$env_pbaker
-      print(env)
+      #print(env)
       rep <- input$rep_pbaker
-      print(rep)
+      #print(rep)
       genotypes <- input$genotypes_pbaker
-      print(genotypes)
+      #print(genotypes)
       model <- gsub(pattern = "[[:space:]]\\(.*", replacement = "", input$model_pbaker)
-      print(model)
+      #print(model)
       
       units <- input$units_pbaker
       
@@ -171,10 +172,12 @@ pbaker_server <- function(input, output, session, values){
       #format <- paste(input$format_pbaker,sep="")
       
       #TODO: Tener en cuenta cuando la matriz es singular, y no la puedes invertir.
+      format <- paste(input$format_pbaker,sep="")
+      
       
       #try(pepa::pty.pesekbaker(traits = trait, geno = genotypes, env = env , model = model, data = fieldbook))
       try(pepa::pty.pesekbaker(traits = trait, geno = genotypes, env = env, rep = rep,
-                               means = means,model = model, units = units,  data = fieldbook))
+                               means = means, model = model, units = units,  data = fieldbook, format = format))
       
     })
   })

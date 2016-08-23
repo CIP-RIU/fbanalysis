@@ -47,7 +47,8 @@ met_server <- function(input, output, session, values){
       
       Minimal <- readxl::read_excel(cropfiles_list[i], sheet = "Minimal") 
       
-      BOOK <- traittools::get_fb_param(Minimal,"Short_name")
+      #BOOK <- traittools::get_fb_param(Minimal,"Short_name")
+      BOOK <- traittools::get_fb_param(Minimal,"Trial_name")
       DATE <- traittools::get_fb_param(Minimal,"Begin_date")
       #MONTH <- traittools::get_fb_param()
       ENVIRONMENT <- traittools::get_fb_param(Minimal,"Site_short_name")

@@ -53,6 +53,7 @@ pbaker_ui <- function(type = "tab", title = "Pesek-Baker Selection Index", name 
                                                      
                                                      radioButtons(inputId="format_pbaker", label="Report format", choices= c("html","word"), 
                                                                   selected = "html", inline = TRUE, width = NULL),
+                                                     
                                                      actionButton(inputId = "pbaker_button", label= "Analyze", icon = icon("play-circle"),
                                                                   width = NULL,height = NULL)
                                                      #uiOutput("run_pbaker")

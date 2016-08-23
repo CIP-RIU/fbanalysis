@@ -43,7 +43,8 @@ elston_server <- function(input, output, session, values){
         
         Minimal <- readxl::read_excel(cropfiles_list[i], sheet = "Minimal") 
         
-        BOOK <- traittools::get_fb_param(Minimal,"Short_name")
+        #BOOK <- traittools::get_fb_param(Minimal,"Short_name")
+        BOOK <- traittools::get_fb_param(Minimal,"Trial_name")
         DATE <- traittools::get_fb_param(Minimal,"Begin_date")
         #MONTH <- traittools::get_fb_param()
         ENVIRONMENT <- traittools::get_fb_param(Minimal,"Site_short_name")
@@ -58,7 +59,7 @@ elston_server <- function(input, output, session, values){
       
       join_books <- data.table::rbindlist(combine,fill = TRUE)
       join_books <- as.data.frame(join_books)
-      write.csv(join_books,"join_books.csv")
+      #write.csv(join_books,"join_books.csv")
       # join_books    
       
       #elston_bdata <- readxl::read_excel(path=hot_file , sheet = "Fieldbook")
@@ -122,23 +123,23 @@ elston_server <- function(input, output, session, values){
       fieldbook <- as.data.frame(elston_bdata())
       
       trait_pos <- input$trait_pos_elston
-      print(trait_pos)
+      #print(trait_pos)
       trait_neg <- input$trait_neg_elston
-      print(trait_neg)
+      #print(trait_neg)
       trait <- c(trait_pos,trait_neg)
       trait <- trait[trait!=""]
       #trait <- input$trait_elston
       env <- input$env_elston
-      print(input$env_elston)
+      #print(input$env_elston)
       rep <- input$rep_elston
       genotypes <- input$genotypes_elston
       model <- gsub(pattern = "[[:space:]]\\(.*", replacement = "", input$model_elston)
       
       means <- input$means_elston
       model <- input$model_elston
-      print(input$means_elston)
-      print(input$model_elston)
-      
+#       print(input$means_elston)
+#       print(input$model_elston)
+#       
       if(length(trait_neg)>0){
         fieldbook[,trait_neg] <- -fieldbook[,trait_neg]
       }
@@ -148,14 +149,14 @@ elston_server <- function(input, output, session, values){
       format <- paste(input$format_elston,sep="")
       
       try(pepa::pty.elston(traits = trait, geno = genotypes, model = model, env= env, rep = rep, means = means,
-                           data = fieldbook))
+                           data = fieldbook, format = format))
       
       if(env=="" && model=="g+e" && means=="single"){
-        try(pepa::pty.elston(traits = trait, geno = genotypes, model = model, means = means, data = fieldbook))
+        try(pepa::pty.elston(traits = trait, geno = genotypes, model = model, means = means, data = fieldbook, format = format))
       }
       
       if(env=="" && model=="gxe" && means=="single"){
-        try(pepa::pty.elston(traits = trait, geno = genotypes, model = model, means = means, data = fieldbook))
+        try(pepa::pty.elston(traits = trait, geno = genotypes, model = model, means = means, data = fieldbook, format = format))
       } 
       
 #       if(env=="" && model=="g+e" && means=="single"){
