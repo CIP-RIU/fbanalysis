@@ -113,18 +113,21 @@ single_server <- function(input, output, session, values){
       format <- paste(input$format_single)
       
       if(design=="Randomized Complete Block Design (RCBD)"){
-         try(pepa::repo.rcbd(traits = trait, treat = genotypes, rep = rep, format = format, data = fieldbook))
+         try(pepa::repo.rcbd(traits = trait, geno = genotypes, rep = rep, format = format, data = fieldbook))
       }
       
       if(design=="Complete Randomized Design (CRD)"){
-        try(pepa::repo.crd(traits = trait, treat = genotypes, rep = rep, format = format, data = fieldbook))
+        try(pepa::repo.crd(traits = trait, geno = genotypes, format = format, data = fieldbook))
+        #try(pepa::repo.crd(traits = trait, geno = genotypes, rep = rep, format = format, data = fieldbook))
       }
       
       if(design=="Augmented Block Design (ABD)"){
-        try(pepa::repo.abd(traits = trait, treat = genotypes, format = format, data = fieldbook))
+        #try(pepa::repo.abd(traits = trait, geno = genotypes, format = format, data = fieldbook))
+        try(pepa::repo.abd(traits = trait, geno = genotypes, rep = rep, format = format, data = fieldbook))
       }
+
       
-    
+      
       })
   })
   
