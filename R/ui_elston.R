@@ -30,7 +30,7 @@ elston_ui <- function(type = "tab", title = "Elston Index for Ranking and Select
                   #                    selected = "single", selectize = FALSE),
                   #                    selectInput(inputId = 'means_elston', label='Select type of means', choices=c("single","fitted"), 
                   #                                selected = "single", selectize = FALSE),
-                                       selectInput(inputId = 'model_elston', label = 'Select Model', 
+                                       selectInput(inputId = 'model_elston', label = 'Select model to fit', 
                                                               c('gxe (interaction)'='gxe',"g+e (no-interaction)"='g+e'),
                                                               selectize=TRUE, multiple = FALSE),
                                        shiny::conditionalPanel("input.model_elston == 'gxe'|

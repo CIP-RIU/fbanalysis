@@ -68,28 +68,28 @@ pbaker_server <- function(input, output, session, values){
   })
   
   output$genotypes_pbaker  <- renderUI({
-    selectInput('genotypes_pbaker', 'Select Genotypes', c(Choose='', select_options(pbaker_bdata())), 
+    selectInput('genotypes_pbaker', 'Select genotypes', c(Choose='', select_options(pbaker_bdata())), 
                 selectize=TRUE)
   })
   
   output$env_pbaker  <- renderUI({
-    selectInput('env_pbaker', 'Select Environments', c(Choose='', select_options(pbaker_bdata())),
+    selectInput('env_pbaker', 'Select rnvironments', c(Choose='', select_options(pbaker_bdata())),
                 selectize=TRUE)
   })
   
   output$rep_pbaker  <- renderUI({
-    selectInput('rep_pbaker', 'Select Repetitions', c(Choose='', select_options(pbaker_bdata())),
+    selectInput('rep_pbaker', 'Select repetitions', c(Choose='', select_options(pbaker_bdata())),
                 selectize=TRUE)
   })
   
   output$model_pbaker <- renderUI({
-    selectInput('model_pbaker', 'Select Model', c('gxe (interaction)'='gxe', 
+    selectInput('model_pbaker', 'Select model', c('gxe (interaction)'='gxe', 
                                                   "g+e (no-interaction)"='g+e'),
                 selectize=TRUE, multiple = FALSE)
   })
   
   output$trait_pbaker <- renderUI({
-    selectInput('trait_pbaker', 'Select at least 2 Trait(s)', c(Choose='', select_options(pbaker_bdata())),
+    selectInput('trait_pbaker', 'Select at least 2 trait(s)', c(Choose='', select_options(pbaker_bdata())),
                 selectize=TRUE, multiple = TRUE)
 
   })
@@ -117,12 +117,12 @@ pbaker_server <- function(input, output, session, values){
     print(hot_file)
     if(is.null(hot_file)){
       infoBox(title="Select File", subtitle=
-                paste("Choose at least 3 Fieldbook Files"), icon = icon("upload", lib = "glyphicon"),
+                paste("Choose at least 2 fieldbook files"), icon = icon("upload", lib = "glyphicon"),
               color = "blue",fill = TRUE, width = NULL)
     } else {
       hot_file <- basename(hot_file)
       infoBox(title="GREAT!", subtitle =
-                paste("Your fieldbook has been Selected: ", hot_file),  icon = icon("ok", lib = "glyphicon"),
+                paste("Your fieldbook has been selected: ", hot_file),  icon = icon("ok", lib = "glyphicon"),
               color = "green",fill = TRUE, width = NULL)
     }
   })

@@ -72,22 +72,22 @@ met_server <- function(input, output, session, values){
   })
   
   output$genotypes_met  <- renderUI({
-    selectInput('genotypes_met', 'Select Genotypes', c(Choose='', select_options(met_bdata())), 
+    selectInput('genotypes_met', 'Select genotypes', c(Choose='', select_options(met_bdata())), 
                 selectize=TRUE)
   })
   
   output$env_met  <- renderUI({
-    selectInput('env_met', 'Select Environments', c(Choose='', select_options(met_bdata())),
+    selectInput('env_met', 'Select environments', c(Choose='', select_options(met_bdata())),
                 selectize=TRUE)
   })
   
   output$rep_met  <- renderUI({
-    selectInput('rep_met', 'Select Repetitions', c(Choose='', select_options(met_bdata())),
+    selectInput('rep_met', 'Select repetitions', c(Choose='', select_options(met_bdata())),
                 selectize=TRUE)
   })
   
   output$trait_met <- renderUI({
-    selectInput('trait_met', 'Select Trait(s)', c(Choose='', select_options(met_bdata())),
+    selectInput('trait_met', 'Select trait(s)', c(Choose='', select_options(met_bdata())),
                 selectize=TRUE, multiple = TRUE)
   })
   
@@ -100,14 +100,14 @@ met_server <- function(input, output, session, values){
     hot_file <- hot_path()
     print(hot_file)
     if(is.null(hot_file)){
-      infoBox(title="Select File", subtitle=
-                paste("Choose at least 3 Fieldbook Files for MET"), icon = icon("upload", lib = "glyphicon"),
+      infoBox(title="Select Fieldbook File", subtitle=
+                paste("Choose at least 3 fieldbook files for MET"), icon = icon("upload", lib = "glyphicon"),
               color = "blue",fill = TRUE, width = NULL)
     } else {
 
       hot_file <- basename(hot_file)
       infoBox(title="GREAT!", subtitle =
-                paste(" Fieldbook Selected: ", hot_file),  icon = icon("ok", lib = "glyphicon"),
+                paste(" Fieldbook selected: ", hot_file),  icon = icon("ok", lib = "glyphicon"),
               color = "green",fill = TRUE, width = NULL)
     }
   })

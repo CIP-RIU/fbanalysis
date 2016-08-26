@@ -7,7 +7,7 @@
 #' @export
 #' 
 
-single_ui <- function(type = "tab", title = "The Statistical Analysis of Single-Environment Trial", name = "analysis_single"){
+single_ui <- function(type = "tab", title = "Statistical Analysis of Single-Environment Trials", name = "analysis_single"){
   
   shinydashboard::tabItem(tabName = name,
                           h2(title),   

@@ -64,8 +64,8 @@ single_server <- function(input, output, session, values){
       hot_file <- hot_path()
       print(hot_file)
       if(is.null(hot_file)){
-        infoBox(title="Select File", subtitle=
-                  paste("Choose your Fieldbook File"), icon = icon("upload", lib = "glyphicon"),
+        infoBox(title="Select fieldbook file", subtitle=
+                  paste("Choose your fieldbook file"), icon = icon("upload", lib = "glyphicon"),
                 color = "blue",fill = TRUE, width = NULL)
 #      }
 #       else if(all(is.na(germoplasm))) {
@@ -79,7 +79,7 @@ single_server <- function(input, output, session, values){
         #       message <-  paste("Material list imported: ", material)
         hot_file <- basename(hot_file)
         infoBox(title="GREAT!", subtitle =
-                  paste(" Fieldbook Selected: ", hot_file),  icon = icon("ok", lib = "glyphicon"),
+                  paste(" Fieldbook selected: ", hot_file),  icon = icon("ok", lib = "glyphicon"),
                 color = "green",fill = TRUE, width = NULL)
       }
     })
