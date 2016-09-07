@@ -5,7 +5,8 @@
 \title{UI for pbaker Analysis in HiDAP
 Returns user friendly ui}
 \usage{
-pbaker_ui(type = "tab", title = "Pesek Baker", name = "analysis_pbaker")
+pbaker_ui(type = "tab", title = "Pesek-Baker Selection Index",
+  name = "analysis_pbaker")
 }
 \arguments{
 \item{type}{type of UI element, deault is a tab in a shinydashboard}

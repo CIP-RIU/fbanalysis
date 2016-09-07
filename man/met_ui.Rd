@@ -5,7 +5,9 @@
 \title{UI for Multi Environment Analysis (MET) in HiDAP
 Returns user friendly ui}
 \usage{
-met_ui(type = "tab", title = "Multi-Environment", name = "analysis_met")
+met_ui(type = "tab",
+  title = "The Statistical Analysis of Multi-Environment Trials (MET)",
+  name = "analysis_met")
 }
 \arguments{
 \item{type}{type of UI element, deault is a tab in a shinydashboard}

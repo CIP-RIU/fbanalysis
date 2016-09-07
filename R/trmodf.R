@@ -35,26 +35,25 @@ elston_ui <- function(type = "tab", title = "Elston Index for Ranking and Select
                                                                  choices=c("single","fitted"), 
                                                                  selected = "single", selectize = FALSE),
                                                      
-                                                     
                                                      selectInput(inputId = 'model_elston', label = 'Select model to fit', 
                                                                  c('gxe (interaction)'='gxe',"g+e (no-interaction)"='g+e'),
                                                                  selectize=TRUE, multiple = FALSE),
                                                      
-#                                                    shiny::conditionalPanel("input.model_elston == 'gxe'|
-#                                                                              input.model_elston == 'g+e'",
-#                                                                              
-#                                                                              selectInput(inputId = 'means_elston', label='Select type of means',
-#                                                                                          choices=c("single","fitted"), 
-#                                                                                          selected = "single", selectize = FALSE),
-#                                                                              #begin
-#                                                                              shiny::conditionalPanel("input.means_elston == 'fitted'|
-#                                                                                                      input.means_elston == 'single'",  
-#                                                                                                      uiOutput("env_elston")#,
-#                                                                              ),#end
-#                                                                              shiny::conditionalPanel("input.means_elston == 'fitted'",  
-#                                                                                                      uiOutput("rep_elston")#,
-#                                                                              )#,#end
-#                                                    ),
+                                                     shiny::conditionalPanel("input.model_elston == 'gxe'|
+                                                                              input.model_elston == 'g+e'",
+                                                                             
+                                                                             selectInput(inputId = 'means_elston', label='Select type of means',
+                                                                                         choices=c("single","fitted"), 
+                                                                                         selected = "single", selectize = FALSE),
+                                                                             #begin
+                                                                             shiny::conditionalPanel("input.means_elston == 'fitted'|
+                                                                                                     input.means_elston == 'single'",  
+                                                                                                     uiOutput("env_elston")#,
+                                                                             ),#end
+                                                                             shiny::conditionalPanel("input.means_elston == 'fitted'",  
+                                                                                                     uiOutput("rep_elston")#,
+                                                                             )#,#end
+                                                     ),
                                                      # uiOutput("env_elston"),
                                                      # uiOutput("rep_elston"),
                                                      uiOutput("trait_posElston"),

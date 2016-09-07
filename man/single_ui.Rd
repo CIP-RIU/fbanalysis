@@ -5,7 +5,8 @@
 \title{UI for Single Environment Analysis in HiDAP
 Returns user friendly ui}
 \usage{
-single_ui(type = "tab", title = "Single Environment",
+single_ui(type = "tab",
+  title = "Statistical Analysis of Single-Environment Trials",
   name = "analysis_single")
 }
 \arguments{

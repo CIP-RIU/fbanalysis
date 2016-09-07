@@ -5,7 +5,8 @@
 \title{UI for Elston Analysis in HiDAP
 Returns user friendly ui}
 \usage{
-elston_ui(type = "tab", title = "Elston", name = "analysis_elston")
+elston_ui(type = "tab", title = "Elston Index for Ranking and Selection",
+  name = "analysis_elston")
 }
 \arguments{
 \item{type}{type of UI element, deault is a tab in a shinydashboard}

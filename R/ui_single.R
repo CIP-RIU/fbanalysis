@@ -26,7 +26,7 @@ single_ui <- function(type = "tab", title = "Statistical Analysis of Single-Envi
                                               #selectInput('rep_single', 'Select Repetition', c(Choose='', names(iris)), selectize=TRUE),
                                               #selectInput('genotypes_single', 'Select Treatment', c(Choose='', names(iris)), selectize=TRUE),
                                               selectInput(inputId = 'design_single', label = 'Select statistical design of your experiment', choices = 
-                                                                           c("Complete Randomized Design (CRD)",
+                                                                           c("Completely Randomized Design (CRD)",
                                                                           "Randomized Complete Block Design (RCBD)",
                                                                           "Augmented Block Design (ABD)"),selected = "Randomized Complete Block Design (RCBD)",
                                                                            selectize=FALSE),
