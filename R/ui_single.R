@@ -28,11 +28,51 @@ single_ui <- function(type = "tab", title = "Statistical Analysis of Single-Envi
                                               selectInput(inputId = 'design_single', label = 'Select statistical design of your experiment', choices = 
                                                                            c("Completely Randomized Design (CRD)",
                                                                           "Randomized Complete Block Design (RCBD)",
-                                                                          "Augmented Block Design (ABD)"),selected = "Randomized Complete Block Design (RCBD)",
+                                                                          "Augmented Block Design (ABD)",
+                                                                          "Alpha Design(0,1) (AD)"),
+                                                                           selected = "Randomized Complete Block Design (RCBD)",
                                                                            selectize=FALSE),
-                                              uiOutput("genotypes_single"),
-                                              uiOutput("rep_single"),
-                                              uiOutput("trait_single"),
+                                              # 
+                                              # shiny::conditionalPanel(
+                                              #   condition = 
+                                              #   "input.design_single == 'Completely Randomized Design (CRD)' |
+                                              #   input.design_single == 'Randomized Complete Block Design (RCBD)'|
+                                              #   input.design_single == 'Augmented Block Design (ABD)'
+                                              #   input.design_single == 'Alpha Design(0,1) (AD)'",
+                                              #   
+                                              #   uiOutput("genotypes_single"),
+                                              #   uiOutput("trait_single")
+                                              #   
+                                              # ),
+                                              
+                                              shiny::conditionalPanel(
+                                                condition = "input.design_single == 'Alpha Design(0,1) (AD)'|
+                                                             input.design_single == 'Completely Randomized Design (CRD)'|
+                                                             input.design_single == 'Randomized Complete Block Design (RCBD)'|
+                                                             input.design_single == 'Augmented Block Design (ABD)'",
+                                                uiOutput("genotypes_single"),
+                                                uiOutput("trait_single")
+                                              ),  
+                                                
+                                              shiny::conditionalPanel(
+                                                condition = "input.design_single == 'Alpha Design(0,1) (AD)'|
+                                                             input.design_single == 'Randomized Complete Block Design (RCBD)'",
+                                                uiOutput("rep_single")
+                                               ),  
+                                              
+                                              #uiOutput("genotypes_single"),
+                                              #uiOutput("rep_single"),
+                                            
+                                              #uiOutput("trait_single"),
+                                            
+                                              shiny::conditionalPanel(
+                                                 condition = "input.design_single == 'Alpha Design(0,1) (AD)'",
+                                                 
+                                              uiOutput("block_single"),
+                                              uiOutput("k_single")
+                                              
+                                              ),
+                                                
                                               radioButtons(inputId="format_single", label="Report format", choices= c("html","word"), 
                                                            selected = "html", inline = TRUE, width = NULL),
                                               actionButton(inputId = "single_button", label= "Analyze", icon = icon("play-circle"),

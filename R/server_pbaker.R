@@ -119,7 +119,9 @@ pbaker_server <- function(input, output, session, values){
       infoBox(title="Select File", subtitle=
                 paste("Choose at least 2 fieldbook files"), icon = icon("upload", lib = "glyphicon"),
               color = "blue",fill = TRUE, width = NULL)
+      
     } else {
+      
       hot_file <- basename(hot_file)
       infoBox(title="GREAT!", subtitle =
                 paste("Your fieldbook has been selected: ", hot_file),  icon = icon("ok", lib = "glyphicon"),
@@ -152,6 +154,8 @@ pbaker_server <- function(input, output, session, values){
       w_pbaker_table <- data.frame(lapply(1:length(trait), function(i) {
         input[[paste0("n_input_wpb_", trait[i])]]
       }))
+      
+      
       
 #       res <<- w_pbaker_table
 #       #print(w_pbaker_table)

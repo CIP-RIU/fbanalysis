@@ -49,11 +49,26 @@ single_server <- function(input, output, session, values){
       selectInput('rep_single', 'Select Repetitions', c(Choose='', select_options(hot_bdata())),
                   selectize=TRUE)
     })
-  
+    
     output$trait_single <- renderUI({
       selectInput('trait_single', 'Select Trait(s)', c(Choose='', select_options(hot_bdata())),
                   selectize=TRUE, multiple = TRUE)
     })
+    
+    
+    output$block_single  <- renderUI({
+      selectInput('block_single', 'Select Block', c(Choose='', select_options(hot_bdata())),
+                  selectize=TRUE)
+    })
+    
+    output$k_single  <- renderUI({
+      selectInput('k_single', 'Select Block Size', c(Choose='', select_options(hot_bdata())),
+                  selectize=TRUE)
+    })    
+    
+    
+    
+    
     
     output$file_message_single <- renderInfoBox({
       
@@ -109,6 +124,10 @@ single_server <- function(input, output, session, values){
       print(trait)
       rep <- input$rep_single
       genotypes <- input$genotypes_single
+      
+      block <- input$block_single
+      k <- input$k_single
+      
       #format <- paste(input$format_single,"_document",sep="")
       format <- paste(input$format_single)
       
@@ -126,7 +145,11 @@ single_server <- function(input, output, session, values){
         try(pepa::repo.abd(traits = trait, geno = genotypes, rep = rep, format = format, data = fieldbook))
       }
 
-      
+      if(design== "Alpha Design(0,1) (AD)"){
+        #try(pepa::repo.abd(traits = trait, geno = genotypes, format = format, data = fieldbook))
+        try(pepa::repo.a01d(traits = trait,geno = genotypes, rep = rep, block = block, k = k, data = fieldbook, format = format))
+      }
+  
       
       })
   })
