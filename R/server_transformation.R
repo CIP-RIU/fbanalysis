@@ -100,19 +100,16 @@ dtr_server <- function(input, output, session, values){
                     selected = "none",
                     selectize = TRUE),
         
-        numericInput(paste0("n_input_tdr_", trait[i]), label = paste0("The parameter for tranforming ", trait[i]), value = 10)
+      
+ 
+        numericInput(paste0("n_input_tdr_", trait[i]), label = paste0("The parameter for tranforming ", trait[i]), value = '',min = 1,max = 10)
+        
+        
         )
       })
       
     }
   })
-  
-  
-  
-  #updateSelectInput("subproject_field", choices = c("new", "choices"))
-  
-  
-  
   
   fbdraft_dtr <- shiny::reactive({    
     
@@ -161,36 +158,13 @@ dtr_server <- function(input, output, session, values){
     
     
     fieldbook2
-    #format <- paste(input$format_dtr)
-    
-    # if( type_transformation == "logy"){
-    #
-    #   try(fieldbook <- st4gi::dtr(trait = trait, type = "logy",base = par_logy_tdr, data = fieldbook))
-    # }
-    #
-    # if( type_transformation == "logy1"){
-    #   #try(pepa::repo.abd(traits = trait, geno = genotypes, rep = rep, format = format, data = fieldbook))
-    #   try(fieldbook <- st4gi::dtr(trait = trait, type = "logy1",base = par_logy_tdr, data = fieldbook))
-    # }
-    #
-    # if( type_transformation == "sqrty"){
-    #
-    #   try(fieldbook <- st4gi::dtr(trait = trait, type = "sqrty",  data = fieldbook))
-    # }
-    #
-    # if( type_transformation == "sqrty1"){
-    #
-    #   try(fieldbook <- st4gi::dtr(trait = trait, type = "sqrty1", data = fieldbook))
-    # }
-    #
-    # if( type_transformation == "arcsin"){
-    #
-    #   try(fieldbook <- st4gi::dtr(trait = trait, type = "arcsin" , n = arcsin_tdr, data = fieldbook))
-    # }
-
-   
+ 
   })
   
+  
+  # Update Seleted Values ---------------------------------------------------
+  # After select values in type of tranformation and its parameter respectly, shiny return to defaults values. 
+  # But using updateInputs, it preserve the values selected by users.
   
   shiny::observe({
     
@@ -202,7 +176,6 @@ dtr_server <- function(input, output, session, values){
                                choices = dtr_choices,
                                selected = input[[paste0('type_dtr_',trait[i])]])
       
-      
       shiny::updateNumericInput(session , paste0("n_input_tdr_", trait[i]), label = paste0("The parameter for tranforming ", 
                                                                                            trait[i]), value = input[[paste0('n_input_tdr_',trait[i])]])
       
@@ -212,26 +185,12 @@ dtr_server <- function(input, output, session, values){
   
   
   shiny::observeEvent(input$dtr_button, {
-    
-#new code
- 
-    
-    
-   
-    
-    
-    
-    
 
-#end code
-    
-    
-    
-        fb_dtr <-  fbdraft_dtr()
+  fb_dtr <-  fbdraft_dtr()
         fbtemp <- fb_dtr
         #print(fb)
         output$fbDesign_table_dtr <- rhandsontable::renderRHandsontable({
-          rhandsontable::rhandsontable(fb_dtr, readOnly = T)})
+        rhandsontable::rhandsontable(fb_dtr, readOnly = T)})
         
       })
       
