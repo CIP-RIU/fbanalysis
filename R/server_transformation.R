@@ -1,4 +1,4 @@
-dtr_choices <- c(
+dtr_choices <- c(Choose='',
   "Logarithmic transformation log(y)"="logy",
   "Logarithmic transformation log(y + 1)"="logy1",
   "Square root transformation sqrt(y)"="sqrty",
@@ -89,73 +89,37 @@ dtr_server <- function(input, output, session, values){
    # res <- vector()
     
     if(length(trait)>0){
-      
-      lapply(1:length(trait), function(i) {
-        print(i)
+   
         
-        # if(type =='Logarithmic transformation log(y)' || type == 'Logarithmic transformation log(y + 1)'){
-        #   label <- "Base for Logarithmic transformation "
-        #   value <- 10
-        # }
-        # 
-        # if(type =='Arc-sine transformation arcsin'){
-        #   label <- "Parameter for arc-sine transformation "
-        #   value <- 1
-        # }
+      lapply(1:length(trait), function(i) {
+
         tagList(
           
         selectInput(paste0('type_dtr_',trait[i]), label = 'Select type of data tranformation', 
                     choices = dtr_choices,
-                    selected = "logy",
-                    selectize = FALSE),
+                    selected = "none",
+                    selectize = TRUE),
         
-          # 
-          # shiny::conditionalPanel(
-          #   condition =
-          #   "input.type_dtr_ == 'logy'|
-          #    input.type_dtr_ == 'logy1'",
-          #   numericInput(paste0("n_input_tdr1_", trait[i]), label = paste0("The parameter for ", trait[i]), value = 10)
-          #   #uiOutput("trait_single")
-          # 
-          # ),
-          # 
-          # shiny::conditionalPanel(
-          #   condition =
-          #     "input.type_dtr_ == 'arcsin'",
-          #   numericInput(paste0("n_input_tdr2_", trait[i]), label = paste0("The parameter for ", trait[i]), value = 10)
-          #   #uiOutput("trait_single")
-          # 
-          # )#,
-        
-  
-        # res <- input[[paste0("type_dtr_", trait[i])]],
-        # print("-------------"),
-        # print(res),
-        # print("-------------"),
-        # type <- input$type_dtr
-        # 
-        # if(res[i] == 'Logarithmic transformation log(y)' || res[i] == 'Logarithmic transformation log(y + 1)'){
-        #   label <- "Base for Logarithmic transformation "
-        #   value <- 10
-        # }
-        # 
-        # if(res[i] ==  'Arc-sine transformation arcsin'){
-        #   label <- "Parameter for arc-sine transformation "
-        #   value <- 1
-        # }
-        
-        numericInput(paste0("n_input_tdr_", trait[i]), label = paste0("The parameter for ", trait[i]), value = 10)
+        numericInput(paste0("n_input_tdr_", trait[i]), label = paste0("The parameter for tranforming ", trait[i]), value = 10)
         )
       })
       
     }
   })
   
+  
+  
+  #updateSelectInput("subproject_field", choices = c("new", "choices"))
+  
+  
+  
+  
   fbdraft_dtr <- shiny::reactive({    
     
     fieldbook <- as.data.frame(hot_bdata())
     
     trait <- input$trait_dtr
+    
     tdr_table <- data.frame(lapply(1:length(trait), function(i) {
       input[[paste0('type_dtr_',trait[i])]]
     }), stringsAsFactors = FALSE)
@@ -173,8 +137,8 @@ dtr_server <- function(input, output, session, values){
     
     if(!is.null(trait)){
       for(j in 1:length(trait)) {
-      print(j)
-      print(tdr_global[1,j])
+      #print(j)
+      #print(tdr_global[1,j])
       
       
       if(tdr_global[1,j]=='logy' || tdr_global[1,j]=='logy1'){
@@ -227,7 +191,42 @@ dtr_server <- function(input, output, session, values){
    
   })
   
+  
+  shiny::observe({
+    
+    trait <- as.character(input$trait_dtr)
+    type <- input$type_dtr
+    lapply(1:length(trait), function(i) {
+      
+      shiny::updateSelectInput(session, paste0('type_dtr_',trait[i]), label = 'Select type of data tranformation', 
+                               choices = dtr_choices,
+                               selected = input[[paste0('type_dtr_',trait[i])]])
+      
+      
+      shiny::updateNumericInput(session , paste0("n_input_tdr_", trait[i]), label = paste0("The parameter for tranforming ", 
+                                                                                           trait[i]), value = input[[paste0('n_input_tdr_',trait[i])]])
+      
+    })
+    
+  })
+  
+  
   shiny::observeEvent(input$dtr_button, {
+    
+#new code
+ 
+    
+    
+   
+    
+    
+    
+    
+
+#end code
+    
+    
+    
         fb_dtr <-  fbdraft_dtr()
         fbtemp <- fb_dtr
         #print(fb)
