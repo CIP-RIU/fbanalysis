@@ -7,7 +7,7 @@
 #' @export
 #' 
 
-single_ui <- function(type = "tab", title = "Statistical Analysis of Single-Environment Trials", name = "analysis_single"){
+single_ui <- function(type = "tab", title = "PVS anova", name = "analysis_single"){
   
   shinydashboard::tabItem(tabName = name,
                           h2(title),   
@@ -29,9 +29,13 @@ single_ui <- function(type = "tab", title = "Statistical Analysis of Single-Envi
                                                                            c("Completely Randomized Design (CRD)",
                                                                           "Randomized Complete Block Design (RCBD)",
                                                                           "Augmented Block Design (ABD)",
-                                                                          "Alpha Design(0,1) (AD)"),
-                                                                           selected = "Randomized Complete Block Design (RCBD)",
-                                                                           selectize=FALSE),
+                                                                          "Alpha Design(0,1) (AD)",
+                                                                          "Factorial Two-Way Design in CRD (F2CRD)",
+                                                                          "Factorial Two-Way Design in RCBD (F2RCBD)",
+                                                                          "Split Plot with Plots in CRD (SPCRD)",
+                                                                          "Split Plot with Plots in RCBD (SPRCBD)"),
+                                                                          selected = "Randomized Complete Block Design (RCBD)",
+                                                                          selectize=FALSE),
                                               # 
                                               # shiny::conditionalPanel(
                                               #   condition = 
@@ -49,22 +53,43 @@ single_ui <- function(type = "tab", title = "Statistical Analysis of Single-Envi
                                                 condition = "input.design_single == 'Alpha Design(0,1) (AD)'|
                                                              input.design_single == 'Completely Randomized Design (CRD)'|
                                                              input.design_single == 'Randomized Complete Block Design (RCBD)'|
-                                                             input.design_single == 'Augmented Block Design (ABD)'",
-                                                uiOutput("genotypes_single"),
-                                                uiOutput("trait_single")
-                                              ),  
+                                                             input.design_single == 'Augmented Block Design (ABD)'|          
+                                                             input.design_single == 'Split Plot with Plots in CRD (SPCRD)'| 
+                                                             input.design_single == 'Split Plot with Plots in RCBD (SPRCBD)'|
+                                                             input.design_single == 'Factorial Two-Way Design in CRD (F2CRD)'|
+                                                             input.design_single == 'Factorial Two-Way Design in RCBD (F2RCBD)'",
                                                 
-                                              shiny::conditionalPanel(
-                                                condition = "input.design_single == 'Alpha Design(0,1) (AD)'|
-                                                             input.design_single == 'Randomized Complete Block Design (RCBD)'",
+                                                uiOutput("genotypes_single"),                                                    
+                                                uiOutput("trait_single")                                                            
+                                              ),                                                                                   
+                                                                                                                                   
+                                              shiny::conditionalPanel(                                                               
+                                                condition = "input.design_single == 'Alpha Design(0,1) (AD)'|                      
+                                                             input.design_single == 'Randomized Complete Block Design (RCBD)'|
+                                                             input.design_single == 'Augmented Block Design (ABD)'| 
+                                                             input.design_single == 'Split Plot with Plots in CRD (SPCRD)'|
+                                                             input.design_single == 'Split Plot with Plots in RCBD (SPRCBD)'|     
+                                                             input.design_single == 'Factorial Two-Way Design in CRD (F2CRD)'|
+                                                             input.design_single == 'Factorial Two-Way Design in RCBD (F2RCBD)'",
+                                               
                                                 uiOutput("rep_single")
-                                               ),  
+                                              ),  
                                               
                                               #uiOutput("genotypes_single"),
                                               #uiOutput("rep_single"),
                                             
                                               #uiOutput("trait_single"),
-                                            
+                                              shiny::conditionalPanel(
+                                                condition =  "input.design_single == 'Split Plot with Plots in CRD (SPCRD)'|
+                                                              input.design_single == 'Split Plot with Plots in RCBD (SPRCBD)'|     
+                                                              input.design_single == 'Factorial Two-Way Design in CRD (F2CRD)'|
+                                                              input.design_single == 'Factorial Two-Way Design in RCBD (F2RCBD)'",
+
+                                                uiOutput("factor_single")
+                                              ),
+                                              
+                                              
+                                              
                                               shiny::conditionalPanel(
                                                  condition = "input.design_single == 'Alpha Design(0,1) (AD)'",
                                                  

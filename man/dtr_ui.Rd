@@ -10,7 +10,7 @@ dtr_ui(type = "tab", title = "Data Transformation", name = "analysis_dtr")
 \arguments{
 \item{type}{type of UI element, deault is a tab in a shinydashboard}
 
-\item{title}{diaply title name}
+\item{title}{display title name}
 
 \item{name}{UI TabName}
 }

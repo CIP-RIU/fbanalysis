@@ -27,11 +27,11 @@ elston_ui(type = "tab", title = "Elston Index for Ranking and Selection",
 
 \item{name}{UI TabName}
 
-\item{type}{type of UI element, deault is a tab in a shinydashboard}
+\item{type}{type of UI element, default is a tab in a shinydashboard for elston index}
 
-\item{title}{diaply title name}
+\item{title}{display title name for elston index}
 
-\item{name}{UI TabName}
+\item{name}{UI TabName for elston index}
 }
 \description{
 UI for Elston Analysis in HiDAP
@@ -41,7 +41,7 @@ UI for Elston Analysis in HiDAP
 Returns user friendly ui
 
 UI for Elston Analysis in HiDAP
-Returns user friendly ui
+Returns user friendly ui for elston index
 }
 \author{
 Omar Benites

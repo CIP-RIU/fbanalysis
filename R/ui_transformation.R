@@ -2,7 +2,7 @@
 #' Returns user friendly ui
 #' @author Omar Benites
 #' @param type type of UI element, deault is a tab in a shinydashboard
-#' @param title diaply title name
+#' @param title display title name
 #' @param name UI TabName
 #' @export
 #' 

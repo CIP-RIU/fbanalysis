@@ -12,7 +12,12 @@ Imports:
       shinydashboard,
       readxl,
       data.table,
-      shinyFiles
+      shinyFiles,
+      rhandsontable,
+      openxlsx,
+      pvs,
+      shinysky,
+      rlist
 Suggests: 
      traittools
 Copyright: International Potato Center (2016)     

@@ -1,9 +1,9 @@
 #' UI for Elston Analysis in HiDAP
-#' Returns user friendly ui
+#' Returns user friendly ui for elston index
 #' @author Omar Benites
-#' @param type type of UI element, deault is a tab in a shinydashboard
-#' @param title diaply title name
-#' @param name UI TabName
+#' @param type type of UI element, default is a tab in a shinydashboard for elston index
+#' @param title display title name for elston index
+#' @param name UI TabName for elston index
 #' @export
 #' 
 

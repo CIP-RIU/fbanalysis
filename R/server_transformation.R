@@ -16,7 +16,10 @@ dtr_choices <- c(Choose='',
 #' @param values reactive values
 #' @importFrom shiny reactive tabPanel renderUI selectInput icon h2 uiOutput radioButtons actionButton br column fluidRow 
 #' @importFrom shinydashboard infoBox tabBox infoBoxOutput renderInfoBox
-#' @importFrom shinyFiles parseFilePaths
+#' @importFrom openxlsx loadWorkbook addWorksheet writeDataTable saveWorkbook removeWorksheet
+#' @importFrom readxl read_excel
+#' @importFrom rhandsontable renderRHandsontable rhandsontable
+#' @importFrom shinyFiles parseFilePaths shinyFileChoose
 #' @import pepa
 #' @import st4gi
 #' @author Omar Benites
@@ -93,7 +96,7 @@ dtr_server <- function(input, output, session, values){
         
       lapply(1:length(trait), function(i) {
 
-        tagList(
+        shiny::tagList(
           
         selectInput(paste0('type_dtr_',trait[i]), label = 'Select type of data tranformation', 
                     choices = dtr_choices,
