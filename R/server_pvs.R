@@ -19,7 +19,6 @@ pvs_server <- function(input, output, session, values){
   shinyFiles::shinyFileChoose(input, 'file_pvs', roots=volumes, session=session,
                               restrictions=system.file(package='base'),filetypes=c('xlsx'))
 
-
   hot_path <- reactive ({
 
     if(length(input$file_pvs)==0){return (NULL)}
@@ -45,7 +44,7 @@ pvs_server <- function(input, output, session, values){
     sheets <- hot_sheet()
     pvs_need_sheet <- c("F1_selection_criteria", "F2_select_clones_flowering", "F3_select_clones_harvest",
                         "F9_postharvest_clones_storage" , "summary_organoleptic_mother",
-                        "summary_organoleptic_baby", "summary_global")
+                        "summary_organoleptic_baby")
 
     sheets <-  sort(sheets[is.element(sheets, pvs_need_sheet)])
 
@@ -68,6 +67,53 @@ pvs_server <- function(input, output, session, values){
 
   })
 
+  hot_check_pvs_form <- reactive({
+    
+    fp <- hot_path
+    
+    format <- paste(input$format_pvs)
+    
+    pvs_need_sheet <- c("F1_selection_criteria", "F2_select_clones_flowering", "F3_select_clones_harvest",
+                        "F4_harvest_mother",      "F5_harvest_baby", "F6_organoleptic_mother", "F7_organoleptic_baby",
+                        "F8_postharvest_dormancy", "F9_postharvest_clones_storage" , "summary_organoleptic_mother",
+                        "summary_organoleptic_baby")
+    
+    pvs_hot_sheet <- input$pvs_sheet
+    
+    pvs_found_sheet <-  pvs_hot_sheet[is.element(pvs_hot_sheet, pvs_need_sheet)]
+    
+    hot_pvs_bdata <- hot_bdata()
+    
+    res <-  lapply(X = pvs_found_sheet, function(x)  pvs::check_pvs_form(x, hot_pvs_bdata[[x]]) )
+    names(res) <- pvs_found_sheet
+    
+    res
+    
+  })
+  
+  hot_check_fail_sheet <- reactive({
+    
+    res <- hot_check_pvs_form()
+    out_fail <- rlist::list.filter(res, out == FALSE)
+    out_fail_fnumber <- rlist::list.map(out_fail, mensaje)
+    out_fail_fnumber <- unlist(out_fail_fnumber)
+     
+  })
+  
+  output$pvs_fail_message <- shiny::renderText({
+  #output$pvs_fail_message <- shiny::renderUI({
+    
+    if(!is.null(hot_check_fail_sheet())) {
+    res <- hot_check_fail_sheet()
+    #print(res)
+    out <- paste(names(res),": ", res, collapse = ";    ")  
+    #out <- print(res)
+    } else {
+      out <- paste("", sep = "\n")
+    }
+    
+  })
+  
   output$file_message_pvs <- renderInfoBox({
 
     #germoplasm <-material_table()$Institutional_number
@@ -76,8 +122,8 @@ pvs_server <- function(input, output, session, values){
 
     hot_file <- hot_path()
     sheets <- hot_sheet()
-     print(hot_file)
-     print(sheets)
+     # print(hot_file)
+     # print(sheets)
     if(is.null(hot_file)){
       infoBox(title="Select fieldbook file", subtitle=
                 paste("Choose your fieldbook file"), icon = icon("upload", lib = "glyphicon"),
@@ -99,19 +145,12 @@ pvs_server <- function(input, output, session, values){
     }
   })
 
-
   shiny::observeEvent(input$pvs_button, {
     shiny::withProgress(message = "Opening pvs Report...",value= 0,{
 
       #NOTE: To use pepa report package we need R 3.3.0 or more.
       #NOTE Finally, we always need pandoc installer.
 
-      #design <- input$design_pvs
-      #fieldbook <- as.data.frame(hot_bdata())
-      # trait <- input$trait_pvs
-      # print(trait)
-      # rep <- input$rep_pvs
-      # genotypes <- input$genotypes_pvs
       fp <- hot_path
 
       format <- paste(input$format_pvs)
@@ -119,26 +158,18 @@ pvs_server <- function(input, output, session, values){
       pvs_need_sheet <- c("F1_selection_criteria", "F2_select_clones_flowering", "F3_select_clones_harvest",
                           "F4_harvest_mother",      "F5_harvest_baby", "F6_organoleptic_mother", "F7_organoleptic_baby",
                           "F8_postharvest_dormancy", "F9_postharvest_clones_storage" , "summary_organoleptic_mother",
-                          "summary_organoleptic_baby", "summary_global")
+                          "summary_organoleptic_baby")
 
       pvs_hot_sheet <- input$pvs_sheet
-      # print(pvs_hot_sheet)
+
       pvs_found_sheet <-  pvs_hot_sheet[is.element(pvs_hot_sheet, pvs_need_sheet)]
-      # print("found sheet")
-      # print(pvs_found_sheet)
+
 
       hot_pvs_bdata <- hot_bdata()
-      # print("hot_pvs_data")
-      print("print fieldbooks")
-      print(hot_pvs_bdata)
-      #saveRDS(hot_pvs_bdata,"pvs.rda")
-      #res <- list()
 
       print("f1")
       res <-  lapply(X = pvs_found_sheet, function(x)  pvs::check_pvs_form(x, hot_pvs_bdata[[x]]) )
       names(res) <- pvs_found_sheet
-      print(res)
-
 
       print("f2")
       out_pass <- rlist::list.filter(res, out == TRUE)
@@ -146,34 +177,27 @@ pvs_server <- function(input, output, session, values){
       #out_pass_fnumber <- unlist(out_pass_fnumber, use.names = FALSE)
       out_pass_fnumber <-  unlist(out_pass_fnumber)
 
-      # print("out pass")
-      # print(out_pass)
-       print(out_pass_fnumber)
+      print("out pass")
+      #print(out_pass)
+      #print(out_pass_fnumber)
       #
       # print(sheets)
       #
-      #
-      out_fail <- rlist::list.filter(res, out == FALSE)
-      out_fail_fnumber <- rlist::list.map(out_fail, form_number)
-      out_fail_fnumber <- unlist(out_fail_fnumber)
+      # out_fail <- rlist::list.filter(res, out == FALSE)
+      # out_fail_fnumber <- rlist::list.map(out_fail, form_number)
+      # out_fail_fnumber <- unlist(out_fail_fnumber)
       #out_fail_fnumber <-  unlist(out_fail_fnumber,use.names = FALSE)
 
       sheets <- names(out_pass)
-      #lapply(X = sheets, function(x) repo.pvs(x = sheets, form = form_number, format = format))
+      #lapply(X = sheets, function(x) repo.pvs(data = sheets, form = form_number, format = format))
       print("f4")
-      print(sheets)
-      # print(hot_pvs_bdata)
-      # print(out_pass_fnumber)
-      # print(hot_pvs_bdata)
-      # saveRDS(hot_pvs_bdata,"pvs.rda")
-
       # res <- check_pvs_form(i, hot_pvs_bdata[[i]]
       # } #end for loop
       # print(hot_pvs_bdata[[sheets]])
       # print(out_pass_fnumber[[sheets]])
 
       for(i in sheets) {
-        try(pepa::repo.pvs(x =  hot_pvs_bdata[[i]], form = out_pass_fnumber[[i]], format =  format))
+        try(pepa::repo.pvs(data =  hot_pvs_bdata[[i]], form = out_pass_fnumber[[i]], format =  format))
       }
       # print("f5")
       # shinysky::showshinyalert(session, "alert_fb_done", paste("WARNING: This fieldbook already exists in HiDAP. Please Select Experiment Number in Crop & Location"),

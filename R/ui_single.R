@@ -19,9 +19,9 @@ single_ui <- function(type = "tab", title = "PVS anova", name = "analysis_single
                             tabBox(width = 12,
                                    tabPanel("Single Analysis", #begin tabset "CHECK"
                                             fluidRow( 
-                                              column(width = 6,
+                                              column(width = 8,
                                               shinyFiles::shinyFilesButton('file_single', 'Select File', 'Please select a file',FALSE),
-                                              infoBoxOutput("file_message_single",width = NULL),
+                                              infoBoxOutput("file_message_single", width = NULL),
                                               #selectInput('trait_single', 'Select Trait', c(Choose='', single_select_options()   ), selectize=TRUE),
                                               #selectInput('rep_single', 'Select Repetition', c(Choose='', names(iris)), selectize=TRUE),
                                               #selectInput('genotypes_single', 'Select Treatment', c(Choose='', names(iris)), selectize=TRUE),
@@ -49,6 +49,19 @@ single_ui <- function(type = "tab", title = "PVS anova", name = "analysis_single
                                               #   
                                               # ),
                                               
+                                              shiny::conditionalPanel(                                                               
+                                                condition = "input.design_single == 'Alpha Design(0,1) (AD)'|                      
+                                                             input.design_single == 'Randomized Complete Block Design (RCBD)'|
+                                                             input.design_single == 'Augmented Block Design (ABD)'| 
+                                                             input.design_single == 'Split Plot with Plots in CRD (SPCRD)'|
+                                                             input.design_single == 'Split Plot with Plots in RCBD (SPRCBD)'|     
+                                                             input.design_single == 'Factorial Two-Way Design in CRD (F2CRD)'|
+                                                             input.design_single == 'Factorial Two-Way Design in RCBD (F2RCBD)'",
+                                                
+                                                uiOutput("rep_single")
+                                              ),  
+                                              
+                                              
                                               shiny::conditionalPanel(
                                                 condition = "input.design_single == 'Alpha Design(0,1) (AD)'|
                                                              input.design_single == 'Completely Randomized Design (CRD)'|
@@ -63,17 +76,7 @@ single_ui <- function(type = "tab", title = "PVS anova", name = "analysis_single
                                                 uiOutput("trait_single")                                                            
                                               ),                                                                                   
                                                                                                                                    
-                                              shiny::conditionalPanel(                                                               
-                                                condition = "input.design_single == 'Alpha Design(0,1) (AD)'|                      
-                                                             input.design_single == 'Randomized Complete Block Design (RCBD)'|
-                                                             input.design_single == 'Augmented Block Design (ABD)'| 
-                                                             input.design_single == 'Split Plot with Plots in CRD (SPCRD)'|
-                                                             input.design_single == 'Split Plot with Plots in RCBD (SPRCBD)'|     
-                                                             input.design_single == 'Factorial Two-Way Design in CRD (F2CRD)'|
-                                                             input.design_single == 'Factorial Two-Way Design in RCBD (F2RCBD)'",
-                                               
-                                                uiOutput("rep_single")
-                                              ),  
+                                            
                                               
                                               #uiOutput("genotypes_single"),
                                               #uiOutput("rep_single"),
@@ -101,7 +104,14 @@ single_ui <- function(type = "tab", title = "PVS anova", name = "analysis_single
                                               radioButtons(inputId="format_single", label="Report format", choices= c("html","word"), 
                                                            selected = "html", inline = TRUE, width = NULL),
                                               actionButton(inputId = "single_button", label= "Analyze", icon = icon("play-circle"),
-                                                            width = NULL,height = NULL)
+                                                            width = NULL,height = NULL),
+                                              
+                                              
+                                              br(),
+                                              shiny::wellPanel(
+                                                shiny::HTML("<b> Fieldbook Note </b>"),
+                                                rHandsontableOutput("single_anova_fail_message")
+                                              )
                                               
                                               
                                               #uiOutput("run_single")

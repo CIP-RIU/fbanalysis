@@ -17,7 +17,7 @@ ui_pvs <- function(type = "tab", title = "PVS Criteria & Organoleptic", name = "
                             collapsible = TRUE, width = NULL,
                             #tabsetPanel(
                             tabBox(width = 12,
-                                   tabPanel("PVS Report", #begin tabset "CHECK"
+                                   tabPanel("PVS Form Analysis", #begin tabset "CHECK"
                                             h2(title),
                                             fluidRow(
                                               
@@ -29,7 +29,12 @@ ui_pvs <- function(type = "tab", title = "PVS Criteria & Organoleptic", name = "
                                                      radioButtons(inputId = "format_pvs", label="Report format", choices= c("html","word"),
                                                                   selected = "html", inline = TRUE, width = NULL),
                                                      actionButton(inputId = "pvs_button", label= "Analyze", icon = icon("play-circle"),
-                                                                  width = NULL,height = NULL)
+                                                                  width = NULL,height = NULL),
+                                                     br(),
+                                                     shiny::wellPanel(
+                                                       shiny::HTML("<b> Form Note </b>"),
+                                                       shiny::textOutput("pvs_fail_message")
+                                                     )
   
                                               )#,#end column
              
@@ -37,7 +42,7 @@ ui_pvs <- function(type = "tab", title = "PVS Criteria & Organoleptic", name = "
 
                                    ), #end tab Panel "pvs report"
                               
-                                   pvs_anova_ui(type="tab", title="PVS Anova", name="analysis_pvs")
+                                   pvs_anova_ui(type="tab", title="PVS Fieldbook Analysis", name="anova_pvs")
                                 
                             )#,
                             

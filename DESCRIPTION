@@ -18,8 +18,9 @@ Imports:
       pvs,
       shinysky,
       rlist
-Suggests: 
-     traittools
+Suggests:
+     traittools,
+    testthat
 Copyright: International Potato Center (2016)     
 License: MIT + file LICENSE
 LazyData: true

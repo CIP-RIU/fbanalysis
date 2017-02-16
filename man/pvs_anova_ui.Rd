@@ -5,7 +5,8 @@
 \title{UI for PVS's analysis of variance
 Returns user friendly ui}
 \usage{
-pvs_anova_ui(type = "tab", title = "Anova PVS", name = "anova_pvs")
+pvs_anova_ui(type = "tab", title = "PVS Fieldbook Analysis",
+  name = "anova_pvs")
 }
 \arguments{
 \item{type}{type of UI element, deault is a tab in a shinydashboard}

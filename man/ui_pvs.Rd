@@ -5,7 +5,7 @@
 \title{UI for PVS report for selection criteria and organoleptics
 Returns user friendly ui for selection criteria and organoleptics}
 \usage{
-ui_pvs(type = "tab", title = "PVS report for criteria",
+ui_pvs(type = "tab", title = "PVS Criteria & Organoleptic",
   name = "analysis_pvs")
 }
 \arguments{

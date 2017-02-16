@@ -7,7 +7,7 @@
 #' @export
 #'
 
-pvs_anova_ui <- function(type = "tab", title = "Anova PVS", name = "anova_pvs"){
+pvs_anova_ui <- function(type = "tab", title = "PVS Fieldbook Analysis", name = "anova_pvs"){
 
   #shinydashboard::tabItem(tabName = name,
   # tabPanel(title, icon = icon("tags", lib = "glyphicon"),
@@ -58,7 +58,13 @@ pvs_anova_ui <- function(type = "tab", title = "Anova PVS", name = "anova_pvs"){
                                                      radioButtons(inputId="format_pvs_anova", label="Report format", choices= c("html","word"),
                                                                   selected = "html", inline = TRUE, width = NULL),
                                                      actionButton(inputId = "button_pvs_anova", label= "Analyze", icon = icon("play-circle"),
-                                                                  width = NULL,height = NULL)
+                                                                  width = NULL,height = NULL),
+                                                     
+                                                     br(),
+                                                     shiny::wellPanel(
+                                                       shiny::HTML("<b> Fieldbook Note </b>"),
+                                                       shiny::textOutput("pvs_anova_fail_message")
+                                                     )
 
                                                      )#end column
 

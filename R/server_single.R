@@ -136,6 +136,9 @@ single_server <- function(input, output, session, values){
       #format <- paste(input$format_single,"_document",sep="")
       format <- paste(input$format_single)
       
+      
+      
+      
       if(design == "Randomized Complete Block Design (RCBD)"){
          try(pepa::repo.rcbd(traits = trait, geno = genotypes, rep = rep, format = format, data = fieldbook))
       }
@@ -180,16 +183,108 @@ single_server <- function(input, output, session, values){
         try(pepa::repo.2f(traits = trait, A = genotypes, B = factor_single, rep = rep, design = "rcbd", title= title, data = fieldbook, format = format))
       }
 
+      
+      
+      
       })
   })
   
-} 
+  
+  hot_check_single_fb <- reactive({
+    
+    req(input$trait_single)
+    req(input$rep_single)
+    req(input$genotypes_single)
+    
+    trait <- input$trait_single
+    rep <- input$rep_single
+    genotypes <- input$genotypes_single
+    design <- input$design_single
+    factorb <- input$factor_single
+    
+    n <- length(trait)
+    fb <- as.data.frame(hot_bdata())
+    
+    if(!is.null(trait) && !is.null(rep) && !is.null(genotypes)) {
+    
+    
+      if(design == 'Completely Randomized Design (CRD)' || design  == 'Randomized Complete Block Design (RCBD)') {
+        
+        temp_colum <- lapply(X = 1:n, function(x) (single_error(mve.rcbd(trait = trait[x], treat = genotypes, rep = rep, data = fb), trait[x])))
+        
+      }
+      
+      if(design == "Factorial Two-Way Design in CRD (F2CRD)"){
+
+        temp_colum <- lapply(X = 1:n, function(x) (single_error(mve.2f(trait = trait, A = genotypes, B = factorb, rep = rep, design = "crd",data = fb))))
+      }
+
+      if(design  == "Factorial Two-Way Design in RCBD (F2RCBD)"){
+
+        temp_colum <- lapply(X = 1:n, function(x) (single_error(mve.2f(trait = trait, A = genotypes, B = factorb, rep = rep, design = "rcbd",data = fb))))
+
+      } 
+      
+      e_trait <- temp_colum %>% map_chr("trait")
+      e_error <- temp_colum %>% map_chr("error")
+      
+      #out <- paste("Trait Status of ", e_trait, ": ", e_error, sep="")
+      out <- list( e_trait =  e_trait, e_error = e_error)
+      #out <- paste(out, sep= "\n")
+      #out <-   paste("hello", "world", sep="\n")
+      
+    } else {
+      
+      out <- NULL
+    }
+    
+    out
+    
+  })
+  
+  
+  output$single_anova_fail_message = renderRHandsontable({
+    
+    if(!is.null(hot_check_single_fb())) {
+       msg <-  hot_check_single_fb() 
+      # #HTML(paste(msg, sep = '<br/>'))
+      # out <- paste("Trait Status of ", msg$e_trait, ": ", msg$e_error, sep="")
+      # #msg <- paste(msg)
+      # msg <- HTML(paste(out , sep = '<br/>'))
+      df <- data.frame(trait = msg$e_trait, status = msg$e_error)
+      rhandsontable(df)
+       #msg <- paste(msg)
+    } else {
+      df <- data.frame()
+      rhandsontable(df)
+    }
+    
+  })
+  
+  
+  
+  
+  #output$single_anova_fail_message <- shiny::renderText({
+  
+#   output$single_anova_fail_message <-renderUI({
+#     if(!is.null(hot_check_single_fb())) {
+#       
+#         msg <-  hot_check_single_fb() 
+#         #HTML(paste(msg, sep = '<br/>'))
+#         out <- paste("Trait Status of ", msg$e_trait, ": ", msg$e_error, sep="")
+#         #msg <- paste(msg)
+#         msg <- HTML(paste(out , sep = '<br/>'))
+#         
+#         #msg <- paste(msg)  
+#     } else {
+#         msg <- paste("")
+#     }
+#     msg
+#   })
+#   
+# } 
 
 
 
-
-
-
-
-
+}
 

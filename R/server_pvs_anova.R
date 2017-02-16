@@ -40,7 +40,7 @@ pvs_anova_server <- function(input, output, session, values){
     req(input$file_pvs_anova)
     
     sheets <- hot_sheet()
-    pvs_need_sheet <- c( "F4_harvest_mother" , "F5_harvest_baby", "F8_postharvest_dormancy")
+    pvs_need_sheet <- c( "F4_harvest_mother" , "F5_harvest_baby", "F8_postharvest_dormancy", "summary_global")
 
     sheets <-  sort(sheets[is.element(sheets, pvs_need_sheet)])
 
@@ -57,15 +57,18 @@ pvs_anova_server <- function(input, output, session, values){
 
     if(length(hot_file)>0){
       
-        sheet <- input$pvs_anova_sheet
+      sheet <- input$pvs_anova_sheet
       # fb_sheets <- readxl::excel_sheets(path = hot_file )
       # sheet_list <- lapply(X=fb_sheets, function(x) openxlsx::read.xlsx(xlsxFile =  hot_file, sheet = x, na.strings = TRUE ))
       # names(sheet_list) <- fb_sheets
       # hot_bdata <- sheet_list
         
       # Read the excel using the selected sheet.  
-      hot_bdata <- readxl::read_excel(path = hot_file, sheet = sheet)
+      hot_bdata <- openxlsx::read.xlsx( xlsxFile =  hot_file, sheet = sheet, na.strings = TRUE )
+      if(sheet =="summary_global"){hot_bdata <- select(hot_bdata, matches('INSTN|Mean'))} 
       hot_bdata 
+      
+
     }
 
     
@@ -76,15 +79,18 @@ pvs_anova_server <- function(input, output, session, values){
                 selectize=TRUE)
   })
 
+  
   output$pvs_anova_rep  <- renderUI({
     selectInput('rep_pvs_anova', 'Select Repetitions', c(Choose='', select_options(hot_bdata())),
                 selectize=TRUE)
   })
 
+  
   output$pvs_anova_trait <- renderUI({
     selectInput('trait_pvs_anova', 'Select Trait(s)', c(Choose='', select_options(hot_bdata())),
                 selectize=TRUE, multiple = TRUE)
   })
+  
   
   output$pvs_message_anova <- renderInfoBox({
 
@@ -115,33 +121,98 @@ pvs_anova_server <- function(input, output, session, values){
               color = "green",fill = TRUE, width = NULL)
     }
   })
+  
+  
+  # hot_check_pvs_fb <- reactive({
+  #   
+  #   fp <- hot_path()
+  #   pvs_hot_sheet <- input$sheet_pvs_anova
+  #   pvs_need_sheet <- c("F4_harvest_mother", "F5_harvest_baby", "F8_postharvest_dormancy")
+  #   pvs_found_sheet <-  pvs_hot_sheet[is.element(pvs_hot_sheet, pvs_need_sheet)]
+  #   
+  #   fieldbook <- as.data.frame(hot_bdata())
+  #   res <- pvs::check_pvs_form(pvs_found_sheet, fieldbook) 
+  #   names(res) <- pvs_found_sheet
+  #   res
+  #   
+  # })
+  
+  
+  hot_check_fail_fb <- reactive({
 
+    #fp <- hot_path()
+    pvs_hot_sheet <- input$pvs_anova_sheet
+    #print(input$sheet_pvs_anova)
+    #print(pvs_hot_sheet)
+    
+    fieldbook <- as.data.frame(hot_bdata())
+    
+    check_pvs_aov <- pvs::check_pvs_data(fieldbook)
+    flag <- check_pvs_aov$flag
+    mensaje <- check_pvs_aov$mensaje
+    
+    if(!flag){
+      out <- paste( pvs_hot_sheet, mensaje, sep = ": ")
+    } else {
+      out <- ""
+    }
+    
+    out
+    
+  })
+  
+  
+  output$pvs_anova_fail_message <- shiny::renderText({
+    #output$pvs_fail_message <- shiny::renderUI({
+
+    if(!is.null(hot_check_fail_fb())) {
+      res <- hot_check_fail_fb()
+      # print(res)
+      out <- res
+    } else {
+      out <- paste("")
+    }
+
+  })
+  
+  
   shiny::observeEvent(input$button_pvs_anova, {
     shiny::withProgress(message = "Opening PVS anova report...",value= 0,{
 
       fp <- hot_path()
 
-      pvs_hot_sheet <- input$sheet_pvs_anova
-      pvs_need_sheet <- c("F4_harvest_mother", "F5_harvest_baby", "F8_postharvest_dormancy")
+      pvs_hot_sheet <- input$pvs_anova_sheet
+      pvs_need_sheet <- c("F4_harvest_mother", "F5_harvest_baby", "F8_postharvest_dormancy", "summary_global")
       pvs_found_sheet <-  pvs_hot_sheet[is.element(pvs_hot_sheet, pvs_need_sheet)]
 
       fieldbook <- as.data.frame(hot_bdata())
-       print(fieldbook)
-      saveRDS(fieldbook, "fb.rda")
+     
       
       
       genotypes <- input$genotypes_pvs_anova
       rep   <- input$rep_pvs_anova
       trait <- input$trait_pvs_anova
       format <- paste(input$format_pvs_anova)
+      
+      check_pvs_aov <- pvs::check_pvs_data(fieldbook)
+      flag <- check_pvs_aov$flag
+      print(flag)
+      
+      if(flag){
+      # print(fieldbook)
+      # print(trait)  
+      # print(pvs_hot_sheet)
+         
+       if(pvs_hot_sheet!="summary_global"){
+         try(pepa::repo.rcbd(traits = trait, geno = genotypes, rep = rep, format = format, data = fieldbook))
+       }
+       else {
+          try(pepa::repo.pvssg(traits = trait, data =  fieldbook, format = format))
+       }
+        
+        
+      } 
 
-      #if(design == "Randomized Complete Block Design (RCBD)"){
-        try(pepa::repo.rcbd(traits = trait, geno = genotypes, rep = rep, format = format, data = fieldbook))
-      #}
-
-      # print("f5")
-      # shinysky::showshinyalert(session, "alert_fb_done", paste("WARNING: This fieldbook already exists in HiDAP. Please Select Experiment Number in Crop & Location"),
-      #                          styleclass = "warning")
     })
   })
 
