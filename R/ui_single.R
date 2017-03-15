@@ -7,7 +7,7 @@
 #' @export
 #' 
 
-single_ui <- function(type = "tab", title = "PVS anova", name = "analysis_single"){
+single_ui <- function(type = "tab", title = "ANOVA", name = "analysis_single"){
   
   shinydashboard::tabItem(tabName = name,
                           h2(title),   
@@ -61,6 +61,26 @@ single_ui <- function(type = "tab", title = "PVS anova", name = "analysis_single
                                                 uiOutput("rep_single")
                                               ),  
                                               
+                                              shiny::conditionalPanel(
+                                                condition =  "input.design_single == 'Split Plot with Plots in CRD (SPCRD)'|
+                                                              input.design_single == 'Split Plot with Plots in RCBD (SPRCBD)'|     
+                                                              input.design_single == 'Factorial Two-Way Design in CRD (F2CRD)'|
+                                                              input.design_single == 'Factorial Two-Way Design in RCBD (F2RCBD)'",
+                                                
+                                                uiOutput("factor_single")
+                                              ),
+                                              
+                                              
+                                              
+                                              shiny::conditionalPanel(
+                                                condition = "input.design_single == 'Alpha Design(0,1) (AD)'",
+                                                
+                                                uiOutput("block_single"),
+                                                uiOutput("k_single")
+                                                
+                                              ),
+                                              
+                                              
                                               
                                               shiny::conditionalPanel(
                                                 condition = "input.design_single == 'Alpha Design(0,1) (AD)'|
@@ -82,24 +102,7 @@ single_ui <- function(type = "tab", title = "PVS anova", name = "analysis_single
                                               #uiOutput("rep_single"),
                                             
                                               #uiOutput("trait_single"),
-                                              shiny::conditionalPanel(
-                                                condition =  "input.design_single == 'Split Plot with Plots in CRD (SPCRD)'|
-                                                              input.design_single == 'Split Plot with Plots in RCBD (SPRCBD)'|     
-                                                              input.design_single == 'Factorial Two-Way Design in CRD (F2CRD)'|
-                                                              input.design_single == 'Factorial Two-Way Design in RCBD (F2RCBD)'",
-
-                                                uiOutput("factor_single")
-                                              ),
-                                              
-                                              
-                                              
-                                              shiny::conditionalPanel(
-                                                 condition = "input.design_single == 'Alpha Design(0,1) (AD)'",
-                                                 
-                                              uiOutput("block_single"),
-                                              uiOutput("k_single")
-                                              
-                                              ),
+                                          
                                                 
                                               radioButtons(inputId="format_single", label="Report format", choices= c("html","word"), 
                                                            selected = "html", inline = TRUE, width = NULL),

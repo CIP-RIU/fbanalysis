@@ -60,7 +60,6 @@ single_server <- function(input, output, session, values){
                   selectize=TRUE)
     })
     
-    
     output$block_single  <- renderUI({
       selectInput('block_single', 'Select Block', c(Choose='', select_options(hot_bdata())),
                   selectize=TRUE)
@@ -201,6 +200,7 @@ single_server <- function(input, output, session, values){
     genotypes <- input$genotypes_single
     design <- input$design_single
     factorb <- input$factor_single
+    block <- input$block_single
     
     n <- length(trait)
     fb <- as.data.frame(hot_bdata())
@@ -211,35 +211,79 @@ single_server <- function(input, output, session, values){
       if(design == 'Completely Randomized Design (CRD)' || design  == 'Randomized Complete Block Design (RCBD)') {
         
         temp_colum <- lapply(X = 1:n, function(x) (single_error(mve.rcbd(trait = trait[x], treat = genotypes, rep = rep, data = fb), trait[x])))
+        e_trait <- temp_colum %>% map_chr("trait")
+        e_error <- temp_colum %>% map_chr("error")
+        out <- list( e_trait =  e_trait, e_error = e_error)
         
       }
       
       if(design == "Factorial Two-Way Design in CRD (F2CRD)"){
 
-        temp_colum <- lapply(X = 1:n, function(x) (single_error(mve.2f(trait = trait, A = genotypes, B = factorb, rep = rep, design = "crd",data = fb))))
+        temp_colum <- lapply(X = 1:n, function(x) (single_error(mve.2f(trait = trait[x], A = genotypes, B = factorb, rep = rep, design = "crd", data = fb),trait[x] )))
+        e_trait <- temp_colum %>% map_chr("trait")
+        e_error <- temp_colum %>% map_chr("error")
+        out <- list( e_trait =  e_trait, e_error = e_error)
       }
 
       if(design  == "Factorial Two-Way Design in RCBD (F2RCBD)"){
 
-        temp_colum <- lapply(X = 1:n, function(x) (single_error(mve.2f(trait = trait, A = genotypes, B = factorb, rep = rep, design = "rcbd",data = fb))))
-
+        temp_colum <- lapply(X = 1:n, function(x) (single_error(mve.2f(trait = trait[x], A = genotypes, B = factorb, rep = rep, design = "rcbd",data = fb), trait[x])))
+        e_trait <- temp_colum %>% map_chr("trait")
+        e_error <- temp_colum %>% map_chr("error")
+        out <- list( e_trait =  e_trait, e_error = e_error)
+        
       } 
       
-      e_trait <- temp_colum %>% map_chr("trait")
-      e_error <- temp_colum %>% map_chr("error")
+      if(design == 'Split Plot with Plots in CRD (SPCRD)'){
+        
+        temp_colum <- lapply(X = 1:n, function(x) (single_error(mve.2f(trait = trait[x], A = genotypes, B = factorb, rep = rep, design = "crd",data = fb), trait[x])))
+        e_trait <- temp_colum %>% map_chr("trait")
+        e_error <- temp_colum %>% map_chr("error")
+        out <- list( e_trait =  e_trait, e_error = e_error)
+      }
       
-      #out <- paste("Trait Status of ", e_trait, ": ", e_error, sep="")
-      out <- list( e_trait =  e_trait, e_error = e_error)
+      if(design == 'Split Plot with Plots in RCBD (SPRCBD)'){
+        
+        temp_colum <- lapply(X = 1:n, function(x) (single_error(mve.2f(trait = trait[x], A = genotypes, B = factorb, rep = rep, design = "rcbd",data = fb), trait[x])))
+        e_trait <- temp_colum %>% map_chr("trait")
+        e_error <- temp_colum %>% map_chr("error")
+        out <- list( e_trait =  e_trait, e_error = e_error)
+      }
+      
+      if(design == 'Alpha Design(0,1) (AD)'){
+        
+        #temp_colum <- lapply(X = 1:n, function(x) (single_error(mve.2f(trait = trait, A = genotypes, B = factorb, rep = rep, design = "crd",data = fb))))
+        # e_trait <- temp_colum %>% map_chr("trait")
+        # e_error <- temp_colum %>% map_chr("error")
+        # out <- list( e_trait =  e_trait, e_error = e_error)
+        out <- NULL
+      }
+      
+      if(design == 'Augmented Block Design (ABD)'){
+        
+        #temp_colum <- lapply(X = 1:n, function(x) (single_error(mve.2f(trait = trait, A = genotypes, B = factorb, rep = rep, design = "crd",data = fb))))
+        # e_trait <- temp_colum %>% map_chr("trait")
+        # e_error <- temp_colum %>% map_chr("error")
+        # out <- list( e_trait =  e_trait, e_error = e_error)
+        out <- NULL
+      }
+      
+      
+      # e_trait <- temp_colum %>% map_chr("trait")
+      # e_error <- temp_colum %>% map_chr("error")
+      # 
+      # #out <- paste("Trait Status of ", e_trait, ": ", e_error, sep="")
+      # out <- list( e_trait =  e_trait, e_error = e_error)
       #out <- paste(out, sep= "\n")
       #out <-   paste("hello", "world", sep="\n")
       
-    } else {
+    #} else {
       
-      out <- NULL
+      out <- out
+    #}
     }
-    
+    #out
     out
-    
   })
   
   
