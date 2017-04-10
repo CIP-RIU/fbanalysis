@@ -7,7 +7,7 @@
 #' @export
 #' 
 
-single_ui <- function(type = "tab", title = "ANOVA", name = "analysis_single"){
+single_ui <- function(type = "tab", title = "Statistical Analysis for One Environment Trial", name = "analysis_single"){
   
   shinydashboard::tabItem(tabName = name,
                           h2(title),   
@@ -20,7 +20,7 @@ single_ui <- function(type = "tab", title = "ANOVA", name = "analysis_single"){
                                    tabPanel("Single Analysis", #begin tabset "CHECK"
                                             fluidRow( 
                                               column(width = 8,
-                                              shinyFiles::shinyFilesButton('file_single', 'Select File', 'Please select a file',FALSE),
+                                              shinyFiles::shinyFilesButton('file_single', 'Select File', 'Select a file',FALSE),
                                               infoBoxOutput("file_message_single", width = NULL),
                                               #selectInput('trait_single', 'Select Trait', c(Choose='', single_select_options()   ), selectize=TRUE),
                                               #selectInput('rep_single', 'Select Repetition', c(Choose='', names(iris)), selectize=TRUE),
@@ -112,7 +112,7 @@ single_ui <- function(type = "tab", title = "ANOVA", name = "analysis_single"){
                                               
                                               br(),
                                               shiny::wellPanel(
-                                                shiny::HTML("<b> Fieldbook Note </b>"),
+                                                shiny::HTML("<b>  </b>"),
                                                 rHandsontableOutput("single_anova_fail_message")
                                               )
                                               

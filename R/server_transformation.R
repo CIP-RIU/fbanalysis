@@ -2,7 +2,7 @@ dtr_choices <- c(Choose='',
   "Logarithmic transformation log(y)"="logy",
   "Logarithmic transformation log(y + 1)"="logy1",
   "Square root transformation sqrt(y)"="sqrty",
-  "Square root transformation sqrt(y+1)"="sqrty1",
+  "Square root transformation sqrt(y + 0.5)"="sqrty1",
   "Arc-sine transformation arcsin"="arcsin"
 )
 
@@ -142,7 +142,8 @@ dtr_server <- function(input, output, session, values){
       
       
       if(tdr_global[1,j]=='logy' || tdr_global[1,j]=='logy1'){
-        fieldbook <- st4gi::dtr(trait = trait[j], type = tdr_global[1,j],  base = as.numeric(tdr_global[2,j]), data = fieldbook)
+        #fieldbook <- st4gi::dtr(trait = trait[j], type = tdr_global[1,j],  base = as.numeric(tdr_global[2,j]), data = fieldbook)
+        fieldbook <- st4gi::dtr(trait = trait[j], type = tdr_global[1,j],  base = 10, data = fieldbook)
       }
       
       if(tdr_global[1,j]=='sqrty' || tdr_global[1,j]=='sqrty1'){
@@ -150,7 +151,8 @@ dtr_server <- function(input, output, session, values){
       }
       
      if(tdr_global[1,j]=='arcsin') {
-        fieldbook <- st4gi::dtr(trait = trait[j], type = tdr_global[1,j] , n = as.numeric(tdr_global[2,j]), data = fieldbook)
+        #fieldbook <- st4gi::dtr(trait = trait[j], type = tdr_global[1,j] , n = as.numeric(tdr_global[2,j]), data = fieldbook)
+       fieldbook <- st4gi::dtr(trait = trait[j], type = tdr_global[1,j] , data = fieldbook)
       }
       
       fieldbook2 <- fieldbook

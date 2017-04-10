@@ -20,7 +20,7 @@ elston_ui <- function(type = "tab", title = "Elston Index for Ranking and Select
                                    tabPanel("Elston Index", #begin tabset "CHECK"
                                             fluidRow( 
                                               column(width = 6,
-                                                     shinyFiles::shinyFilesButton('file_elston', 'Select File', 'Please select your files',multiple = TRUE),
+                                                     shinyFiles::shinyFilesButton('file_elston', 'Select File', 'Select your files',multiple = TRUE),
                                                      infoBoxOutput("file_message_elston",width = NULL),
                                                      #selectInput('trait_elston', 'Select Trait', c(Choose='', elston_select_options()   ), selectize=TRUE),
                                                      #selectInput('rep_elston', 'Select Repetition', c(Choose='', names(iris)), selectize=TRUE),

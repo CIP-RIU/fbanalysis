@@ -22,7 +22,7 @@ ui_pvs <- function(type = "tab", title = "PVS Criteria & Organoleptic", name = "
                                             fluidRow(
                                               
                                               column(width = 6,
-                                                     shinyFiles::shinyFilesButton('file_pvs', 'Select File', 'Please select a file',FALSE),
+                                                     shinyFiles::shinyFilesButton('file_pvs', 'Select File', 'Select a file',FALSE),
                                                      infoBoxOutput("file_message_pvs", width = NULL),
 
                                                      uiOutput("sheet_pvs"),
@@ -32,7 +32,7 @@ ui_pvs <- function(type = "tab", title = "PVS Criteria & Organoleptic", name = "
                                                                   width = NULL,height = NULL),
                                                      br(),
                                                      shiny::wellPanel(
-                                                       shiny::HTML("<b> Form Note </b>"),
+                                                       shiny::HTML("<b>   </b>"),
                                                        shiny::textOutput("pvs_fail_message")
                                                      )
   

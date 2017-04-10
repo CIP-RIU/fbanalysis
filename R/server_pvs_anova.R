@@ -81,7 +81,7 @@ pvs_anova_server <- function(input, output, session, values){
 
   
   output$pvs_anova_rep  <- renderUI({
-    selectInput('rep_pvs_anova', 'Select Repetitions', c(Choose='', select_options(hot_bdata())),
+    selectInput('rep_pvs_anova', 'Select Replications', c(Choose='', select_options(hot_bdata())),
                 selectize=TRUE)
   })
 

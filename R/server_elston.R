@@ -78,7 +78,7 @@ elston_server <- function(input, output, session, values){
   })
   
   output$rep_elston  <- renderUI({
-    selectInput('rep_elston', 'Select Repetitions', c(Choose='', select_options(elston_bdata())),
+    selectInput('rep_elston', 'Select Replications', c(Choose='', select_options(elston_bdata())),
                 selectize=TRUE)
   })
   

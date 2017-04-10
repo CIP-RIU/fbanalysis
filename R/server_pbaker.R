@@ -78,7 +78,7 @@ pbaker_server <- function(input, output, session, values){
   })
   
   output$rep_pbaker  <- renderUI({
-    selectInput('rep_pbaker', 'Select repetitions', c(Choose='', select_options(pbaker_bdata())),
+    selectInput('rep_pbaker', 'Select Replications', c(Choose='', select_options(pbaker_bdata())),
                 selectize=TRUE)
   })
   

@@ -20,7 +20,7 @@ dtr_ui <- function(type = "tab", title = "Data Transformation", name = "analysis
                                    tabPanel("Data Transformation", #begin tabset "CHECK"
                                             fluidRow( 
                                               column(width = 8,
-                                                     shinyFiles::shinyFilesButton('file_dtr', 'Select File', 'Please select a file',FALSE),
+                                                     shinyFiles::shinyFilesButton('file_dtr', 'Select File', 'Select a file',FALSE),
                                                      infoBoxOutput("file_message_dtr", width = NULL),
                                                      #selectInput('trait_single', 'Select Trait', c(Choose='', single_select_options()   ), selectize=TRUE),
                                                      #selectInput('rep_single', 'Select Repetition', c(Choose='', names(iris)), selectize=TRUE),

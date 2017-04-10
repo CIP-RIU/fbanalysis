@@ -20,7 +20,7 @@ pbaker_ui <- function(type = "tab", title = "Pesek-Baker Selection Index", name 
                                    tabPanel("Pesek-Baker Index", #begin tabset "CHECK"
                                             fluidRow( 
                                               column(width = 6,
-                                                     shinyFiles::shinyFilesButton('file_pbaker', 'Select File', 'Please select your files',multiple = TRUE),
+                                                     shinyFiles::shinyFilesButton('file_pbaker', 'Select File', 'Select your files',multiple = TRUE),
                                                      infoBoxOutput("file_message_pbaker",width = NULL),
                                                      #selectInput('trait_pbaker', 'Select Trait', c(Choose='', pbaker_select_options()   ), selectize=TRUE),
                                                      #selectInput('rep_pbaker', 'Select Repetition', c(Choose='', names(iris)), selectize=TRUE),

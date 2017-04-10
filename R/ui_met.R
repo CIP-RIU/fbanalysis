@@ -20,7 +20,7 @@ met_ui <- function(type = "tab", title = "The Statistical Analysis of Multi-Envi
                             tabPanel("MET Analysis", #begin tabset "CHECK"
                                   fluidRow( 
                                        column(width = 6,
-                                       shinyFiles::shinyFilesButton('file_met', 'Select Files', 'Please select your files',multiple = TRUE),
+                                       shinyFiles::shinyFilesButton('file_met', 'Select Files', 'Select your files',multiple = TRUE),
                                              infoBoxOutput("file_message_met",width = NULL),
                                        #selectInput('trait_met', 'Select Trait', c(Choose='', met_select_options()   ), selectize=TRUE),
                                        #selectInput('rep_met', 'Select Repetition', c(Choose='', names(iris)), selectize=TRUE),

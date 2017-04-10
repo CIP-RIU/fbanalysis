@@ -82,7 +82,7 @@ met_server <- function(input, output, session, values){
   })
   
   output$rep_met  <- renderUI({
-    selectInput('rep_met', 'Select repetitions', c(Choose='', select_options(met_bdata())),
+    selectInput('rep_met', 'Select Replications', c(Choose='', select_options(met_bdata())),
                 selectize=TRUE)
   })
   

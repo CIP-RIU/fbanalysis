@@ -27,7 +27,7 @@ pvs_anova_ui <- function(type = "tab", title = "PVS Fieldbook Analysis", name = 
                                           h2(title),
                                            fluidRow(
                                               column(width = 6,
-                                                     shinyFiles::shinyFilesButton('file_pvs_anova', 'Select File', 'Please select a file',FALSE),
+                                                     shinyFiles::shinyFilesButton('file_pvs_anova', 'Select File', 'Select a file',FALSE),
                                                      infoBoxOutput("pvs_message_anova",width = NULL),
 
                                                      uiOutput("sheet_pvs_anova"),
@@ -62,7 +62,7 @@ pvs_anova_ui <- function(type = "tab", title = "PVS Fieldbook Analysis", name = 
                                                      
                                                      br(),
                                                      shiny::wellPanel(
-                                                       shiny::HTML("<b> Fieldbook Note </b>"),
+                                                       shiny::HTML("<b>  </b>"),
                                                        shiny::textOutput("pvs_anova_fail_message")
                                                      )
 

@@ -46,7 +46,7 @@ single_server <- function(input, output, session, values){
     })
     
     output$rep_single  <- renderUI({
-      selectInput('rep_single', 'Select Repetitions', c(Choose='', select_options(hot_bdata())),
+      selectInput('rep_single', 'Select Replications', c(Choose='', select_options(hot_bdata())),
                   selectize=TRUE)
     })
     
