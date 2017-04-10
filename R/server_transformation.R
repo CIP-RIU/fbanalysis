@@ -101,11 +101,11 @@ dtr_server <- function(input, output, session, values){
         selectInput(paste0('type_dtr_',trait[i]), label = 'Select type of data tranformation', 
                     choices = dtr_choices,
                     selected = "none",
-                    selectize = TRUE),
+                    selectize = TRUE) #,
         
       
  
-        numericInput(paste0("n_input_tdr_", trait[i]), label = paste0("The parameter for tranforming ", trait[i]), value = '',min = 1,max = 10)
+        #numericInput(paste0("n_input_tdr_", trait[i]), label = paste0("The parameter for tranforming ", trait[i]), value = '',min = 1,max = 10)
         
         
         )
@@ -125,7 +125,8 @@ dtr_server <- function(input, output, session, values){
     }), stringsAsFactors = FALSE)
     
     tdr_par <- data.frame(lapply(1:length(trait), function(i) {
-      input[[paste0('n_input_tdr_',trait[i])]]
+      #input[[paste0('n_input_tdr_',trait[i])]] 
+      1 #this values will fill tha table instead of n_input_tds
     }), stringsAsFactors = FALSE)
     
     names(tdr_par) <- trait
