@@ -5,7 +5,9 @@
 \title{UI for Single Environment Analysis in HiDAP
 Returns user friendly ui}
 \usage{
-single_ui(type = "tab", title = "ANOVA", name = "analysis_single")
+single_ui(type = "tab",
+  title = "Statistical Analysis for One Environment Trial",
+  name = "analysis_single")
 }
 \arguments{
 \item{type}{type of UI element, deault is a tab in a shinydashboard}

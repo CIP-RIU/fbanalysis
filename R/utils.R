@@ -5,7 +5,7 @@
 
 select_options <- function(fieldbook){
   if(is.null(fieldbook)) headers <- c("no-traits")
-  headers <- names(fieldbook)
+  headers <-  setdiff(names(fieldbook), c("BOOK","DATE","PLOT"))
   headers
 }
 

@@ -92,6 +92,7 @@ single_server <- function(input, output, session, values){
         #       material <- paste(germoplasm, collapse = ",")
         #       message <-  paste("Material list imported: ", material)
         hot_file <- basename(hot_file)
+        hot_file <- paste(hot_file, collapse = ", ")
         infoBox(title="GREAT!", subtitle =
                   paste(" Fieldbook selected: ", hot_file),  icon = icon("ok", lib = "glyphicon"),
                 color = "green",fill = TRUE, width = NULL)
@@ -120,23 +121,15 @@ single_server <- function(input, output, session, values){
      
       fieldbook <- as.data.frame(hot_bdata())
       #saveRDS(fieldbook,"res.rds")
-      
       trait <- input$trait_single
-      
       rep <- input$rep_single
-      
       genotypes <- input$genotypes_single
-      
       block <- input$block_single
       k <- input$k_single
-      
       factor_single <- input$factor_single
      
       #format <- paste(input$format_single,"_document",sep="")
       format <- paste(input$format_single)
-      
-      
-      
       
       if(design == "Randomized Complete Block Design (RCBD)"){
          try(pepa::repo.rcbd(traits = trait, geno = genotypes, rep = rep, format = format, data = fieldbook))
@@ -181,132 +174,129 @@ single_server <- function(input, output, session, values){
         title <- paste("Automatic report for ", design, sep= "")
         try(pepa::repo.2f(traits = trait, A = genotypes, B = factor_single, rep = rep, design = "rcbd", title= title, data = fieldbook, format = format))
       }
-
-      
-      
       
       })
   })
   
-  
-  hot_check_single_fb <- reactive({
-    
-    req(input$trait_single)
-    req(input$rep_single)
-    req(input$genotypes_single)
-    
-    trait <- input$trait_single
-    rep <- input$rep_single
-    genotypes <- input$genotypes_single
-    design <- input$design_single
-    factorb <- input$factor_single
-    block <- input$block_single
-    
-    n <- length(trait)
-    fb <- as.data.frame(hot_bdata())
-    
-    if(!is.null(trait) && !is.null(rep) && !is.null(genotypes)) {
-    
-    
-      if(design == 'Completely Randomized Design (CRD)' || design  == 'Randomized Complete Block Design (RCBD)') {
-        
-        temp_colum <- lapply(X = 1:n, function(x) (single_error(mve.rcbd(trait = trait[x], treat = genotypes, rep = rep, data = fb), trait[x])))
-        e_trait <- temp_colum %>% map_chr("trait")
-        e_error <- temp_colum %>% map_chr("error")
-        out <- list( e_trait =  e_trait, e_error = e_error)
-        
-      }
-      
-      if(design == "Factorial Two-Way Design in CRD (F2CRD)"){
-
-        temp_colum <- lapply(X = 1:n, function(x) (single_error(mve.2f(trait = trait[x], A = genotypes, B = factorb, rep = rep, design = "crd", data = fb),trait[x] )))
-        e_trait <- temp_colum %>% map_chr("trait")
-        e_error <- temp_colum %>% map_chr("error")
-        out <- list( e_trait =  e_trait, e_error = e_error)
-      }
-
-      if(design  == "Factorial Two-Way Design in RCBD (F2RCBD)"){
-
-        temp_colum <- lapply(X = 1:n, function(x) (single_error(mve.2f(trait = trait[x], A = genotypes, B = factorb, rep = rep, design = "rcbd",data = fb), trait[x])))
-        e_trait <- temp_colum %>% map_chr("trait")
-        e_error <- temp_colum %>% map_chr("error")
-        out <- list( e_trait =  e_trait, e_error = e_error)
-        
-      } 
-      
-      if(design == 'Split Plot with Plots in CRD (SPCRD)'){
-        
-        temp_colum <- lapply(X = 1:n, function(x) (single_error(mve.2f(trait = trait[x], A = genotypes, B = factorb, rep = rep, design = "crd",data = fb), trait[x])))
-        e_trait <- temp_colum %>% map_chr("trait")
-        e_error <- temp_colum %>% map_chr("error")
-        out <- list( e_trait =  e_trait, e_error = e_error)
-      }
-      
-      if(design == 'Split Plot with Plots in RCBD (SPRCBD)'){
-        
-        temp_colum <- lapply(X = 1:n, function(x) (single_error(mve.2f(trait = trait[x], A = genotypes, B = factorb, rep = rep, design = "rcbd",data = fb), trait[x])))
-        e_trait <- temp_colum %>% map_chr("trait")
-        e_error <- temp_colum %>% map_chr("error")
-        out <- list( e_trait =  e_trait, e_error = e_error)
-      }
-      
-      if(design == 'Alpha Design(0,1) (AD)'){
-        
-        #temp_colum <- lapply(X = 1:n, function(x) (single_error(mve.2f(trait = trait, A = genotypes, B = factorb, rep = rep, design = "crd",data = fb))))
-        # e_trait <- temp_colum %>% map_chr("trait")
-        # e_error <- temp_colum %>% map_chr("error")
-        # out <- list( e_trait =  e_trait, e_error = e_error)
-        out <- NULL
-      }
-      
-      if(design == 'Augmented Block Design (ABD)'){
-        
-        #temp_colum <- lapply(X = 1:n, function(x) (single_error(mve.2f(trait = trait, A = genotypes, B = factorb, rep = rep, design = "crd",data = fb))))
-        # e_trait <- temp_colum %>% map_chr("trait")
-        # e_error <- temp_colum %>% map_chr("error")
-        # out <- list( e_trait =  e_trait, e_error = e_error)
-        out <- NULL
-      }
-      
-      
-      # e_trait <- temp_colum %>% map_chr("trait")
-      # e_error <- temp_colum %>% map_chr("error")
-      # 
-      # #out <- paste("Trait Status of ", e_trait, ": ", e_error, sep="")
-      # out <- list( e_trait =  e_trait, e_error = e_error)
-      #out <- paste(out, sep= "\n")
-      #out <-   paste("hello", "world", sep="\n")
-      
-    #} else {
-      
-      out <- out
-    #}
-    }
-    #out
-    out
-  })
-  
-  
-  output$single_anova_fail_message = renderRHandsontable({
-    
-    if(!is.null(hot_check_single_fb())) {
-       msg <-  hot_check_single_fb() 
-      # #HTML(paste(msg, sep = '<br/>'))
-      # out <- paste("Trait Status of ", msg$e_trait, ": ", msg$e_error, sep="")
-      # #msg <- paste(msg)
-      # msg <- HTML(paste(out , sep = '<br/>'))
-      df <- data.frame(trait = msg$e_trait, status = msg$e_error)
-      rhandsontable(df)
-       #msg <- paste(msg)
-    } else {
-      df <- data.frame()
-      rhandsontable(df)
-    }
-    
-  })
-  
-  
-  
+  # 
+  # hot_check_single_fb <- reactive({
+  #   
+  #   req(input$trait_single)
+  #   req(input$rep_single)
+  #   req(input$genotypes_single)
+  #   
+  #   trait <- input$trait_single
+  #   rep <- input$rep_single
+  #   genotypes <- input$genotypes_single
+  #   design <- input$design_single
+  #   factorb <- input$factor_single
+  #   block <- input$block_single
+  #   
+  #   n <- length(trait)
+  #   fb <- as.data.frame(hot_bdata())
+  #   
+  #   if(!is.null(trait) && !is.null(rep) && !is.null(genotypes)) {
+  #   
+  #   
+  #     if(design == 'Completely Randomized Design (CRD)' || design  == 'Randomized Complete Block Design (RCBD)') {
+  #       
+  #       temp_colum <- lapply(X = 1:n, function(x) (single_error(mve.rcbd(trait = trait[x], treat = genotypes, rep = rep, data = fb), trait[x])))
+  #       e_trait <- temp_colum %>% map_chr("trait")
+  #       e_error <- temp_colum %>% map_chr("error")
+  #       out <- list( e_trait =  e_trait, e_error = e_error)
+  #       
+  #     }
+  #     
+  #     if(design == "Factorial Two-Way Design in CRD (F2CRD)"){
+  # 
+  #       temp_colum <- lapply(X = 1:n, function(x) (single_error(mve.2f(trait = trait[x], A = genotypes, B = factorb, rep = rep, design = "crd", data = fb),trait[x] )))
+  #       e_trait <- temp_colum %>% map_chr("trait")
+  #       e_error <- temp_colum %>% map_chr("error")
+  #       out <- list( e_trait =  e_trait, e_error = e_error)
+  #     }
+  # 
+  #     if(design  == "Factorial Two-Way Design in RCBD (F2RCBD)"){
+  # 
+  #       temp_colum <- lapply(X = 1:n, function(x) (single_error(mve.2f(trait = trait[x], A = genotypes, B = factorb, rep = rep, design = "rcbd",data = fb), trait[x])))
+  #       e_trait <- temp_colum %>% map_chr("trait")
+  #       e_error <- temp_colum %>% map_chr("error")
+  #       out <- list( e_trait =  e_trait, e_error = e_error)
+  #       
+  #     } 
+  #     
+  #     if(design == 'Split Plot with Plots in CRD (SPCRD)'){
+  #       
+  #       temp_colum <- lapply(X = 1:n, function(x) (single_error(mve.2f(trait = trait[x], A = genotypes, B = factorb, rep = rep, design = "crd",data = fb), trait[x])))
+  #       e_trait <- temp_colum %>% map_chr("trait")
+  #       e_error <- temp_colum %>% map_chr("error")
+  #       out <- list( e_trait =  e_trait, e_error = e_error)
+  #     }
+  #     
+  #     if(design == 'Split Plot with Plots in RCBD (SPRCBD)'){
+  #       
+  #       temp_colum <- lapply(X = 1:n, function(x) (single_error(mve.2f(trait = trait[x], A = genotypes, B = factorb, rep = rep, design = "rcbd",data = fb), trait[x])))
+  #       e_trait <- temp_colum %>% map_chr("trait")
+  #       e_error <- temp_colum %>% map_chr("error")
+  #       out <- list( e_trait =  e_trait, e_error = e_error)
+  #     }
+  #     
+  #     if(design == 'Alpha Design(0,1) (AD)'){
+  #       
+  #       #temp_colum <- lapply(X = 1:n, function(x) (single_error(mve.2f(trait = trait, A = genotypes, B = factorb, rep = rep, design = "crd",data = fb))))
+  #       # e_trait <- temp_colum %>% map_chr("trait")
+  #       # e_error <- temp_colum %>% map_chr("error")
+  #       # out <- list( e_trait =  e_trait, e_error = e_error)
+  #       out <- NULL
+  #     }
+  #     
+  #     if(design == 'Augmented Block Design (ABD)'){
+  #       
+  #       #temp_colum <- lapply(X = 1:n, function(x) (single_error(mve.2f(trait = trait, A = genotypes, B = factorb, rep = rep, design = "crd",data = fb))))
+  #       # e_trait <- temp_colum %>% map_chr("trait")
+  #       # e_error <- temp_colum %>% map_chr("error")
+  #       # out <- list( e_trait =  e_trait, e_error = e_error)
+  #       out <- NULL
+  #     }
+  #     
+  #     
+  #     # e_trait <- temp_colum %>% map_chr("trait")
+  #     # e_error <- temp_colum %>% map_chr("error")
+  #     # 
+  #     # #out <- paste("Trait Status of ", e_trait, ": ", e_error, sep="")
+  #     # out <- list( e_trait =  e_trait, e_error = e_error)
+  #     #out <- paste(out, sep= "\n")
+  #     #out <-   paste("hello", "world", sep="\n")
+  #     
+  #   #} else {
+  #     
+  #     out <- out
+  #   #}
+  #   }
+  #   #out
+  #   out
+  # })
+  # 
+  # 
+  # output$single_anova_fail_message = renderRHandsontable({
+  #   
+  #   if(!is.null(hot_check_single_fb())) {
+  #      msg <-  hot_check_single_fb() 
+  #     # #HTML(paste(msg, sep = '<br/>'))
+  #     # out <- paste("Trait Status of ", msg$e_trait, ": ", msg$e_error, sep="")
+  #     # #msg <- paste(msg)
+  #     # msg <- HTML(paste(out , sep = '<br/>'))
+  #     df <- data.frame(trait = msg$e_trait, status = msg$e_error)
+  #     rhandsontable(df)
+  #      #msg <- paste(msg)
+  #   } else {
+  #     df <- data.frame()
+  #     rhandsontable(df)
+  #   }
+  #   
+  # })
+  # 
+  # 
+  # 
   
   #output$single_anova_fail_message <- shiny::renderText({
   

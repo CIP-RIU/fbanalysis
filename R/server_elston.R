@@ -38,6 +38,8 @@ elston_server <- function(input, output, session, values){
       n <- length(hot_file)
       combine <- list() 
       
+      ENVIRONMENT <- vector(mode = "character", length = n )
+      
       for(i in 1:n){  
         combine[[i]] <- readxl::read_excel(cropfiles_list[i], sheet = "Fieldbook") 
         
@@ -47,7 +49,9 @@ elston_server <- function(input, output, session, values){
         BOOK <- traittools::get_fb_param(Minimal,"Trial_name")
         DATE <- traittools::get_fb_param(Minimal,"Begin_date")
         #MONTH <- traittools::get_fb_param()
-        ENVIRONMENT <- traittools::get_fb_param(Minimal,"Site_short_name")
+        #ENVIRONMENT <- traittools::get_fb_param(Minimal,"Site_short_name")
+        
+        ENVIRONMENT <- paste(traittools::get_fb_param(Minimal,"Site_short_name"), "_env_", i, sep = "")
         #BOOK <- getfilename_book(ammiafiles_list[i])
         #YEAR <- getdate_file(BOOK)$year
         #MONTH <- getdate_file(BOOK)$month
@@ -87,19 +91,27 @@ elston_server <- function(input, output, session, values){
                 selectize=TRUE, multiple = TRUE)
   })
   
-  
   output$trait_negElston <- renderUI({
     selectInput('trait_neg_elston', 'Select Negative Trait(s)', c(Choose='', select_options(elston_bdata())),
                 selectize=TRUE, multiple = TRUE)
   })
   
-
-  output$model_elston <- renderUI({
-    selectInput('model_elston', 'Select Model', c('gxe (interaction)'='gxe', 
-                                                           "g+e (no-interaction)"='g+e'),
-                selectize=TRUE, multiple = FALSE)
-  })
+  ###
+  # hot_check_elston_fb <- reactive({
+  # 
+  # req(input$trait_single)
+  # req(input$rep_single)
+  # req(input$genotypes_single)
+  # 
+  # })
   
+  ### 
+  # output$model_elston <- renderUI({
+  #   selectInput('model_elston', 'Select Model', c('gxe (interaction)'='gxe', 
+  #                                                          "g+e (no-interaction)"='g+e'),
+  #               selectize=TRUE, multiple = FALSE)
+  # })
+  # 
 
   output$file_message_elston <- renderInfoBox({
 
@@ -107,12 +119,13 @@ elston_server <- function(input, output, session, values){
     print(hot_file)
     if(is.null(hot_file)){
       infoBox(title="Select File", subtitle=
-                paste("Choose your Fieldbook File"), icon = icon("upload", lib = "glyphicon"),
+                paste("Choose your Fieldbook(s) File"), icon = icon("upload", lib = "glyphicon"),
               color = "blue",fill = TRUE, width = NULL)
      } else {
       hot_file <- basename(hot_file)
+      
       infoBox(title="GREAT!", subtitle =
-                paste(" Fieldbook Selected: ", hot_file),  icon = icon("ok", lib = "glyphicon"),
+                paste("Fieldbook(s) Selected: ", hot_file),  icon = icon("ok", lib = "glyphicon"),
               color = "green",fill = TRUE, width = NULL)
     }
   })
@@ -130,15 +143,15 @@ elston_server <- function(input, output, session, values){
       trait <- trait[trait!=""]
       #trait <- input$trait_elston
       env <- input$env_elston
-      #print(input$env_elston)
       rep <- input$rep_elston
+
       genotypes <- input$genotypes_elston
       model <- gsub(pattern = "[[:space:]]\\(.*", replacement = "", input$model_elston)
-      
+ 
       means <- input$means_elston
       model <- input$model_elston
-#       print(input$means_elston)
-#       print(input$model_elston)
+#     print(input$means_elston)
+#     print(input$model_elston)
 #       
       if(length(trait_neg)>0){
         fieldbook[,trait_neg] <- -fieldbook[,trait_neg]
@@ -146,17 +159,30 @@ elston_server <- function(input, output, session, values){
       
       
       #format <- paste(input$format_elston,"_document",sep="")
-      format <- paste(input$format_elston,sep="")
+      format <- paste(input$format_elston, sep="")
       
-      try(pepa::pty.elston(traits = trait, geno = genotypes, model = model, env= env, rep = rep, means = means,
+      try(pepa::pty.elston(traits = trait, geno = genotypes, env= env, rep = rep, means = means,
                            data = fieldbook, format = format))
       
-      if(env=="" && model=="g+e" && means=="single"){
-        try(pepa::pty.elston(traits = trait, geno = genotypes, model = model, means = means, data = fieldbook, format = format))
+      if(env!="" && means=="fitted"){
+        #env <- NULL
+        try(pepa::pty.elston(traits = trait, geno = genotypes, env = env,  means = means, data = fieldbook, format = format))
       }
       
-      if(env=="" && model=="gxe" && means=="single"){
-        try(pepa::pty.elston(traits = trait, geno = genotypes, model = model, means = means, data = fieldbook, format = format))
+      if(env=="" && means=="single"){
+        # If means = "single" and env is not specified, then single arithmetic means are computed over all 
+        # the observations for each genotype.
+        
+        #env <- NULL
+        try(pepa::pty.elston(traits = trait, geno = genotypes, env = NULL,  means = means, data = fieldbook, format = format))
+      }
+      
+      if(env!="" && means=="single"){
+        
+        # If means = "single" and env is specified, then single arithmetic means are computed 
+        # over the replications for each genotype at each environment and then for each genotype over environments.
+        
+        try(pepa::pty.elston(traits = trait, geno = genotypes, env = env, means = means, data = fieldbook, format = format))
       } 
       
 #       if(env=="" && model=="g+e" && means=="single"){

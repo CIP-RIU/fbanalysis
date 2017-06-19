@@ -52,7 +52,15 @@ pvs_anova_ui <- function(type = "tab", title = "PVS Fieldbook Analysis", name = 
                                                      #   "input.design_pvs_anova == 'Randomized Complete Block Design (RCBD)'",
                                                       
                                                        uiOutput("pvs_anova_genotypes"),
-                                                       uiOutput("pvs_anova_rep"),
+                                                     
+                                                     shiny::conditionalPanel(
+                                                       condition = "input.pvs_anova_sheet!='summary_global'",
+                                                     
+                                                       uiOutput("pvs_anova_rep")#,
+                                                     
+                                                       
+                                                     ),
+                                                       
                                                        uiOutput("pvs_anova_trait"),
                                                      
                                                      radioButtons(inputId="format_pvs_anova", label="Report format", choices= c("html","word"),

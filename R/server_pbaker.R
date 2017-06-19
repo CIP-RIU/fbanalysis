@@ -37,6 +37,7 @@ pbaker_server <- function(input, output, session, values){
       
       n <- length(hot_file)
       combine <- list() 
+      ENVIRONMENT <- vector(mode = "character", length = n )
       
       for(i in 1:n){  
         combine[[i]] <- readxl::read_excel(cropfiles_list[i], sheet = "Fieldbook") 
@@ -47,7 +48,9 @@ pbaker_server <- function(input, output, session, values){
         BOOK <- traittools::get_fb_param(Minimal,"Trial_name")
         DATE <- traittools::get_fb_param(Minimal,"Begin_date")
         #MONTH <- traittools::get_fb_param()
-        ENVIRONMENT <- traittools::get_fb_param(Minimal,"Site_short_name")
+        #ENVIRONMENT <- traittools::get_fb_param(Minimal,"Site_short_name")
+        ENVIRONMENT <- paste(traittools::get_fb_param(Minimal,"Site_short_name"), "_env_", i, sep = "")
+        
         #BOOK <- getfilename_book(ammiafiles_list[i])
         #YEAR <- getdate_file(BOOK)$year
         #MONTH <- getdate_file(BOOK)$month

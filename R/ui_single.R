@@ -31,9 +31,9 @@ single_ui <- function(type = "tab", title = "Statistical Analysis for One Enviro
                                                                           "Augmented Block Design (ABD)",
                                                                           "Alpha Design(0,1) (AD)",
                                                                           "Factorial Two-Way Design in CRD (F2CRD)",
-                                                                          "Factorial Two-Way Design in RCBD (F2RCBD)",
-                                                                          "Split Plot with Plots in CRD (SPCRD)",
-                                                                          "Split Plot with Plots in RCBD (SPRCBD)"),
+                                                                          "Factorial Two-Way Design in RCBD (F2RCBD)"),
+                                                                          #"Split Plot with Plots in CRD (SPCRD)",
+                                                                          #"Split Plot with Plots in RCBD (SPRCBD)"),
                                                                           selected = "Randomized Complete Block Design (RCBD)",
                                                                           selectize=FALSE),
                                               # 
@@ -53,19 +53,21 @@ single_ui <- function(type = "tab", title = "Statistical Analysis for One Enviro
                                                 condition = "input.design_single == 'Alpha Design(0,1) (AD)'|                      
                                                              input.design_single == 'Randomized Complete Block Design (RCBD)'|
                                                              input.design_single == 'Augmented Block Design (ABD)'| 
-                                                             input.design_single == 'Split Plot with Plots in CRD (SPCRD)'|
-                                                             input.design_single == 'Split Plot with Plots in RCBD (SPRCBD)'|     
                                                              input.design_single == 'Factorial Two-Way Design in CRD (F2CRD)'|
-                                                             input.design_single == 'Factorial Two-Way Design in RCBD (F2RCBD)'",
+                                                             input.design_single == 'Factorial Two-Way Design in RCBD (F2RCBD)'",#|
+                                                             #input.design_single == 'Split Plot with Plots in CRD (SPCRD)'|
+                                                             #input.design_single == 'Split Plot with Plots in RCBD (SPRCBD)'"
+                                                             
                                                 
                                                 uiOutput("rep_single")
                                               ),  
                                               
                                               shiny::conditionalPanel(
-                                                condition =  "input.design_single == 'Split Plot with Plots in CRD (SPCRD)'|
-                                                              input.design_single == 'Split Plot with Plots in RCBD (SPRCBD)'|     
-                                                              input.design_single == 'Factorial Two-Way Design in CRD (F2CRD)'|
+                                                condition =  "input.design_single == 'Factorial Two-Way Design in CRD (F2CRD)'|
                                                               input.design_single == 'Factorial Two-Way Design in RCBD (F2RCBD)'",
+                                                              # input.design_single == 'Split Plot with Plots in CRD (SPCRD)'|
+                                                              # input.design_single == 'Split Plot with Plots in RCBD (SPRCBD)'|
+                                                              
                                                 
                                                 uiOutput("factor_single")
                                               ),
@@ -87,10 +89,11 @@ single_ui <- function(type = "tab", title = "Statistical Analysis for One Enviro
                                                              input.design_single == 'Completely Randomized Design (CRD)'|
                                                              input.design_single == 'Randomized Complete Block Design (RCBD)'|
                                                              input.design_single == 'Augmented Block Design (ABD)'|          
-                                                             input.design_single == 'Split Plot with Plots in CRD (SPCRD)'| 
-                                                             input.design_single == 'Split Plot with Plots in RCBD (SPRCBD)'|
                                                              input.design_single == 'Factorial Two-Way Design in CRD (F2CRD)'|
                                                              input.design_single == 'Factorial Two-Way Design in RCBD (F2RCBD)'",
+                                                             #input.design_single == 'Split Plot with Plots in CRD (SPCRD)'| 
+                                                             #input.design_single == 'Split Plot with Plots in RCBD (SPRCBD)'|
+                                                           
                                                 
                                                 uiOutput("genotypes_single"),                                                    
                                                 uiOutput("trait_single")                                                            
@@ -110,11 +113,11 @@ single_ui <- function(type = "tab", title = "Statistical Analysis for One Enviro
                                                             width = NULL,height = NULL),
                                               
                                               
-                                              br(),
-                                              shiny::wellPanel(
-                                                shiny::HTML("<b>  </b>"),
-                                                rHandsontableOutput("single_anova_fail_message")
-                                              )
+                                              br()#,
+                                              # shiny::wellPanel(
+                                              #   shiny::HTML("<b>  </b>"),
+                                              #   rHandsontableOutput("single_anova_fail_message")
+                                              # )
                                               
                                               
                                               #uiOutput("run_single")

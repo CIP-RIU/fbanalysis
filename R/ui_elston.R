@@ -34,11 +34,12 @@ elston_ui <- function(type = "tab", title = "Elston Index for Ranking and Select
                                                      selectInput(inputId = 'means_elston', label='Select type of means',
                                                                  choices=c("single","fitted"), 
                                                                  selected = "single", selectize = FALSE),
+                                                     uiOutput("env_elston"),
+                                                     uiOutput("rep_elston"),
                                                      
-                                                     
-                                                     selectInput(inputId = 'model_elston', label = 'Select model to fit', 
-                                                                 c('gxe (interaction)'='gxe',"g+e (no-interaction)"='g+e'),
-                                                                 selectize=TRUE, multiple = FALSE),
+                                                      # selectInput(inputId = 'model_elston', label = 'Select model to fit', 
+                                                     #             c('gxe (interaction)'='gxe',"g+e (no-interaction)"='g+e'),
+                                                     #             selectize=TRUE, multiple = FALSE),
                                                      
 #                                                    shiny::conditionalPanel("input.model_elston == 'gxe'|
 #                                                                              input.model_elston == 'g+e'",
@@ -55,8 +56,9 @@ elston_ui <- function(type = "tab", title = "Elston Index for Ranking and Select
 #                                                                                                      uiOutput("rep_elston")#,
 #                                                                              )#,#end
 #                                                    ),
-                                                     # uiOutput("env_elston"),
-                                                     # uiOutput("rep_elston"),
+                                                     #uiOutput("env_elston"),
+                                                     #uiOutput("rep_elston"),
+
                                                      uiOutput("trait_posElston"),
                                                      uiOutput("trait_negElston"),
                                                      #  uiOutput("model_elston"),
