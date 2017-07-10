@@ -24,4 +24,4 @@ Suggests:
 Copyright: International Potato Center (2016)     
 License: MIT + file LICENSE
 LazyData: true
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.1

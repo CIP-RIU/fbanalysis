@@ -4,7 +4,7 @@
 #' @param output shinyserver output
 #' @param session shinyserver session
 #' @param values reactive values
-#' @importFrom shiny reactive tabPanel renderUI selectInput icon h2 uiOutput radioButtons actionButton br column fluidRow
+#' @importFrom shiny reactive tabPanel renderUI selectInput req icon h2 uiOutput radioButtons actionButton br column fluidRow
 #' @importFrom shinydashboard infoBox tabBox infoBoxOutput renderInfoBox
 #' @importFrom shinyFiles parseFilePaths
 #' @import pepa
@@ -70,23 +70,18 @@ pvs_server <- function(input, output, session, values){
   hot_check_pvs_form <- reactive({
     
     fp <- hot_path
-    
     format <- paste(input$format_pvs)
-    
     pvs_need_sheet <- c("F1_selection_criteria", "F2_select_clones_flowering", "F3_select_clones_harvest",
                         "F4_harvest_mother",      "F5_harvest_baby", "F6_organoleptic_mother", "F7_organoleptic_baby",
                         "F8_postharvest_dormancy", "F9_postharvest_clones_storage" , "summary_organoleptic_mother",
                         "summary_organoleptic_baby")
     
     pvs_hot_sheet <- input$pvs_sheet
-    
     pvs_found_sheet <-  pvs_hot_sheet[is.element(pvs_hot_sheet, pvs_need_sheet)]
-    
     hot_pvs_bdata <- hot_bdata()
     
     res <-  lapply(X = pvs_found_sheet, function(x)  pvs::check_pvs_form(x, hot_pvs_bdata[[x]]) )
     names(res) <- pvs_found_sheet
-    
     res
     
   })

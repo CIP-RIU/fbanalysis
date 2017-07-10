@@ -4,6 +4,9 @@
 #' @param type type of UI element, default is a tab in a shinydashboard for elston index
 #' @param title display title name for elston index
 #' @param name UI TabName for elston index
+#' @importFrom shiny reactive tabPanel withProgress renderUI HTML selectInput icon h2 uiOutput radioButtons actionButton br column fluidRow 
+#' @importFrom shinydashboard infoBox tabBox infoBoxOutput renderInfoBox
+#' @importFrom shinyFiles parseFilePaths
 #' @export
 #' 
 

@@ -4,7 +4,7 @@
 #' @param output shinyserver output
 #' @param session shinyserver session
 #' @param values reactive values
-#' @importFrom shiny reactive tabPanel renderUI selectInput icon h2 uiOutput radioButtons actionButton br column fluidRow
+#' @importFrom shiny reactive tabPanel withProgress renderUI HTML selectInput icon h2 uiOutput radioButtons actionButton br column fluidRow 
 #' @importFrom shinydashboard infoBox tabBox infoBoxOutput renderInfoBox
 #' @importFrom shinyFiles parseFilePaths
 #' @import pepa
@@ -140,11 +140,8 @@ pvs_anova_server <- function(input, output, session, values){
   
   hot_check_fail_fb <- reactive({
 
-    #fp <- hot_path()
     pvs_hot_sheet <- input$pvs_anova_sheet
-    #print(input$sheet_pvs_anova)
-    #print(pvs_hot_sheet)
-    
+
     fieldbook <- as.data.frame(hot_bdata())
     
     check_pvs_aov <- pvs::check_pvs_data(fieldbook)
@@ -199,17 +196,13 @@ pvs_anova_server <- function(input, output, session, values){
       print(flag)
       
       if(flag){
-      # print(fieldbook)
-      # print(trait)  
-      # print(pvs_hot_sheet)
-         
+
        if(pvs_hot_sheet!="summary_global"){
          try(pepa::repo.rcbd(traits = trait, geno = genotypes, rep = rep, format = format, data = fieldbook))
        }
        else {
           try(pepa::repo.pvssg(traits = trait, data =  fieldbook, format = format))
        }
-        
         
       } 
 

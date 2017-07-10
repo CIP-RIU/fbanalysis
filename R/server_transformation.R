@@ -14,8 +14,8 @@ dtr_choices <- c(Choose='',
 #' @param output shinyserver output
 #' @param session shinyserver session
 #' @param values reactive values
-#' @importFrom shiny reactive tabPanel renderUI selectInput icon h2 uiOutput radioButtons actionButton br column fluidRow 
-#' @importFrom shinydashboard infoBox tabBox infoBoxOutput renderInfoBox
+#' @importFrom shiny reactive tabPanel withProgress renderUI HTML selectInput icon h2 uiOutput radioButtons actionButton br column fluidRow 
+#' @importFrom shinydashboard infoBox tabBox infoBoxOutput renderInfoBox box
 #' @importFrom openxlsx loadWorkbook addWorksheet writeDataTable saveWorkbook removeWorksheet
 #' @importFrom readxl read_excel
 #' @importFrom rhandsontable renderRHandsontable rhandsontable

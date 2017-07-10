@@ -4,6 +4,9 @@
 #' @param type type of UI element, deault is a tab in a shinydashboard
 #' @param title display title name
 #' @param name UI TabName
+#' @importFrom shiny reactive tabPanel renderUI selectInput icon h2 uiOutput radioButtons actionButton br column fluidRow
+#' @importFrom shinydashboard infoBox tabBox infoBoxOutput renderInfoBox
+#' @importFrom shinyFiles parseFilePaths
 #' @export
 #' 
 

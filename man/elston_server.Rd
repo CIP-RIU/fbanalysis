@@ -18,4 +18,3 @@ elston_server(input, output, session, values)
 \description{
 Server Elston Analysis
 }
-
