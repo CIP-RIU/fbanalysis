@@ -83,7 +83,7 @@ genetic_server <- function(input, output, session, values){
  
   output$trait_des_genetic <- renderUI({
     selectInput('trait_gen', 'Select Trait(s)', c(Choose='', select_options(hot_bdata())),
-                selectize=TRUE)
+                selectize=TRUE, multiple =TRUE)
   })
   
   
@@ -91,6 +91,13 @@ genetic_server <- function(input, output, session, values){
     selectInput('rep_gen', 'Select Replications', c(Choose='', select_options(hot_bdata())),
                 selectize=TRUE)
   })
+  
+  output$sch_des_lxt_genetic<- renderUI({
+    #selectInput('sch_lxt_gen', 'Select scheme', c(Choose='', 1:2),
+    selectInput('sch_lxt_gen', 'Select scheme', c(Choose='', list("progenitors and progenie"= 1, "progenie" =2)),
+                selectize=TRUE)
+  })
+  
   
   
   output$file_message_genetic <- renderInfoBox({
@@ -138,23 +145,27 @@ genetic_server <- function(input, output, session, values){
       rep <- input$rep_gen
       
       
+      scheme <- input$sch_lxt_gen
+      
+      print(scheme)
+      
       format <- paste(input$format_genetic)
       
       if(design == "North Carolina Design I (NCI)"){
         #NCI consider progeny as entry parameter for data analysis
-        pepa::repo.nc(traits = trait, set = set, male = male, female = female, progeny = progeny, rep = rep, model = 1, data = fieldbook, format = format)
+        try(pepa::repo.nc(traits = trait, set = set, male = male, female = female, progeny = progeny, rep = rep, model = 1, data = fieldbook, format = format))
         
       }
       
       if(design == "North Carolina Design II (NCII)"){
         #NCII consider progeny as entry parameter for data analysis
-        pepa::repo.nc(traits = trait, set = set, male = male, female = female, rep = rep, model = 2, data = fieldbook, format = format)
+        try(pepa::repo.nc(traits = trait, set = set, male = male, female = female, rep = rep, model = 2, data = fieldbook, format = format))
         
       }
       
       if(design == "Line by Tester (LxT)"){
         #try(pepa::repo.abd(traits = trait, geno = genotypes, rep = rep, format = format, data = fieldbook))
-        pepa::repo.lxt(traits = trait, line = line, tester = tester,rep = rep, data = fieldbook, format = format)
+        try(pepa::repo.lxt(traits = trait, line = line, tester = tester,rep = rep, scheme = scheme ,data = fieldbook, format = format))
       }
       
     })

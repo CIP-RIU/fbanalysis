@@ -26,7 +26,7 @@ ui <- dashboardPage(skin = "yellow",
                     ),
                     dashboardBody(
                       tabItems(
-                        fbanalysis::ui_genetic(name = tabNameS)
+                        fbanalysis::genetic_ui(name = tabNameS)
                       )
                     )
 )

@@ -19,7 +19,7 @@ Imports:
       shinysky,
       rlist
 Suggests:
-     traittools,
+    traittools,
     testthat
 Copyright: International Potato Center (2016)     
 License: MIT + file LICENSE

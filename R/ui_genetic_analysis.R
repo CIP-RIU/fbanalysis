@@ -10,7 +10,7 @@
 #' @export
 #' 
 
-ui_genetic <- function(type = "tab", title = "Genetic Analysis", name = "genetic_design_analysis"){
+genetic_ui <- function(type = "tab", title = "Genetic Analysis", name = "genetic_design_analysis"){
   
   shinydashboard::tabItem(tabName = name,
                           h2(title),   
@@ -69,7 +69,8 @@ ui_genetic <- function(type = "tab", title = "Genetic Analysis", name = "genetic
                                                      shiny::conditionalPanel(
                                                        condition =  "input.design_genetic == 'Line by Tester (LxT)'",
                                                        uiOutput("line_des_lxt_genetic"),
-                                                       uiOutput("tester_des_lxt_genetic")
+                                                       uiOutput("tester_des_lxt_genetic"),
+                                                       uiOutput("sch_des_lxt_genetic")
                                                      ),
                                                      
                                                      radioButtons(inputId="format_genetic", label="Report format", choices= c("html","word"), 
