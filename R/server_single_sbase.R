@@ -12,7 +12,7 @@
 #' @author Omar Benites
 #' @export
 
-single_server <- function(input, output, session, values){
+single_server_base <- function(input, output, session, values){
   
   
   volumes <- shinyFiles::getVolumes()

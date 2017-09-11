@@ -2,26 +2,28 @@ Package: fbanalysis
 Title: Statistical Analysis for Breeding Data in HiDAP
 Version: 2.0.4
 Authors@R: person("Omar Benites", "Omar", email = "obacc07@gmail.com", role = c("aut", "cre"))
-Description: Statistical analysis for plant breeding in potato and sweetpotato. It includes anova, single and multi-environment analysis, Pesek-Baker and Elston indexes.
+Description: Statistical analysis for plant breeding in potato and sweetpotato.
+    It includes anova, single and multi-environment analysis, Pesek-Baker and Elston
+    indexes.
 Depends:
     R (>= 3.0.0),
     pepa,
     st4gi
 Imports:
-      shiny,
-      shinydashboard,
-      readxl,
-      data.table,
-      shinyFiles,
-      rhandsontable,
-      openxlsx,
-      pvs,
-      shinysky,
-      rlist
+    shiny,
+    shinydashboard,
+    readxl,
+    data.table,
+    shinyFiles,
+    rhandsontable,
+    openxlsx,
+    pvs,
+    shinysky,
+    rlist
 Suggests:
     traittools,
     testthat
-Copyright: International Potato Center (2016)     
+Copyright: International Potato Center (2016)
 License: MIT + file LICENSE
 LazyData: true
-RoxygenNote: 6.0.1
+RoxygenNote: 5.0.1
