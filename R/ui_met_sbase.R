@@ -10,7 +10,7 @@
 #' @export
 #' 
 
-met_ui_sbase <- function(type = "tab", title = "The Statistical Analysis of Multi-Environment Trials (MET)", name = "analysis_met"){
+met_sbase_ui <- function(type = "tab", title = "The Statistical Analysis of Multi-Environment Trials (MET)", name = "analysis_met"){
   
   shinydashboard::tabItem(tabName = name,
                           h2(title),   
