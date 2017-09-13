@@ -20,11 +20,34 @@ single_sbase_ui <- function(type = "tab", title = "Statistical Analysis for One 
                                    tabPanel("Single Analysis", #begin tabset "CHECK"
                                             fluidRow( 
                                               column(width = 8,
+                                                     
                                                      shinyFiles::shinyFilesButton('file_single_sbase', 'Select File', 'Select a file',FALSE),
-                                                     infoBoxOutput("file_message_single_sbase", width = NULL),
+                                                    
                                                      #selectInput('trait_single', 'Select Trait', c(Choose='', single_select_options()   ), selectize=TRUE),
                                                      #selectInput('rep_single', 'Select Repetition', c(Choose='', names(iris)), selectize=TRUE),
                                                      #selectInput('genotypes_single', 'Select Treatment', c(Choose='', names(iris)), selectize=TRUE),
+                                                     
+                                                     shiny::radioButtons(inputId = "typeImport_single_sbase", label = "Type of import",
+                                                                         choices = list("SweetPotato Base" = "sbase", "Local"= "local"),
+                                                                         selected = "sbase", inline = TRUE),
+                                                     
+                                                     #fileInput(inputId = "fileInput_single_sbase", label = "Choose file", accept = "xlsx"),
+                                                     
+                                                     conditionalPanel(
+                                                       condition = "input.typeImport_single_sbase == 'local'",
+                                                       fileInput(inputId = "fileInput_single_sbase", label = "Choose file", accept = "xlsx")#,
+                                                     ),
+                                                       
+                                                     
+                                                     conditionalPanel(
+                                                       condition = "input.typeImport_single_sbase  == 'sbase'",
+                                                       shiny::selectInput(inputId = "sel_single_list_sbase", label = "Select Files from SweetPotato Base", choices = c("omar","benites"))#,
+                                                     ),
+                                                       
+                                                     
+                                                     infoBoxOutput("file_message_single_sbase", width = NULL),
+                                                     
+
                                                      selectInput(inputId = 'design_single_sbase', label = 'Select statistical design of your experiment', choices = 
                                                                    c("Completely Randomized Design (CRD)",
                                                                      "Randomized Complete Block Design (RCBD)",

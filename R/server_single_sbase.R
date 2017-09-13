@@ -20,17 +20,23 @@ single_server_base <- function(input, output, session, values){
                               restrictions=system.file(package='base'),filetypes=c('xlsx'))
   
   
+  
   hot_path <- reactive ({
     
     #validate(
     #  need(input$file != "", label = "Please enter an XLSX file. XLS files are forbidden")
     #)
     
+    typeImport <- input$typeImport_single_sbase
+    
+    
     if(length(input$file_single_sbase)==0){return (NULL)}
     if(length(input$file_single_sbase)>0){
       hot_file <- as.character(parseFilePaths(volumes, input$file_single_sbase)$datapath)
     }
   })
+  
+  
   
   hot_bdata <- reactive({
     hot_file <- hot_path()
