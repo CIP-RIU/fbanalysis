@@ -19,6 +19,23 @@ met_server_sbase <- function(input, output, session, values){
   shinyFiles::shinyFileChoose(input, 'file_met_sbase', roots=volumes, session=session,
                               restrictions=system.file(package='base'),filetypes=c('xlsx'))
   
+  validate(
+    need(input$file != "", label = "Please select a file from sweetpotato base")
+  )
+  
+  # hot_path <- reactive ({
+  #   
+  #   #validate(
+  #   #  need(input$file != "", label = "Please enter an XLSX file. XLS files are forbidden")
+  #   #)
+  #   
+  #   if(length(input$file_met_sbase)==0){return (NULL)}
+  #   if(length(input$file_met_sbase)>0){
+  #     hot_file <- as.character(parseFilePaths(volumes, input$file_met_sbase)$datapath)
+  #   }
+  # })
+  # 
+  
   
   hot_path <- reactive ({
     
@@ -26,11 +43,53 @@ met_server_sbase <- function(input, output, session, values){
     #  need(input$file != "", label = "Please enter an XLSX file. XLS files are forbidden")
     #)
     
-    if(length(input$file_met_sbase)==0){return (NULL)}
-    if(length(input$file_met_sbase)>0){
-      hot_file <- as.character(parseFilePaths(volumes, input$file_met_sbase)$datapath)
-    }
+    #typeImport <- input$typeImport_single_sbase
+    
+    #if(typeImport=="sbase"){
+      
+      fb_temp <- input$sel_single_list_sbase
+      
+      
+      if(is.null(fb_temp)){return()}
+      if(!is.null(fb_temp)){
+        
+        #ToDo: Establish a conection with SBASE
+        # (1) Find the location of the files in SBASE
+        # (2) List Files from SBASE
+        # (3) Read the fselected files
+        
+        # file.copy(fb_temp$datapath,paste(fb_temp$datapath, ".xlsx", sep=""))
+        # fb_temp <- readxl::read_excel(paste(fb_temp$datapath, ".xlsx", sep=""), sheet = "FieldBook")
+        fb_temp <- readRDS(sel_fb_temp)
+        
+        
+      }
+      
+      fb_temp
+    #}
+    # 
+    # if(typeImport=="local"){
+    #   
+    #   sel_fb_temp <- input$fileInput_single_sbase
+    #   
+    #   if(is.null(sel_fb_temp) || sel_fb_temp == ""){  return()  }
+    #   if(length(sel_fb_temp)>0){
+    #     
+    #     #ToDo: Establish a conection with SBASE
+    #     # (1) Find the location of the files in SBASE
+    #     # (2) List Files from SBASE
+    #     # (3) Read the fselected files
+    #     fb_temp <- readRDS(sel_fb_temp)
+    #     
+    #   }
+    #   
+    # }
+    # 
+    #fb_temp
+    
   })
+  
+  
   
   met_bdata <- reactive({
     hot_file <- hot_path()
@@ -129,7 +188,7 @@ met_server_sbase <- function(input, output, session, values){
     
     hot_file <- hot_path()
     #print("omar")
-    print(hot_file)
+    #print(hot_file)
     #print("omar2")
     if(is.null(hot_file)){
       infoBox(title="Select Fieldbook File", subtitle=

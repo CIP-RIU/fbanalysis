@@ -15,65 +15,97 @@
 single_server_base <- function(input, output, session, values){
   
   
-  volumes <- shinyFiles::getVolumes()
-  shinyFiles::shinyFileChoose(input, 'file_single_sbase', roots=volumes, session=session,
-                              restrictions=system.file(package='base'),filetypes=c('xlsx'))
+  # volumes <- shinyFiles::getVolumes()
+  # shinyFiles::shinyFileChoose(input, 'file_single_sbase', roots=volumes, session=session,
+  #                             restrictions=system.file(package='base'),filetypes=c('xlsx'))
   
   
-  
-  hot_path <- reactive ({
+  hot_bdata <- reactive ({
     
-    #validate(
-    #  need(input$file != "", label = "Please enter an XLSX file. XLS files are forbidden")
-    #)
+    validate(
+     need(input$sel_single_list_sbase != "", label = "Please enter an XLSX file. XLS files are forbidden")
+    )
+    sel_fb_temp <- input$sel_single_list_sbase
     
-    typeImport <- input$typeImport_single_sbase
-    
-    
-    if(length(input$file_single_sbase)==0){return (NULL)}
-    if(length(input$file_single_sbase)>0){
-      hot_file <- as.character(parseFilePaths(volumes, input$file_single_sbase)$datapath)
+    if(is.null(sel_fb_temp) || sel_fb_temp == ""){  return()  }
+    if(length(sel_fb_temp)>0){
+      
+      #ToDo: Establish a conection with SBASE
+      # (1) Find the location of the files in SBASE
+      # (2) List Files from SBASE
+      # (3) Read the fselected files
+      fb_temp <- readRDS(sel_fb_temp)
+      
     }
+    
+    # }
+    
+    fb_temp
+    
+    
+   #typeImport <- input$typeImport_single_sbase
+   # if(typeImport=="sbase"){
+   #    
+   #    fb_temp <- input$fileInput_single_sbase
+   #    
+   #    if(is.null(fb_temp)){return()}
+   #    if(!is.null(fb_temp)){
+   #      
+   #      file.copy(fb_temp$datapath,paste(fb_temp$datapath, ".xlsx", sep=""))
+   #      fb_temp <- readxl::read_excel(paste(fb_temp$datapath, ".xlsx", sep=""), sheet = "FieldBook")
+   #      
+   #      fb_temp <- as.list(fb_temp) #mtl in list format
+   #    }
+   #    
+   #    
+   #  }
+   #  fb_temp
+    
   })
   
+  # hot_bdata <- reactive({
+  #   hot_file <- hot_path()
+  #   if(length(hot_file)==0){return (NULL)}
+  #   if(length(hot_file)>0){
+  #     hot_bdata <- readxl::read_excel(path=hot_file , sheet = "Fieldbook")
+  #   }
+  # })
   
-  
-  hot_bdata <- reactive({
-    hot_file <- hot_path()
-    if(length(hot_file)==0){return (NULL)}
-    if(length(hot_file)>0){
-      hot_bdata <- readxl::read_excel(path=hot_file , sheet = "Fieldbook")
-    }
-  })
   
   output$genotypes_single_sbase  <- renderUI({
     selectInput('genotypes_single_sbase', 'Select Genotypes', c(Choose='', select_options(hot_bdata())), 
                 selectize=TRUE)
   })
   
+  
   output$rep_single_sbase  <- renderUI({
     selectInput('rep_single_sbase', 'Select Replications', c(Choose='', select_options(hot_bdata())),
                 selectize=TRUE)
   })
+  
   
   output$trait_single_sbase <- renderUI({
     selectInput('trait_single_sbase', 'Select Trait(s)', c(Choose='', select_options(hot_bdata())),
                 selectize=TRUE, multiple = TRUE)
   })
   
+  
   output$factor_single_sbase  <- renderUI({
     selectInput('factor_single_sbase', 'Select Factor', c(Choose='', select_options(hot_bdata())),
                 selectize=TRUE)
   })
+  
   
   output$block_single  <- renderUI({
     selectInput('block_single_sbase', 'Select Block', c(Choose='', select_options(hot_bdata())),
                 selectize=TRUE)
   })
   
+  
   output$k_single_sbase  <- renderUI({
     shiny::numericInput('k_single_sbase', 'Select Block Size',   value =2, min=2, max = 100)
   })    
+  
   
   output$file_message_single_sbase <- renderInfoBox({
     
@@ -81,7 +113,8 @@ single_server_base <- function(input, output, session, values){
     #germoplasm <-germoplasm_list()$institutional_number
     #print( germoplasm)
     
-    hot_file <- hot_path()
+    #hot_file <- hot_path()
+    hot_file <- input$sel_single_list_sbase
     print(hot_file)
     if(is.null(hot_file)){
       infoBox(title="Select fieldbook file", subtitle=

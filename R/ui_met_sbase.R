@@ -23,8 +23,11 @@ met_sbase_ui <- function(type = "tab", title = "The Statistical Analysis of Mult
                                    tabPanel("MET Analysis", #begin tabset "CHECK"
                                             fluidRow( 
                                               column(width = 6,
-                                                     shinyFiles::shinyFilesButton('file_met_sbase', 'Select Files', 'Select your files',multiple = TRUE),
-                                                     infoBoxOutput("file_message_met_sbase",width = NULL),
+                                                     
+                                                     shiny::selectInput(inputId = "met_single_list_sbase", label = "Select Files from SweetPotato Base", choices = c("omar","benites")),
+                                                     
+                                                     # shinyFiles::shinyFilesButton('file_met_sbase', 'Select Files', 'Select your files',multiple = TRUE),
+                                                     # infoBoxOutput("file_message_met_sbase",width = NULL),
                                                      #selectInput('trait_met', 'Select Trait', c(Choose='', met_select_options()   ), selectize=TRUE),
                                                      #selectInput('rep_met', 'Select Repetition', c(Choose='', names(iris)), selectize=TRUE),
                                                      #selectInput('genotypes_met', 'Select Treatment', c(Choose='', names(iris)), selectize=TRUE),

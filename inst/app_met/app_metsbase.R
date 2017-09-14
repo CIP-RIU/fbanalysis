@@ -15,7 +15,7 @@ tabNameS <- "met_aov"
 
 server <- function(input, output, session,values) {
   values = shiny::reactiveValues()
-  fbanalysis::met_server(input, output, session, values = values)
+  fbanalysis::met_server_sbase(input, output, session, values = values)
 }
 
 ui <- dashboardPage(skin = "yellow",
@@ -31,7 +31,7 @@ ui <- dashboardPage(skin = "yellow",
                     dashboardBody(
                       
                       tabItems(
-                        fbanalysis::met_ui(name = tabNameS)
+                        fbanalysis::met_sbase_ui(name = tabNameS)
                       )
                     )
 )

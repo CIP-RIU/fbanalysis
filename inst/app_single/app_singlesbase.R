@@ -5,17 +5,13 @@ library(shinyFiles)
 library(st4gi)
 library(pepa)
 library(readxl)
-library(purrr)
 library(knitr)
-library(data.table)
 
-
-
-tabNameS <- "met_aov"
+tabNameS <- "analysis_aov"
 
 server <- function(input, output, session,values) {
   values = shiny::reactiveValues()
-  fbanalysis::met_server(input, output, session, values = values)
+  fbanalysis::single_server_base(input, output, session, values = values)
 }
 
 ui <- dashboardPage(skin = "yellow",
@@ -23,7 +19,7 @@ ui <- dashboardPage(skin = "yellow",
                     dashboardSidebar(width = 200,
                                      menuItem("Resources",
                                               sidebarMenu(id = "menu",
-                                                          menuSubItem("MET", icon = icon("star"),
+                                                          menuSubItem("ANOVA", icon = icon("star"),
                                                                       tabName = tabNameS)
                                               )
                                      )
@@ -31,9 +27,13 @@ ui <- dashboardPage(skin = "yellow",
                     dashboardBody(
                       
                       tabItems(
-                        fbanalysis::met_ui(name = tabNameS)
+                        fbanalysis::single_sbase_ui(name = tabNameS)
                       )
                     )
 )
 
 shinyApp(ui = ui, server = server)
+
+
+
+
