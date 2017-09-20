@@ -20,46 +20,26 @@ single_server_base <- function(input, output, session, values){
   #                             restrictions=system.file(package='base'),filetypes=c('xlsx'))
   
   
-  hot_bdata <- reactive ({
-    
+  #hot_bdata <- reactive ({
+   
+  hot_bdata <-  eventReactive(input$connect_single_sbase,{
+  
     validate(
-     need(input$sel_single_list_sbase != "", label = "Please enter an XLSX file. XLS files are forbidden")
+     need(input$connect_single_sbase != "", label = "Please connect to SweetPotato Base")
     )
-    sel_fb_temp <- input$sel_single_list_sbase
     
-    if(is.null(sel_fb_temp) || sel_fb_temp == ""){  return()  }
-    if(length(sel_fb_temp)>0){
+    #if(is.null(sel_fb_temp) || sel_fb_temp == ""){  return()  }
+    #if(length(input$connect_single_sbase)>0){
       
-      #ToDo: Establish a conection with SBASE
-      # (1) Find the location of the files in SBASE
-      # (2) List Files from SBASE
-      # (3) Read the fselected files
-      fb_temp <- readRDS(sel_fb_temp)
+     #fb_temp <- readRDS(sel_fb_temp)
+      white_list <- ba_db()
+      #establish connection
+      sp_base_credentials <- ba_db()$sweetpotatobase
+      trial_table <- brapi::ba_trials(con = sp_base_credentials)
+    #}
+      out <- list(sp_base_credentials  = sp_base_credentials , trial_table = trial_table)
       
-    }
-    
-    # }
-    
-    fb_temp
-    
-    
-   #typeImport <- input$typeImport_single_sbase
-   # if(typeImport=="sbase"){
-   #    
-   #    fb_temp <- input$fileInput_single_sbase
-   #    
-   #    if(is.null(fb_temp)){return()}
-   #    if(!is.null(fb_temp)){
-   #      
-   #      file.copy(fb_temp$datapath,paste(fb_temp$datapath, ".xlsx", sep=""))
-   #      fb_temp <- readxl::read_excel(paste(fb_temp$datapath, ".xlsx", sep=""), sheet = "FieldBook")
-   #      
-   #      fb_temp <- as.list(fb_temp) #mtl in list format
-   #    }
-   #    
-   #    
-   #  }
-   #  fb_temp
+   #trial_table
     
   })
   
@@ -71,33 +51,102 @@ single_server_base <- function(input, output, session, values){
   #   }
   # })
   
+  # program name for single trial in sbase
+  output$programName_single_sbase  <- renderUI({
+    
+    req(input$connect_single_sbase)
+    
+    sbase_data <- hot_bdata()$trial_table
+    program_name <-sbase_data  %>% select(programName)
+    program_name <- program_name %>% unique()
+    
+    selectInput('single_selProgram_sbase', 'Select program', c(Choose='', program_name), selectize=TRUE)
+  
+  })
+  
+  
+  output$trialName_single_sbase  <- renderUI({
+    
+    req(input$connect_single_sbase)
+    req(input$single_selProgram_sbase)
+    
+    sel_programName <- input$single_selProgram_sbase
+    sbase_data <- hot_bdata()$trial_table
+    sbase_data <- sbase_data %>% filter(programName == sel_programName)
+    
+    trial_name <- sbase_data %>% select(trialName) 
+    trial_name <- trial_name[[1]] %>% unique()
+    
+    selectInput('single_sbase_trialName', 'Select trial', c(Choose='', trial_name), selectize=TRUE)
+    
+  })
+  
+  
+  
+  output$studyName_single_sbase  <- renderUI({
+    
+    # req(input$connect_single_sbase)
+    # req(input$single_selProgram_sbase)
+    req(input$single_sbase_trialName)
+    sel_trialName <- input$single_sbase_trialName
+    sbase_data <- hot_bdata()$trial_table
+    sbase_data <- sbase_data %>% filter(trialName == sel_trialName)
+    
+    study_name <- sbase_data %>% select(studyName)
+    study_name <- study_name[[1]] %>% unique()
+    
+    selectInput('single_sbase_studyName', 'Select study', c(Choose='', study_name), selectize=TRUE)
+
+  })
+  
+  
+  hot_fbsbase <- reactive({
+    
+    req(input$single_sbase_studyName)
+    
+    sbase_fb <- hot_bdata()$trial_table
+    credentials <- hot_bdata()$sp_base_credentials
+    col_fb_sbase <- sbase_fb %>% dplyr::filter(programName== input$single_selProgram_sbase, trialName == input$single_sbase_trialName, studyName == input$single_sbase_studyName)
+    dt <-  ba_studies_table(credentials , studyDbId = as.character(col_fb_sbase$studyDbId))
+    
+  })
   
   output$genotypes_single_sbase  <- renderUI({
-    selectInput('genotypes_single_sbase', 'Select Genotypes', c(Choose='', select_options(hot_bdata())), 
+    
+    req(input$connect_single_sbase)
+    req(input$single_selProgram_sbase)
+    req(input$single_sbase_trialName)
+    
+    # sbase_fb <- hot_bdata()$trial_table
+    # credentials <- hot_bdata()$sp_base_credentials
+    # col_fb_sbase <- sbase_fb %>% dplyr::filter(programName== input$single_selProgram_sbase, trialName == input$single_sbase_trialName, studyName == input$single_sbase_studyName)
+    # dt <-  ba_studies_table(credentials , studyDbId = as.character(col_fb_sbase$studyDbId))
+    # 
+    selectInput('genotypes_single_sbase', 'Select Genotypes', c(Choose='', names(hot_fbsbase())), 
                 selectize=TRUE)
   })
   
   
   output$rep_single_sbase  <- renderUI({
-    selectInput('rep_single_sbase', 'Select Replications', c(Choose='', select_options(hot_bdata())),
+    selectInput('rep_single_sbase', 'Select Replications', c(Choose='', names(hot_fbsbase())),
                 selectize=TRUE)
   })
   
   
   output$trait_single_sbase <- renderUI({
-    selectInput('trait_single_sbase', 'Select Trait(s)', c(Choose='', select_options(hot_bdata())),
+    selectInput('trait_single_sbase', 'Select Trait(s)', c(Choose='', names(hot_fbsbase())),
                 selectize=TRUE, multiple = TRUE)
   })
   
   
   output$factor_single_sbase  <- renderUI({
-    selectInput('factor_single_sbase', 'Select Factor', c(Choose='', select_options(hot_bdata())),
+    selectInput('factor_single_sbase', 'Select Factor', c(Choose='', names(hot_fbsbase())),
                 selectize=TRUE)
   })
   
   
   output$block_single  <- renderUI({
-    selectInput('block_single_sbase', 'Select Block', c(Choose='', select_options(hot_bdata())),
+    selectInput('block_single_sbase', 'Select Block', c(Choose='', names(hot_fbsbase())),
                 selectize=TRUE)
   })
   
@@ -114,11 +163,13 @@ single_server_base <- function(input, output, session, values){
     #print( germoplasm)
     
     #hot_file <- hot_path()
-    hot_file <- input$sel_single_list_sbase
-    print(hot_file)
-    if(is.null(hot_file)){
+    #hot_file <- input$sel_single_list_sbase
+    #print(hot_file)
+    sbase_data <-  hot_bdata()$trial_table
+    
+    if(is.null(sbase_data)){
       infoBox(title="Select fieldbook file", subtitle=
-                paste("Choose your fieldbook file"), icon = icon("upload", lib = "glyphicon"),
+                paste("Connect to SweetPotato Base"), icon = icon("plug"),
               color = "blue",fill = TRUE, width = NULL)
       #      }
       #       else if(all(is.na(germoplasm))) {
@@ -130,10 +181,10 @@ single_server_base <- function(input, output, session, values){
     } else {
       #       material <- paste(germoplasm, collapse = ",")
       #       message <-  paste("Material list imported: ", material)
-      hot_file <- basename(hot_file)
+      hot_file <- sbase_data
       hot_file <- paste(hot_file, collapse = ", ")
       infoBox(title="GREAT!", subtitle =
-                paste(" Fieldbook selected: ", hot_file),  icon = icon("ok", lib = "glyphicon"),
+                paste("Now you are connected"),  icon = icon("ok", lib = "glyphicon"),
               color = "green",fill = TRUE, width = NULL)
     }
   })
@@ -158,7 +209,8 @@ single_server_base <- function(input, output, session, values){
       
       design <- input$design_single_sbase
       
-      fieldbook <- as.data.frame(hot_bdata())
+      #fieldbook <- as.data.frame(hot_bdata()$trial_table)
+      fieldbook <-  as.data.frame(hot_fbsbase())
       #saveRDS(fieldbook,"res.rds")
       trait <- input$trait_single_sbase
       rep <- input$rep_single_sbase

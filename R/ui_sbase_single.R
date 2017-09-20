@@ -21,32 +21,28 @@ single_sbase_ui <- function(type = "tab", title = "Statistical Analysis for One 
                                             fluidRow( 
                                               column(width = 8,
                                                      
-                                                     #shinyFiles::shinyFilesButton('file_single_sbase', 'Select File', 'Select a file',FALSE),
                                                     
-                                                     #selectInput('trait_single', 'Select Trait', c(Choose='', single_select_options()   ), selectize=TRUE),
-                                                     #selectInput('rep_single', 'Select Repetition', c(Choose='', names(iris)), selectize=TRUE),
-                                                     #selectInput('genotypes_single', 'Select Treatment', c(Choose='', names(iris)), selectize=TRUE),
                                                      
-                                                     # shiny::radioButtons(inputId = "typeImport_single_sbase", label = "Type of import",
-                                                     #                     choices = list("SweetPotato Base" = "sbase", "Local"= "local"),
-                                                     #                     selected = "sbase", inline = TRUE),
-                                                     
-                                                     #fileInput(inputId = "fileInput_single_sbase", label = "Choose file", accept = "xlsx"),
-                                                     
-                                                     # conditionalPanel(
-                                                     #   condition = "input.typeImport_single_sbase == 'local'",
-                                                     #   fileInput(inputId = "fileInput_single_sbase", label = "Choose file", accept = "xlsx")#,
-                                                     # ),
-                                                     #   
-                                                     
-                                                     #conditionalPanel(
-                                                     #   condition = "input.typeImport_single_sbase  == 'sbase'",
-                                                       shiny::selectInput(inputId = "sel_single_list_sbase", label = "Select Files from SweetPotato Base", choices = c("omar","benites")),
-                                                     #),
-                                                       
-                                                     
+                                                     actionButton(inputId= "connect_single_sbase", "Connect to Sweetpotato Base"),
                                                      infoBoxOutput("file_message_single_sbase", width = NULL),
                                                      
+                                                     
+                                                     uiOutput("programName_single_sbase",inline = TRUE),
+                                                     uiOutput("trialName_single_sbase",inline = TRUE),
+                                                     uiOutput("studyName_single_sbase", inline = TRUE),
+                                                     
+                                                     HTML('<hr style="color: purple;">'),
+                                                     #tags$style(HTML("hr {border-top: 1px solid #000000;}")),
+                                                     # tags$button(
+                                                     #    id = "connect_single_sbase",
+                                                     #   # label = "Connect to SweetPotato Base",
+                                                     #    class = "btn action_button",
+                                                     #    value = "Connect to SweetPotato Base",
+                                                     #    
+                                                     #   tags$img(src = "sweetpotato_emoji_png.png",height = "15px")
+                                                     #  ),
+                                                      #shiny::selectInput(inputId = "sel_single_list_sbase", label = "Select Files from SweetPotato Base", choices = c("omar","benites")),
+                                                     #),
 
                                                      selectInput(inputId = 'design_single_sbase', label = 'Select statistical design of your experiment', choices = 
                                                                    c("Completely Randomized Design (CRD)",
@@ -82,7 +78,7 @@ single_sbase_ui <- function(type = "tab", title = "Statistical Analysis for One 
                                                        #input.design_single == 'Split Plot with Plots in RCBD (SPRCBD)'"
                                                        
                                                        
-                                                       uiOutput("rep_single")
+                                                       uiOutput("rep_single_sbase")
                                                      ),  
                                                      
                                                      shiny::conditionalPanel(
