@@ -10,7 +10,7 @@ library(knitr)
 library(dplyr)
 library(brapi)
 
-tabNameS <- "analysis_aov"
+tabNameS <- "analysis_aov_sbase"
 
 server <- function(input, output, session,values) {
   values = shiny::reactiveValues()
