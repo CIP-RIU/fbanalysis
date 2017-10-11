@@ -22,7 +22,7 @@ single_sbase_ui <- function(type = "tab", title = "Statistical Analysis for One 
                                               column(width = 12,
                                                      
                                                      box( # first begin box
-                                                       title = " ", status = "primary", solidHeader = FALSE,
+                                                       title = "Hello", status = "primary", solidHeader = FALSE,
                                                        collapsible = FALSE, width = NULL,
                                                        
                                                        #actionButton(inputId= "connect_single_sbase", "Connect to Sweetpotato Base"),
