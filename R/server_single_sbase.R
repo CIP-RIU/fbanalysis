@@ -15,42 +15,66 @@
 single_server_base <- function(input, output, session, values){
 
 
-  # volumes <- shinyFiles::getVolumes()
-  # shinyFiles::shinyFileChoose(input, 'file_single_sbase', roots=volumes, session=session,
-  #                             restrictions=system.file(package='base'),filetypes=c('xlsx'))
-
-
-  #hot_bdata <- reactive ({
-
-  hot_bdata <-  eventReactive(input$connect_single_sbase,{
-
-    validate(
-     need(input$connect_single_sbase != "", label = "Please connect to SweetPotato Base")
-    )
-
-    #if(is.null(sel_fb_temp) || sel_fb_temp == ""){  return()  }
-    #if(length(input$connect_single_sbase)>0){
-
-     #fb_temp <- readRDS(sel_fb_temp)
+  
+  values <- reactiveValues(fileInput = NULL)
+  
+  # Limpia marcadores del mapa "1a" y asigna NULL a ciertos parametros
+  observe({
+    #input$clearMap1a
+    shiny::withProgress(message = "Connecting to SweetPotatoBase",value= 0,{
+      
+      #NOTE: To use pepa report package we need R 3.3.0 or more.
+      #NOTE Finally, we always need pandoc installer.
+      #ToDo: In case of poor conection print a message and do not show anything
+      
+      incProgress(1/5, detail = paste("Connecting to SweetPotatoBase via brapiR..."))
       white_list <- brapi::ba_db()
       #establish connection
+      incProgress(3/5, detail = paste("Ready for connection..."))
       sp_base_credentials <- white_list$sweetpotatobase
       trial_table <- brapi::ba_trials(con = sp_base_credentials)
 
       out <- list(sp_base_credentials  = sp_base_credentials , trial_table = trial_table)
-
-   #trial_table
-
+      incProgress(5/5, detail = paste("Ready for connection..."))
+   
+    
+    values$hot_bdata <- out
+    })
+    
   })
+  
+  
+  #hot_bdata <- reactive ({
+
+  # hot_bdata <-  eventReactive(input$connect_single_sbase,{
+  # 
+  #   validate(
+  #    need(input$connect_single_sbase != "", label = "Please connect to SweetPotato Base")
+  #   )
+  # 
+  #   #if(is.null(sel_fb_temp) || sel_fb_temp == ""){  return()  }
+  #   #if(length(input$connect_single_sbase)>0){
+  # 
+  #    #fb_temp <- readRDS(sel_fb_temp)
+  #     white_list <- brapi::ba_db()
+  #     #establish connection
+  #     sp_base_credentials <- white_list$sweetpotatobase
+  #     trial_table <- brapi::ba_trials(con = sp_base_credentials)
+  # 
+  #     out <- list(sp_base_credentials  = sp_base_credentials , trial_table = trial_table)
+  # 
+  #  #trial_table
+  # 
+  # })
 
 
 
   # program name for single trial in sbase
   output$programName_single_sbase  <- renderUI({
 
-    req(input$connect_single_sbase)
+    #req(input$connect_single_sbase)
 
-    sbase_data <- hot_bdata()
+    sbase_data <- values$hot_bdata
     sbase_data <- sbase_data$trial_table
     program_name <- sbase_data  %>% select(programName)
     program_name <- program_name %>% unique()
@@ -62,12 +86,13 @@ single_server_base <- function(input, output, session, values){
 
   output$trialName_single_sbase  <- renderUI({
 
-    req(input$connect_single_sbase)
+    #req(input$connect_single_sbase)
     req(input$single_selProgram_sbase)
 
     sel_programName <- input$single_selProgram_sbase
 
-    sbase_data <- hot_bdata()
+    #sbase_data <- hot_bdata() #using button for connecting to SBASE
+    sbase_data <- values$hot_bdata
     sbase_data <- sbase_data$trial_table
 
     sbase_data <- sbase_data %>% filter(programName == sel_programName)
@@ -88,7 +113,8 @@ single_server_base <- function(input, output, session, values){
     req(input$single_sbase_trialName)
     sel_trialName <- input$single_sbase_trialName
 
-    sbase_data <- hot_bdata()
+    #sbase_data <- hot_bdata() #using button for connecting to SBASE
+    sbase_data <- values$hot_bdata #reactive data
     sbase_data <- sbase_data$trial_table
 
     sbase_data <- sbase_data %>% filter(trialName == sel_trialName)
@@ -101,11 +127,32 @@ single_server_base <- function(input, output, session, values){
   })
 
 
+  output$show_single_sbase_params <- reactive({
+    #return(!is.null(gmtl_data()))
+    p <- input$single_sbase_studyName
+    #print(p)
+    # p <- p ==""
+    if(is.null(p)){ 
+      val_logic <- FALSE 
+    } else if(p==""){
+      val_logic <- FALSE
+    } else{
+      val_logic <- TRUE
+    }
+
+    return(val_logic)
+    
+  })
+  
+  #set options for show_mtable
+  outputOptions(output, 'show_single_sbase_params', suspendWhenHidden=FALSE)
+  
   hot_fb_sbase <- reactive({
 
     req(input$single_sbase_studyName)
 
-    sbase_data <- hot_bdata() #extracting informatin from sbase (credentials and fieldbook)
+    #sbase_data <- hot_bdata() #extracting informatin from sbase (credentials and fieldbook) #using button for connecting to SBASE
+    sbase_data <- values$hot_bdata
     
     sbase_fb <- sbase_data$trial_table
     credentials <- sbase_data$sp_base_credentials
@@ -115,17 +162,13 @@ single_server_base <- function(input, output, session, values){
 
   })
 
+  
   output$genotypes_single_sbase  <- renderUI({
 
-    req(input$connect_single_sbase)
+    #req(input$connect_single_sbase)
     req(input$single_selProgram_sbase)
     req(input$single_sbase_trialName)
 
-    # sbase_fb <- hot_bdata()$trial_table
-    # credentials <- hot_bdata()$sp_base_credentials
-    # col_fb_sbase <- sbase_fb %>% dplyr::filter(programName== input$single_selProgram_sbase, trialName == input$single_sbase_trialName, studyName == input$single_sbase_studyName)
-    # dt <-  ba_studies_table(credentials , studyDbId = as.character(col_fb_sbase$studyDbId))
-    #
     selectInput('genotypes_single_sbase', 'Select Genotypes', c(Choose='', names(hot_fb_sbase())),
                 selectize=TRUE)
   })
@@ -162,15 +205,11 @@ single_server_base <- function(input, output, session, values){
 
   output$file_message_single_sbase <- renderInfoBox({
 
-    #germoplasm <-material_table()$Institutional_number
-    #germoplasm <-germoplasm_list()$institutional_number
-    #print( germoplasm)
+    #sbase_data <-  hot_bdata()["trial_table"] #using button for connecting to SBASE
 
-    #hot_file <- hot_path()
-    #hot_file <- input$sel_single_list_sbase
-    #print(hot_file)
-    sbase_data <-  hot_bdata()["trial_table"]
-
+    sbase_data <- values$hot_bdata
+    sbase_data <- sbase_data["trial_table"]
+    
     if(is.null(sbase_data)){
       infoBox(title="Select fieldbook file", subtitle=
                 paste("Connect to SweetPotato Base"), icon = icon("plug"),
@@ -192,18 +231,6 @@ single_server_base <- function(input, output, session, values){
               color = "green",fill = TRUE, width = NULL)
     }
   })
-  #
-  #
-  #     output$run_single <- renderUI({
-  #
-  #       trait <- input$single_fb_trait
-  #       genotypes <- input$single_fb_genotypes
-  #       rep <- input$single_fb_rep
-  #
-  #       if(length(trait)==0 || length(genotypes)==0 || length(rep)==0 || is.null(hot_bdata)) return()
-  #       actionButton(inputId = "single_button", label= "Analyze", icon = icon("play-circle"),
-  #                  width = NULL,height = NULL)
-  #     })
 
   shiny::observeEvent(input$single_button_sbase, {
     shiny::withProgress(message = "Opening single Report...",value= 0,{
@@ -211,6 +238,7 @@ single_server_base <- function(input, output, session, values){
       #NOTE: To use pepa report package we need R 3.3.0 or more.
       #NOTE Finally, we always need pandoc installer.
 
+      incProgress(3/5, detail = paste("Analyzing..."))
       design <- input$design_single_sbase
 
       #fieldbook <- as.data.frame(hot_bdata()$trial_table)
@@ -270,6 +298,9 @@ single_server_base <- function(input, output, session, values){
         try(pepa::repo.2f(traits = trait, A = genotypes, B = factor_single, rep = rep, design = "rcbd", title= title, data = fieldbook, format = format))
       }
 
+      incProgress(5/5, detail = paste("Analyzing..."))
+      
+      
     })
   })
 

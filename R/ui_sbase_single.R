@@ -12,26 +12,27 @@ single_sbase_ui <- function(type = "tab", title = "Statistical Analysis for One 
   shinydashboard::tabItem(tabName = name,
                           h2(title),
 
-                          box(
+                          box( #begin  box
                             title = " ", status = "primary", solidHeader = TRUE,
                             collapsible = TRUE, width = NULL,
                             #tabsetPanel(
-                            tabBox(width = 12,
-                                   tabPanel("Single Analysis", #begin tabset "CHECK"
+                            tabBox(width = 12, #begintab box
+                                   tabPanel("Single Analysis", #begin tabset "single analysis sbase"
                                             fluidRow(
-                                              column(width = 8,
+                                              column(width = 12,
 
-
-
-                                                     actionButton(inputId= "connect_single_sbase", "Connect to Sweetpotato Base"),
+                                                   box( # first begin box
+                                                     title = " ", status = "primary", solidHeader = FALSE,
+                                                     collapsible = FALSE, width = NULL,
+                                                    
+                                                     #actionButton(inputId= "connect_single_sbase", "Connect to Sweetpotato Base"),
                                                      infoBoxOutput("file_message_single_sbase", width = NULL),
-
 
                                                      uiOutput("programName_single_sbase"),
                                                      uiOutput("trialName_single_sbase"),
-                                                     uiOutput("studyName_single_sbase"),
+                                                     uiOutput("studyName_single_sbase")#,
 
-                                                     HTML('<hr style="color: purple;">'),
+                                                     #HTML('<hr style="color: purple;">')#,
                                                      #tags$style(HTML("hr {border-top: 1px solid #000000;}")),
                                                      # tags$button(
                                                      #    id = "connect_single_sbase",
@@ -43,9 +44,16 @@ single_sbase_ui <- function(type = "tab", title = "Statistical Analysis for One 
                                                      #  ),
                                                       #shiny::selectInput(inputId = "sel_single_list_sbase", label = "Select Files from SweetPotato Base", choices = c("omar","benites")),
                                                      #),
+                                                     ), #end first box
 
-                                                     selectInput(inputId = 'design_single_sbase', label = 'Select statistical design of your experiment', choices =
-                                                                   c("Completely Randomized Design (CRD)",
+                                                   
+                                        conditionalPanel( condition = "output.show_single_sbase_params",  ##conditional Panel for Inputs        
+                                                                                                      
+                                                   box( # second begin box
+                                                     title = " ", status = "primary", solidHeader = FALSE,
+                                                     collapsible = FALSE, width = NULL,
+                                                    selectInput(inputId = 'design_single_sbase', label = 'Select statistical design of your experiment', choices =
+                                                                     c("Completely Randomized Design (CRD)",
                                                                      "Randomized Complete Block Design (RCBD)",
                                                                      "Augmented Block Design (ABD)",
                                                                      "Alpha Design(0,1) (AD)",
@@ -53,21 +61,9 @@ single_sbase_ui <- function(type = "tab", title = "Statistical Analysis for One 
                                                                      "Factorial Two-Way Design in RCBD (F2RCBD)"),
                                                                  #"Split Plot with Plots in CRD (SPCRD)",
                                                                  #"Split Plot with Plots in RCBD (SPRCBD)"),
-                                                                 selected = "Randomized Complete Block Design (RCBD)",
-                                                                 selectize=FALSE),
-                                                     #
-                                                     # shiny::conditionalPanel(
-                                                     #   condition =
-                                                     #   "input.design_single == 'Completely Randomized Design (CRD)' |
-                                                     #   input.design_single == 'Randomized Complete Block Design (RCBD)'|
-                                                     #   input.design_single == 'Augmented Block Design (ABD)'
-                                                     #   input.design_single == 'Alpha Design(0,1) (AD)'",
-                                                     #
-                                                     #   uiOutput("genotypes_single"),
-                                                     #   uiOutput("trait_single")
-                                                     #
-                                                     # ),
-
+                                                                      selected = "Randomized Complete Block Design (RCBD)",
+                                                                      selectize=FALSE),
+                                                 
                                                      shiny::conditionalPanel(
                                                        condition = "input.design_single_sbase == 'Alpha Design(0,1) (AD)'|
                                                        input.design_single_sbase == 'Randomized Complete Block Design (RCBD)'|
@@ -116,36 +112,23 @@ single_sbase_ui <- function(type = "tab", title = "Statistical Analysis for One 
                                                        uiOutput("trait_single_sbase")
                                                      ),
 
-
-
-                                                     #uiOutput("genotypes_single"),
-                                                     #uiOutput("rep_single"),
-
-                                                     #uiOutput("trait_single"),
-
-
                                                      radioButtons(inputId="format_single_sbase", label="Report format", choices= c("html","word"),
                                                                   selected = "html", inline = TRUE, width = NULL),
                                                      actionButton(inputId = "single_button_sbase", label= "Analyze", icon = icon("play-circle"),
-                                                                  width = NULL,height = NULL),
+                                                                  width = NULL,height = NULL)#,
 
-
-                                                     br()#,
-                                                     # shiny::wellPanel(
-                                                     #   shiny::HTML("<b>  </b>"),
-                                                     #   rHandsontableOutput("single_anova_fail_message")
-                                                     # )
-
+                                                   ) #end second box
+                                            )#end conditinal panel for Inputs
 
                                                      #uiOutput("run_single")
                                               )#end column
                                             )#, end fluidow
 
-                                   )#,#end tab Panel "CHECK"
+                                   )#,#end tab Panel "single analysis"
 
 
-                            )
-                          ),
+                           ) #end tab box
+                          ),  #end box
 
                           br(),
                           br(),

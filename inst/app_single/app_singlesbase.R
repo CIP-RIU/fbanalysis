@@ -29,6 +29,8 @@ ui <- dashboardPage(skin = "yellow",
                     ),
                     dashboardBody(
                       
+                   
+                      
                       tabItems(
                         fbanalysis::single_sbase_ui(name = tabNameS)
                       )
