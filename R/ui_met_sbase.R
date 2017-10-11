@@ -24,28 +24,31 @@ met_sbase_ui <- function(type = "tab", title = "The Statistical Analysis of Mult
                                             
                                             fluidRow( 
                                               
+                                              column(width = 12,
+                                              
                                               box(
                                                 #"Ingrese una lista de familias o clones", width = 4, status = "primary", height = "730px",
-                                                title = "SweetPotato Base Trial", width = 4,  height = "500px", status = "primary", solidHeader = TRUE, collapsible = TRUE,
+                                                title = "SweetPotato Base Trial", width = NULL,  height = NULL, status = "primary", solidHeader = TRUE, collapsible = TRUE,
                                                 
-                                                actionButton(inputId= "connect_met_sbase", "Connect to Sweetpotato Base"),
+                                                #actionButton(inputId= "connect_met_sbase", "Connect to Sweetpotato Base"),
                                                 infoBoxOutput("file_message_met_sbase", width = NULL),
                                                 br(),
                                                 uiOutput("programName_met_sbase"),
                                                 uiOutput("trialName_met_sbase"),
                                                 uiOutput("studyName_met_sbase"),
                                                 shinysky::shinyalert("alert_met_sbase_done", FALSE, auto.close.after = 8),
-                                                
+                                                br(),
                                                 br(),
                                                 # br(),
                                                 
                                                 br()
                                               ),
                                               
-                                              
+                                              conditionalPanel( condition = "output.show_met_sbase_params",  ##conditional Panel for Inputs 
+                                                 
                                               box(
                                               #column(width = 6,
-                                                title = "SweetPotato Base Trial", width = 8,  status = "primary", solidHeader = TRUE, collapsible = TRUE,
+                                                title = "SweetPotato Base Trial", width = 12,  status = "primary", solidHeader = FALSE, collapsible = TRUE,
                                                      #shiny::selectInput(inputId = "met_met_list_sbase", label = "Select Files from SweetPotato Base", choices = c("omar","benites")),
                                                      conditionalPanel( condition = "output.show_met_sbase_len",  
                                                                
@@ -55,7 +58,7 @@ met_sbase_ui <- function(type = "tab", title = "The Statistical Analysis of Mult
                                                          uiOutput("trait_met_sbase"),
                                                          
                                                          radioButtons(inputId="format_met_sbase", label="Report format", choices= c("html","word"), 
-                                                                      selected = "html", inline = TRUE, width = NULL),
+                                                                      selected = "html",  width = NULL),
                                                          
                                                          shiny::conditionalPanel(condition = "input.format_met_sbase == 'word'",
                                                             
@@ -69,11 +72,15 @@ met_sbase_ui <- function(type = "tab", title = "The Statistical Analysis of Mult
                                                                       width = NULL,height = NULL)
                                                          
                                                          )
-                                       
-                                                
                                                      )
-                                              
                                               )
+                                              
+                                              
+                                              
+                                              )#end conditional panel show design parameters
+                                              
+                                             ) #end column 
+                                              
                                             )#, end fluidow
                                    )#,#end tab Panel "CHECK"
                                    

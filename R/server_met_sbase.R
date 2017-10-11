@@ -15,38 +15,71 @@
 met_server_sbase <- function(input, output, session, values){
   
 
- hot_bdata <-  reactive({
+ # hot_bdata <-  reactive({
+ #  
+ #    validate(
+ #      need(input$connect_met_sbase != "", label = "Please connect to SweetPotato Base")
+ #    )
+ #    
+ #    #if(is.null(sel_fb_temp) || sel_fb_temp == ""){  return()  }
+ #    #if(length(input$connect_single_sbase)>0){
+ #    
+ #    #fb_temp <- readRDS(sel_fb_temp)
+ #    white_list <- brapi::ba_db()
+ #    #establish connection
+ #    sp_base_credentials <- white_list$sweetpotatobase
+ #    trial_table <- brapi::ba_trials(con = sp_base_credentials)
+ #    
+ #    out <- list(sp_base_credentials  = sp_base_credentials , trial_table = trial_table)
+ #    
+ #    hot_bdata <- out
+ #    
+ #    
+ #    
+ #  })
   
+  values <- reactiveValues(fileInput = NULL)
+  
+  observe({
     
+    shiny::withProgress(message = "Connecting to SweetPotatoBase",value= 0,{
       
-    validate(
-      need(input$connect_met_sbase != "", label = "Please connect to SweetPotato Base")
-    )
-    
-    #if(is.null(sel_fb_temp) || sel_fb_temp == ""){  return()  }
-    #if(length(input$connect_single_sbase)>0){
-    
-    #fb_temp <- readRDS(sel_fb_temp)
-    white_list <- brapi::ba_db()
-    #establish connection
-    sp_base_credentials <- white_list$sweetpotatobase
-    trial_table <- brapi::ba_trials(con = sp_base_credentials)
-    
-    out <- list(sp_base_credentials  = sp_base_credentials , trial_table = trial_table)
-    
-    hot_bdata <- out
-    
-    #trial_table
+      #NOTE: To use pepa report package we need R 3.3.0 or more.
+      #NOTE Finally, we always need pandoc installer.
+      #ToDo: In case of poor conection print a message and do not show anything
+      
+      incProgress(1/5, detail = paste("Connecting to SweetPotatoBase via brapiR..."))
+      
+      # validate(
+      #  need(input$connect_single_sbase != "", label = "Please connect to SweetPotato Base")
+      # )
+      
+      white_list <- brapi::ba_db()
+      #establish connection
+      incProgress(3/5, detail = paste("Ready for connection..."))
+      sp_base_credentials <- white_list$sweetpotatobase
+      trial_table <- brapi::ba_trials(con = sp_base_credentials)
+      
+      out <- list(sp_base_credentials  = sp_base_credentials , trial_table = trial_table)
+      incProgress(5/5, detail = paste("Ready for connection..."))
+      
+      
+      values$hot_bdata <- out
+    })
     
   })
+  
   
   #select program name
   output$programName_met_sbase  <- renderUI({
     
-    req(input$connect_met_sbase)
+    ##req(input$connect_met_sbase)
     
-    sbase_data <- hot_bdata()
+    #sbase_data <- hot_bdata()
+    #sbase_data <- sbase_data$trial_table
+    sbase_data <- values$hot_bdata
     sbase_data <- sbase_data$trial_table
+    
     program_name <- sbase_data  %>% select(programName)
     program_name <- program_name %>% unique()
     
@@ -57,12 +90,15 @@ met_server_sbase <- function(input, output, session, values){
   #select trial name
   output$trialName_met_sbase  <- renderUI({
     
-    req(input$connect_met_sbase)
+    #req(input$connect_met_sbase)
     req(input$met_selProgram_sbase)
     
     sel_programName <- input$met_selProgram_sbase
     
-    sbase_data <- hot_bdata()
+    # sbase_data <- hot_bdata()
+    # sbase_data <- sbase_data$trial_table
+    
+    sbase_data <- values$hot_bdata
     sbase_data <- sbase_data$trial_table
     
     sbase_data <- sbase_data %>% filter(programName == sel_programName)
@@ -82,8 +118,12 @@ met_server_sbase <- function(input, output, session, values){
     req(input$met_sbase_trialName)
     sel_trialName <- input$met_sbase_trialName
     
-    sbase_data <- hot_bdata()
+    #sbase_data <- hot_bdata()
+    #sbase_data <- sbase_data$trial_table
+    
+    sbase_data <- values$hot_bdata
     sbase_data <- sbase_data$trial_table
+    
     
     sbase_data <- sbase_data %>% filter(trialName == sel_trialName)
     
@@ -96,15 +136,32 @@ met_server_sbase <- function(input, output, session, values){
   
   
   #conditional value for diplaying MET inputs
-  output$show_met_sbase <- reactive({
-    return(!is.null(hot_bdata()))
+  output$show_met_sbase_params <- reactive({
+    return(!is.null(values$hot_bdata))
   })
   
   output$show_met_sbase_len <- reactive({
     return(!is.null(hot_fb_sbase()))
   })
   
-  outputOptions(output, 'show_met_sbase', suspendWhenHidden=FALSE)
+  output$show_met_sbase_params <- reactive({
+    #return(!is.null(gmtl_data()))
+    p <- input$met_sbase_studyName
+    #print(p)
+    # p <- p ==""
+    if(is.null(p)){ 
+      val_logic <- FALSE 
+    } else if(p==""){
+      val_logic <- FALSE
+    } else{
+      val_logic <- TRUE
+    }
+    
+    return(val_logic)
+    
+  })
+  
+  outputOptions(output, 'show_met_sbase_params', suspendWhenHidden=FALSE)
   
   outputOptions(output, 'show_met_sbase_len', suspendWhenHidden=FALSE)
   
@@ -116,7 +173,7 @@ met_server_sbase <- function(input, output, session, values){
 
     req(input$met_sbase_studyName)
     
-    sbase_data <- hot_bdata() #extracting information from sbase (credentials and fieldbook)
+    sbase_data <- values$hot_bdata #extracting information from sbase (credentials and fieldbook)
     sbase_trial_table <- sbase_data$trial_table
     credentials <- sbase_data$sp_base_credentials
     
@@ -166,11 +223,11 @@ met_server_sbase <- function(input, output, session, values){
       #write.csv(join_books,"join_books.csv")
       shinysky::showshinyalert(session, "alert_met_sbase_done", paste("Great!. Perform your MET analysis"), styleclass = "warning")
       #met_bdata <- readxl::read_excel(path=hot_file , sheet = "Fieldbook")
+      write.csv(join_books,"metdata.csv")
       met_bdata <- join_books
     }
   })
 
-  
   #### Inputs for met analysis #####
   
   #select genotype column
@@ -211,7 +268,8 @@ met_server_sbase <- function(input, output, session, values){
   #ToDo: It should be doing by default
   output$file_message_met_sbase <- renderInfoBox({
     
-    sbase_data <-  hot_bdata()["trial_table"]
+    sbase_data <- values$hot_bdata
+    sbase_data <- sbase_data["trial_table"]
  
     if(is.null(sbase_data)){
       infoBox(title="Select Fieldbook File", subtitle=

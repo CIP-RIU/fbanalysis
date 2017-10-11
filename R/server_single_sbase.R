@@ -71,7 +71,7 @@ single_server_base <- function(input, output, session, values){
   # })
 
   output$show_single_sbase <- reactive({
-    return(!is.null(hot_bdata()))
+    return(!is.null(values$hot_bdata))
   })
   
   output$show_single_sbase_len <- reactive({
