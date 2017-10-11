@@ -5,13 +5,13 @@ library(shinyFiles)
 library(st4gi)
 library(pepa)
 library(readxl)
-library(purrr)
 library(knitr)
-library(data.table)
+
+library(dplyr)
+library(brapi)
 
 
-
-tabNameS <- "met_aov"
+tabNameS <- "met_aov_sbase"
 
 server <- function(input, output, session,values) {
   values = shiny::reactiveValues()
@@ -19,7 +19,7 @@ server <- function(input, output, session,values) {
 }
 
 ui <- dashboardPage(skin = "yellow",
-                    dashboardHeader(title = "Statistical Analysis"),
+                    dashboardHeader(title = "MET Statistical Analysis in SweetPotato Base"),
                     dashboardSidebar(width = 200,
                                      menuItem("Resources",
                                               sidebarMenu(id = "menu",

@@ -15,12 +15,10 @@
 single_server_base <- function(input, output, session, values){
 
 
-  
   values <- reactiveValues(fileInput = NULL)
   
-  # Limpia marcadores del mapa "1a" y asigna NULL a ciertos parametros
-  observe({
-    #input$clearMap1a
+   observe({
+
     shiny::withProgress(message = "Connecting to SweetPotatoBase",value= 0,{
       
       #NOTE: To use pepa report package we need R 3.3.0 or more.
@@ -28,6 +26,11 @@ single_server_base <- function(input, output, session, values){
       #ToDo: In case of poor conection print a message and do not show anything
       
       incProgress(1/5, detail = paste("Connecting to SweetPotatoBase via brapiR..."))
+
+      # validate(
+      #  need(input$connect_single_sbase != "", label = "Please connect to SweetPotato Base")
+      # )
+
       white_list <- brapi::ba_db()
       #establish connection
       incProgress(3/5, detail = paste("Ready for connection..."))
@@ -67,8 +70,19 @@ single_server_base <- function(input, output, session, values){
   # 
   # })
 
+  output$show_single_sbase <- reactive({
+    return(!is.null(hot_bdata()))
+  })
+  
+  output$show_single_sbase_len <- reactive({
+    return(!is.null(hot_fb_sbase()))
+  })
+  
+  
+  outputOptions(output, 'show_single_sbase', suspendWhenHidden=FALSE)
 
-
+  outputOptions(output, 'show_single_sbase_len', suspendWhenHidden=FALSE)
+  
   # program name for single trial in sbase
   output$programName_single_sbase  <- renderUI({
 
@@ -83,7 +97,7 @@ single_server_base <- function(input, output, session, values){
 
   })
 
-
+ #select trial name
   output$trialName_single_sbase  <- renderUI({
 
     #req(input$connect_single_sbase)
@@ -105,7 +119,7 @@ single_server_base <- function(input, output, session, values){
   })
 
 
-
+# select study name
   output$studyName_single_sbase  <- renderUI({
 
     # req(input$connect_single_sbase)
@@ -125,7 +139,6 @@ single_server_base <- function(input, output, session, values){
     selectInput('single_sbase_studyName', 'Select study', c(Choose='', study_name), selectize=TRUE)
 
   })
-
 
   output$show_single_sbase_params <- reactive({
     #return(!is.null(gmtl_data()))
@@ -147,6 +160,13 @@ single_server_base <- function(input, output, session, values){
   #set options for show_mtable
   outputOptions(output, 'show_single_sbase_params', suspendWhenHidden=FALSE)
   
+
+  output$show_studyName_status <- reactive({
+    return(length(input$single_sbase_studyName)>0)
+  })
+  
+  
+  #get information from sbase 
   hot_fb_sbase <- reactive({
 
     req(input$single_sbase_studyName)
@@ -162,7 +182,9 @@ single_server_base <- function(input, output, session, values){
 
   })
 
-  
+
+  #select genotypes
+
   output$genotypes_single_sbase  <- renderUI({
 
     #req(input$connect_single_sbase)
@@ -171,41 +193,40 @@ single_server_base <- function(input, output, session, values){
 
     selectInput('genotypes_single_sbase', 'Select Genotypes', c(Choose='', names(hot_fb_sbase())),
                 selectize=TRUE)
+   
   })
 
-
+  #select repetition or blocks
   output$rep_single_sbase  <- renderUI({
     selectInput('rep_single_sbase', 'Select Replications', c(Choose='', names(hot_fb_sbase())),
                 selectize=TRUE)
   })
 
-
+  #select triats
   output$trait_single_sbase <- renderUI({
     selectInput('trait_single_sbase', 'Select Trait(s)', c(Choose='', names(hot_fb_sbase())),
                 selectize=TRUE, multiple = TRUE)
   })
 
-
+  #select factors
   output$factor_single_sbase  <- renderUI({
     selectInput('factor_single_sbase', 'Select Factor', c(Choose='', names(hot_fb_sbase())),
                 selectize=TRUE)
   })
 
-
+  #select block
   output$block_single  <- renderUI({
     selectInput('block_single_sbase', 'Select Block', c(Choose='', names(hot_fb_sbase())),
                 selectize=TRUE)
   })
 
-
+  #block size
   output$k_single_sbase  <- renderUI({
     shiny::numericInput('k_single_sbase', 'Select Block Size',   value =2, min=2, max = 100)
   })
 
 
   output$file_message_single_sbase <- renderInfoBox({
-
-    #sbase_data <-  hot_bdata()["trial_table"] #using button for connecting to SBASE
 
     sbase_data <- values$hot_bdata
     sbase_data <- sbase_data["trial_table"]
@@ -214,16 +235,8 @@ single_server_base <- function(input, output, session, values){
       infoBox(title="Select fieldbook file", subtitle=
                 paste("Connect to SweetPotato Base"), icon = icon("plug"),
               color = "blue",fill = TRUE, width = NULL)
-      #      }
-      #       else if(all(is.na(germoplasm))) {
-      #         infoBox(title="ERROR", subtitle=
-      #                   paste("Your material list", "is empty. Please check it"), icon = icon("warning-sign", lib = "glyphicon"),
-      #                 color = "red",fill = TRUE, width = NULL)
-      #         #shell.exec(hot_path())
       #
     } else {
-      #       material <- paste(germoplasm, collapse = ",")
-      #       message <-  paste("Material list imported: ", material)
       hot_file <- sbase_data
       hot_file <- paste(hot_file, collapse = ", ")
       infoBox(title="GREAT!", subtitle =
@@ -232,15 +245,111 @@ single_server_base <- function(input, output, session, values){
     }
   })
 
+  
+  output$downloadSbase_single_report <- downloadHandler(
+    filename = function() {
+      paste("report", '.docx', sep='.')
+    },
+    content = function(con) {
+      
+      shiny::withProgress(message = "Opening single Report...",value= 0,{
+      
+      incProgress(1/5, detail = paste("Downloading Analysis..."))  
+      
+      trait <- input$trait_single_sbase
+      rep <- input$rep_single_sbase
+      genotypes <- input$genotypes_single_sbase
+      block <- input$block_single_sbase
+      k <- input$k_single_sbase
+      factor_single <- input$factor_single_sbase
+      
+      format <- paste(input$format_single_sbase, sep="")
+      design <- input$design_single_sbase
+      
+      incProgress(2/5, detail = paste("Downloading Analysis..."))
+      
+      if(design == "Randomized Complete Block Design (RCBD)"){
+        try(pepa::repo.rcbd(traits = trait, geno = genotypes, rep = rep, format = format, data = fieldbook))
+        path <- "/usr/local/lib/R/site-library/pepa/rmd/crd.docx"
+        #file.copy("/usr/local/lib/R/site-library/pepa/rmd/crd.docx", con)
+      }
+      
+      if(design == "Completely Randomized Design (CRD)"){
+        try(pepa::repo.crd(traits = trait, geno = genotypes, format = format, data = fieldbook))
+        path <- "/usr/local/lib/R/site-library/pepa/rmd/rcbd.docx"
+        #file.copy("/usr/local/lib/R/site-library/pepa/rmd/rcbd.docx", con)
+      }
+      
+      
+      if(design == "Augmented Block Design (ABD)"){
+        #try(pepa::repo.abd(traits = trait, geno = genotypes, format = format, data = fieldbook))
+        try(pepa::repo.abd(traits = trait, geno = genotypes, rep = rep, format = format, data = fieldbook))
+        path <- "/usr/local/lib/R/site-library/pepa/rmd/abd.docx"
+        #file.copy("/usr/local/lib/R/site-library/pepa/rmd/abd.docx", con)
+      }
+      
+      
+      if(design == "Alpha Design(0,1) (AD)"){
+        #try(pepa::repo.abd(traits = trait, geno = genotypes, format = format, data = fieldbook))
+        try(pepa::repo.a01d(traits = trait, geno = genotypes, rep = rep, block = block, k = k, data = fieldbook, format = format))
+        path <- "/usr/local/lib/R/site-library/pepa/rmd/a01d.docx"
+        #file.copy("/usr/local/lib/R/site-library/pepa/rmd/a01d.docx", con)
+      }
+      
+      
+      if(design == "Split Plot with Plots in CRD (SPCRD)"){
+        title <- paste("Automatic report for ", design, sep= "")
+        try(pepa::repo.2f(traits = trait, A = genotypes, B = factor_single, rep = rep, design = "crd",  title= title, data = fieldbook, format = format))
+        path <- "/usr/local/lib/R/site-library/pepa/rmd/2fcrd.docx"
+        #file.copy("/usr/local/lib/R/site-library/pepa/rmd/2fcrd.docx", con)
+      }
+      
+      
+      if(design == "Factorial Two-Way Design in CRD (F2CRD)"){
+        title <- paste("Automatic report for ", design, sep= "")
+        try(pepa::repo.2f(traits = trait, A = genotypes, B = factor_single, rep = rep, design = "crd",  title= title, data = fieldbook, format = format))
+        path <- "/usr/local/lib/R/site-library/pepa/rmd/2fcrd.docx"
+        #file.copy("/usr/local/lib/R/site-library/pepa/rmd/2fcrd.docx", con)
+      }
+      
+      
+      if(design == "Split Plot with Plots in RCBD (SPRCBD)"){
+        title <- paste("Automatic report for ", design, sep= "")
+        try(pepa::repo.2f(traits = trait, A = genotypes, B = factor_single, rep = rep, design = "rcbd", title= title, data = fieldbook, format = format))
+        path <- "/usr/local/lib/R/site-library/pepa/rmd/2frcbd.docx"
+        #file.copy("/usr/local/lib/R/site-library/pepa/rmd/2frcbd.docx", con)
+      }
+      
+      
+      if(design == "Factorial Two-Way Design in RCBD (F2RCBD)"){
+        
+        title <- paste("Automatic report for ", design, sep= "")
+        try(pepa::repo.2f(traits = trait, A = genotypes, B = factor_single, rep = rep, design = "rcbd", title= title, data = fieldbook, format = format))
+        path <- "/usr/local/lib/R/site-library/pepa/rmd/2frcbd.docx"
+        #file.copy("/usr/local/lib/R/site-library/pepa/rmd/2frcbd.docx", con)
+      }
+    
+      file.copy(path , con)
+      
+      incProgress(4/5, detail = paste("Formattting in ", "MS Word",sep= ""))
+      incProgress(5/5, detail = paste("Downloading Analysis..."))
+      
+      })
+      
+    }
+)
+  
+  
   shiny::observeEvent(input$single_button_sbase, {
-    shiny::withProgress(message = "Opening single Report...",value= 0,{
+    shiny::withProgress(message = "Opening single Report...",value= 0,{ #begin progress bar
 
       #NOTE: To use pepa report package we need R 3.3.0 or more.
       #NOTE Finally, we always need pandoc installer.
-
       incProgress(3/5, detail = paste("Analyzing..."))
+
       design <- input$design_single_sbase
 
+      incProgress(2/5, detail = paste("Processing..."))
       #fieldbook <- as.data.frame(hot_bdata()$trial_table)
       fieldbook <-  as.data.frame(hot_fb_sbase())
       #saveRDS(fieldbook,"res.rds")
@@ -251,9 +360,14 @@ single_server_base <- function(input, output, session, values){
       k <- input$k_single_sbase
       factor_single <- input$factor_single_sbase
 
+      incProgress(3/5, detail = paste("Passing parameters..."))
+      
       #format <- paste(input$format_single,"_document",sep="")
       format <- paste(input$format_single_sbase)
 
+      
+      incProgress(4/5, detail = paste("Formatting in ", format, sep=""))
+      
       if(design == "Randomized Complete Block Design (RCBD)"){
         try(pepa::repo.rcbd(traits = trait, geno = genotypes, rep = rep, format = format, data = fieldbook))
       }
@@ -276,7 +390,6 @@ single_server_base <- function(input, output, session, values){
       if(design == "Split Plot with Plots in CRD (SPCRD)"){
 
         title <- paste("Automatic report for ", design, sep= "")
-
         try(pepa::repo.2f(traits = trait, A = genotypes, B = factor_single, rep = rep, design = "crd",  title= title, data = fieldbook, format = format))
       }
 
@@ -293,13 +406,12 @@ single_server_base <- function(input, output, session, values){
       }
 
       if(design == "Factorial Two-Way Design in RCBD (F2RCBD)"){
-
         title <- paste("Automatic report for ", design, sep= "")
         try(pepa::repo.2f(traits = trait, A = genotypes, B = factor_single, rep = rep, design = "rcbd", title= title, data = fieldbook, format = format))
       }
 
-      incProgress(5/5, detail = paste("Analyzing..."))
-      
+      incProgress(5/5, detail = paste("Formatting in ", format, sep="")) #end progress bar
+
       
     })
   })
