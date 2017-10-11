@@ -14,224 +14,287 @@
 
 met_server_sbase <- function(input, output, session, values){
   
+
+ hot_bdata <-  reactive({
   
-  volumes <- shinyFiles::getVolumes()
-  shinyFiles::shinyFileChoose(input, 'file_met_sbase', roots=volumes, session=session,
-                              restrictions=system.file(package='base'),filetypes=c('xlsx'))
-  
-  validate(
-    need(input$file != "", label = "Please select a file from sweetpotato base")
-  )
-  
-  # hot_path <- reactive ({
-  #   
-  #   #validate(
-  #   #  need(input$file != "", label = "Please enter an XLSX file. XLS files are forbidden")
-  #   #)
-  #   
-  #   if(length(input$file_met_sbase)==0){return (NULL)}
-  #   if(length(input$file_met_sbase)>0){
-  #     hot_file <- as.character(parseFilePaths(volumes, input$file_met_sbase)$datapath)
-  #   }
-  # })
-  # 
-  
-  
-  hot_path <- reactive ({
     
-    #validate(
-    #  need(input$file != "", label = "Please enter an XLSX file. XLS files are forbidden")
-    #)
+      
+    validate(
+      need(input$connect_met_sbase != "", label = "Please connect to SweetPotato Base")
+    )
     
-    #typeImport <- input$typeImport_single_sbase
+    #if(is.null(sel_fb_temp) || sel_fb_temp == ""){  return()  }
+    #if(length(input$connect_single_sbase)>0){
     
-    #if(typeImport=="sbase"){
-      
-      fb_temp <- input$sel_single_list_sbase
-      
-      
-      if(is.null(fb_temp)){return()}
-      if(!is.null(fb_temp)){
-        
-        #ToDo: Establish a conection with SBASE
-        # (1) Find the location of the files in SBASE
-        # (2) List Files from SBASE
-        # (3) Read the fselected files
-        
-        # file.copy(fb_temp$datapath,paste(fb_temp$datapath, ".xlsx", sep=""))
-        # fb_temp <- readxl::read_excel(paste(fb_temp$datapath, ".xlsx", sep=""), sheet = "FieldBook")
-        fb_temp <- readRDS(sel_fb_temp)
-        
-        
-      }
-      
-      fb_temp
-    #}
-    # 
-    # if(typeImport=="local"){
-    #   
-    #   sel_fb_temp <- input$fileInput_single_sbase
-    #   
-    #   if(is.null(sel_fb_temp) || sel_fb_temp == ""){  return()  }
-    #   if(length(sel_fb_temp)>0){
-    #     
-    #     #ToDo: Establish a conection with SBASE
-    #     # (1) Find the location of the files in SBASE
-    #     # (2) List Files from SBASE
-    #     # (3) Read the fselected files
-    #     fb_temp <- readRDS(sel_fb_temp)
-    #     
-    #   }
-    #   
-    # }
-    # 
-    #fb_temp
+    #fb_temp <- readRDS(sel_fb_temp)
+    white_list <- brapi::ba_db()
+    #establish connection
+    sp_base_credentials <- white_list$sweetpotatobase
+    trial_table <- brapi::ba_trials(con = sp_base_credentials)
+    
+    out <- list(sp_base_credentials  = sp_base_credentials , trial_table = trial_table)
+    
+    hot_bdata <- out
+    
+    #trial_table
+    
+  })
+  
+  #select program name
+  output$programName_met_sbase  <- renderUI({
+    
+    req(input$connect_met_sbase)
+    
+    sbase_data <- hot_bdata()
+    sbase_data <- sbase_data$trial_table
+    program_name <- sbase_data  %>% select(programName)
+    program_name <- program_name %>% unique()
+    
+    selectInput('met_selProgram_sbase', 'Select program', multiple=TRUE, c(Choose='', program_name), selectize=TRUE)
+    
+  })
+  
+  #select trial name
+  output$trialName_met_sbase  <- renderUI({
+    
+    req(input$connect_met_sbase)
+    req(input$met_selProgram_sbase)
+    
+    sel_programName <- input$met_selProgram_sbase
+    
+    sbase_data <- hot_bdata()
+    sbase_data <- sbase_data$trial_table
+    
+    sbase_data <- sbase_data %>% filter(programName == sel_programName)
+    
+    trial_name <- sbase_data %>% select(trialName)
+    trial_name <- trial_name[[1]] %>% unique()
+    
+    selectInput('met_sbase_trialName', 'Select trial',  multiple=TRUE, c(Choose='', trial_name), selectize=TRUE)
+    
+  })
+  
+  # select study name
+  output$studyName_met_sbase  <- renderUI({
+    
+    # req(input$connect_single_sbase)
+    # req(input$single_selProgram_sbase)
+    req(input$met_sbase_trialName)
+    sel_trialName <- input$met_sbase_trialName
+    
+    sbase_data <- hot_bdata()
+    sbase_data <- sbase_data$trial_table
+    
+    sbase_data <- sbase_data %>% filter(trialName == sel_trialName)
+    
+    study_name <- sbase_data %>% select(studyName)
+    study_name <- study_name[[1]] %>% unique()
+    
+    selectInput('met_sbase_studyName', 'Select study',  multiple=TRUE, c(Choose='', study_name), selectize=TRUE)
     
   })
   
   
+  #conditional value for diplaying MET inputs
+  output$show_met_sbase <- reactive({
+    return(!is.null(hot_bdata()))
+  })
   
-  met_bdata <- reactive({
-    hot_file <- hot_path()
-    if(length(hot_file)==0){return (NULL)}
-    if(length(hot_file)>0){
-      
-      cropfiles_list <- hot_file 
-      
-      n <- length(hot_file)
-      combine <- list() 
-      
+  output$show_met_sbase_len <- reactive({
+    return(!is.null(hot_fb_sbase()))
+  })
+  
+  outputOptions(output, 'show_met_sbase', suspendWhenHidden=FALSE)
+  
+  outputOptions(output, 'show_met_sbase_len', suspendWhenHidden=FALSE)
+  
+  
+  # Statistical design Inputs -----------------------------------------------
+  
+  #met combined data
+  hot_fb_sbase <- reactive({
+
+    req(input$met_sbase_studyName)
+    
+    sbase_data <- hot_bdata() #extracting information from sbase (credentials and fieldbook)
+    sbase_trial_table <- sbase_data$trial_table
+    credentials <- sbase_data$sp_base_credentials
+    
+    #get inputs
+    program <- input$met_selProgram_sbase
+    trial <- input$met_sbase_trialName
+    study <- input$met_sbase_studyName
+    
+    #Vector with all the studies selected by users
+    sel_multi_study <-  sbase_trial_table %>%  
+                        filter(programName %in% program) %>% 
+                        filter(trialName %in% trial) %>% 
+                        filter(studyName %in% study)
+    
+    #id of selected studies
+    id_study <- sel_multi_study$studyDbId
+     
+    #number of studies
+    n <- length(id_study)
+    #Inizialitation of empty list. It storages of all datasets selected by users 
+    combine <- vector(mode="list", length = n)
+    
+    if(length(id_study)==0){return (NULL)}
+    
+    if(length(id_study)>=1 && length(id_study)<=2 ) {
+      flag <- FALSE
+      shinysky::showshinyalert(session, "alert_met_sbase_done", paste("Select at least 3 studies (fieldbooks)"), styleclass = "warning")
+      return (NULL)
+    }
+    
+    if(length(id_study)>2){
+
+      #Inizialitation of environment vector.
       ENVIRONMENT <- vector(mode = "character", length = n )
       
-      for(i in 1:n){  
-        
-        combine[[i]] <- readxl::read_excel(cropfiles_list[i], sheet = "Fieldbook") 
-        
-        Minimal <- readxl::read_excel(cropfiles_list[i], sheet = "Minimal") 
-        
-        #BOOK <- traittools::get_fb_param(Minimal,"Short_name")
-        BOOK <- traittools::get_fb_param(Minimal,"Trial_name")
-        DATE <- traittools::get_fb_param(Minimal,"Begin_date")
-        #MONTH <- traittools::get_fb_param()
-        ENVIRONMENT <- paste(traittools::get_fb_param(Minimal,"Site_short_name"), "_env_", i, sep = "")
-        #BOOK <- getfilename_book(ammiafiles_list[i])
-        #YEAR <- getdate_file(BOOK)$year
-        #MONTH <- getdate_file(BOOK)$month
-        #LOCATION <- getlocation_file(BOOK)
-        
-        #combine[[i]] <- cbind(BOOK,YEAR,MONTH,LOCATION,combine[[i]])
-        combine[[i]] <- cbind(BOOK, DATE, ENVIRONMENT, combine[[i]])
-      } 
-      
+      for(i in 1:n){
+ 
+       combine[[i]] <-  brapi::ba_studies_table(credentials , studyDbId = as.character(id_study[i])) #get fieldbook and then storage
+       ENVIRONMENT <- paste("ENV", unique(combine[[i]][["locationName"]]), i, sep="_")#create a differente environment ID despite of having the same location.
+       #put environment columns aside to each fieldbook.
+       combine[[i]] <- cbind(ENVIRONMENT, combine[[i]])
+      }
+
+      #join books. The fieldbook books were previously combined.
       join_books <- data.table::rbindlist(combine,fill = TRUE)
       join_books <- as.data.frame(join_books)
       #write.csv(join_books,"join_books.csv")
-      # join_books    
-      
+      shinysky::showshinyalert(session, "alert_met_sbase_done", paste("Great!. Perform your MET analysis"), styleclass = "warning")
       #met_bdata <- readxl::read_excel(path=hot_file , sheet = "Fieldbook")
       met_bdata <- join_books
     }
   })
+
   
+  #### Inputs for met analysis #####
+  
+  #select genotype column
   output$genotypes_met_sbase  <- renderUI({
     
-    # met_headers <- names(met_bdata())
-    # 
-    # gen_selection <- base::setdiff(met_headers, c("BOOK","DATE","PLOT")) 
-    # 
-    # selectInput('genotypes_met', 'Select genotypes', c(Choose='', gen_selection), 
-    #             selectize=TRUE)
+    req(input$connect_met_sbase)
+    req(input$met_selProgram_sbase)
+    req(input$met_sbase_trialName)
     
-    selectInput('genotypes_met_sbase', 'Select genotypes', c(Choose='', select_options(met_bdata())),
+    selectInput('genotypes_met_sbase', 'Select genotypes', c(Choose='', select_options(hot_fb_sbase())),
                 selectize=TRUE)
   })
   
+  #select genotype column
   output$env_met_sbase  <- renderUI({
     
-    # env_selection <- setdiff(names(met_bdata()), c("BOOK","DATE","PLOT"))
-    # 
-    # selectInput('env_met', 'Select environments', c(Choose='', env_selection),
-    #             selectize=TRUE)
-    
-    selectInput('env_met_sbase', 'Select environments', c(Choose='', select_options(met_bdata())),
+    selectInput('env_met_sbase', 'Select environments', c(Choose='', select_options(hot_fb_sbase())),
                 selectize=TRUE)
   })
   
+  #select repetition column
   output$rep_met_sbase  <- renderUI({
-    
-    # rep_selection <- setdiff(names(met_bdata()), c("BOOK","DATE","PLOT"))
-    # 
-    # selectInput('rep_met', 'Select replications', c(Choose='', rep_selection),
-    #             selectize=TRUE)
-    
-    selectInput('rep_met_sbase', 'Select replications', c(Choose='', select_options(met_bdata())),
+ 
+    selectInput('rep_met_sbase', 'Select replications', c(Choose='', select_options(hot_fb_sbase())),
                 selectize=TRUE)
   })
   
+  #select traits column
   output$trait_met_sbase <- renderUI({
-    
-    # trait_selection <- setdiff(names(met_bdata()), c("BOOK","DATE","PLOT"))
-    # 
-    # selectInput('trait_met', 'Select trait(s)', c(Choose='', trait_selection),
-    #             selectize=TRUE, multiple = TRUE)
-    
-    selectInput('trait_met_sbase', 'Select trait(s)', c(Choose='', select_options(met_bdata())),
+
+    selectInput('trait_met_sbase', 'Select trait(s)', c(Choose='', select_options(hot_fb_sbase())),
                 selectize=TRUE, multiple = TRUE)
     
   })
   
+  ####  
+  #message of connection
+  #ToDo: It should be doing by default
   output$file_message_met_sbase <- renderInfoBox({
     
-    #germoplasm <-material_table()$Institutional_number
-    #germoplasm <-germoplasm_list()$institutional_number
-    #print( germoplasm)
-    
-    hot_file <- hot_path()
-    #print("omar")
-    #print(hot_file)
-    #print("omar2")
-    if(is.null(hot_file)){
+    sbase_data <-  hot_bdata()["trial_table"]
+ 
+    if(is.null(sbase_data)){
       infoBox(title="Select Fieldbook File", subtitle=
                 paste("Choose at least 3 fieldbook files for MET"), icon = icon("upload", lib = "glyphicon"),
               color = "blue",fill = TRUE, width = NULL)
     } else {
       
-      hot_file <- basename(hot_file)
-      hot_file <- paste(hot_file, collapse = ", ")
+      hot_file <- sbase_data
+      hot_file <- paste("hot_file", collapse = ", ")
       infoBox(title="GREAT!", subtitle =
                 paste("Fieldbooks selected: ", hot_file),  icon = icon("ok", lib = "glyphicon"),
               color = "green",fill = TRUE, width = NULL)
     }
   })
-  #     
-  #     
-  #     output$run_met <- renderUI({
-  #       
-  #       trait <- input$met_fb_trait
-  #       genotypes <- input$met_fb_genotypes
-  #       rep <- input$met_fb_rep 
-  #     
-  #       if(length(trait)==0 || length(genotypes)==0 || length(rep)==0 || is.null(hot_bdata)) return()
-  #       actionButton(inputId = "met_button", label= "Analyze", icon = icon("play-circle"),
-  #                  width = NULL,height = NULL) 
-  #     })    
+
   
+  output$downloadSbase_met_report <- downloadHandler(
+    filename = function() {
+      paste("report", '.docx', sep='.')
+    },
+    content = function(con) {
+      
+      shiny::withProgress(message = "Opening single Report...",value= 0,{ #begin progress bar
+      incProgress(1/5, detail = paste("Downloading met report..."))
+      
+      #getting parameters and fieldbook  
+      fieldbook <- as.data.frame(hot_fb_sbase())
+      trait <- input$trait_met_sbase
+      env <- input$env_met_sbase
+      #print(trait)
+      rep <- input$rep_met_sbase
+      genotypes <- input$genotypes_met_sbase
+      
+      incProgress(2/5, detail = paste("Passing parameters..."))
+      
+      #Format of the file
+      format <- paste(input$format_met_sbase,sep="")
+      incProgress(3/5, detail = paste("Formatting on word..."))
+      
+      #Formatting on word
+      try({pepa::repo.met(traits = trait, geno = genotypes, env = env, rep = rep, data = fieldbook, format=format)})
+      file.copy("/usr/local/lib/R/site-library/pepa/rmd/met.docx", con)
+      incProgress(5/5, detail = paste("Formatting on word..."))
+      
+      }) #end progress bar
+      
+    }
+  )
+  
+  
+  #run analysis
   shiny::observeEvent(input$met_sbase_button, {
     shiny::withProgress(message = "Opening Multi Enviroment Report...",value= 0,{
       
       #NOTE: To use pepa report package we need R 3.3.0 or more.
       #NOTE Finally, we always need pandoc installer.
       
-      fieldbook <- as.data.frame(met_bdata())
+      shiny::withProgress(message = "Opening single Report...",value= 0,{ #begin progress bar
+        incProgress(1/5, detail = paste("Downloading met report..."))
+      
+      req(input$met_sbase_trialName)
+      
+      incProgress(2/5, detail = paste("Downloading met report..."))
+      fieldbook <- as.data.frame(hot_fb_sbase())
       trait <- input$trait_met_sbase
       env <- input$env_met_sbase
-      #print(trait)
+
+      
+      incProgress(3/5, detail = paste("Downloading met report..."))
       rep <- input$rep_met_sbase
       genotypes <- input$genotypes_met_sbase
-      #format <- paste(input$format_met,"_document",sep="") deprecated version.
-      format <- paste(input$format_met_sbase,sep="")
+      format <- paste(input$format_met_sbase, sep="")
       
-      try(pepa::repo.met(traits = trait, geno = genotypes, env = env, rep = rep, data = fieldbook, format=format))
+      incProgress(4/5, detail = paste("Downloading met report..."))
+      try({
+        
+        pepa::repo.met(traits = trait, geno = genotypes, env = env, rep = rep, data = fieldbook, format=format)
+      })
+      
+      incProgress(5/5, detail = paste("Downloading met report..."))
+      
+      }) #end progress bar
+      
       
     })
   })
