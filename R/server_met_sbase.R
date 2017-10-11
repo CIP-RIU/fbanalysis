@@ -14,29 +14,29 @@
 
 met_server_sbase <- function(input, output, session, values){
   
-
- # hot_bdata <-  reactive({
- #  
- #    validate(
- #      need(input$connect_met_sbase != "", label = "Please connect to SweetPotato Base")
- #    )
- #    
- #    #if(is.null(sel_fb_temp) || sel_fb_temp == ""){  return()  }
- #    #if(length(input$connect_single_sbase)>0){
- #    
- #    #fb_temp <- readRDS(sel_fb_temp)
- #    white_list <- brapi::ba_db()
- #    #establish connection
- #    sp_base_credentials <- white_list$sweetpotatobase
- #    trial_table <- brapi::ba_trials(con = sp_base_credentials)
- #    
- #    out <- list(sp_base_credentials  = sp_base_credentials , trial_table = trial_table)
- #    
- #    hot_bdata <- out
- #    
- #    
- #    
- #  })
+  
+  # hot_bdata <-  reactive({
+  #  
+  #    validate(
+  #      need(input$connect_met_sbase != "", label = "Please connect to SweetPotato Base")
+  #    )
+  #    
+  #    #if(is.null(sel_fb_temp) || sel_fb_temp == ""){  return()  }
+  #    #if(length(input$connect_single_sbase)>0){
+  #    
+  #    #fb_temp <- readRDS(sel_fb_temp)
+  #    white_list <- brapi::ba_db()
+  #    #establish connection
+  #    sp_base_credentials <- white_list$sweetpotatobase
+  #    trial_table <- brapi::ba_trials(con = sp_base_credentials)
+  #    
+  #    out <- list(sp_base_credentials  = sp_base_credentials , trial_table = trial_table)
+  #    
+  #    hot_bdata <- out
+  #    
+  #    
+  #    
+  #  })
   
   values <- reactiveValues(fileInput = NULL)
   
@@ -170,7 +170,7 @@ met_server_sbase <- function(input, output, session, values){
   
   #met combined data
   hot_fb_sbase <- reactive({
-
+    
     req(input$met_sbase_studyName)
     
     sbase_data <- values$hot_bdata #extracting information from sbase (credentials and fieldbook)
@@ -184,13 +184,13 @@ met_server_sbase <- function(input, output, session, values){
     
     #Vector with all the studies selected by users
     sel_multi_study <-  sbase_trial_table %>%  
-                        filter(programName %in% program) %>% 
-                        filter(trialName %in% trial) %>% 
-                        filter(studyName %in% study)
+      filter(programName %in% program) %>% 
+      filter(trialName %in% trial) %>% 
+      filter(studyName %in% study)
     
     #id of selected studies
     id_study <- sel_multi_study$studyDbId
-     
+    
     #number of studies
     n <- length(id_study)
     #Inizialitation of empty list. It storages of all datasets selected by users 
@@ -205,18 +205,18 @@ met_server_sbase <- function(input, output, session, values){
     }
     
     if(length(id_study)>2){
-
+      
       #Inizialitation of environment vector.
       ENVIRONMENT <- vector(mode = "character", length = n )
       
       for(i in 1:n){
- 
-       combine[[i]] <-  brapi::ba_studies_table(credentials , studyDbId = as.character(id_study[i])) #get fieldbook and then storage
-       ENVIRONMENT <- paste("ENV", unique(combine[[i]][["locationName"]]), i, sep="_")#create a differente environment ID despite of having the same location.
-       #put environment columns aside to each fieldbook.
-       combine[[i]] <- cbind(ENVIRONMENT, combine[[i]])
+        
+        combine[[i]] <-  brapi::ba_studies_table(credentials , studyDbId = as.character(id_study[i])) #get fieldbook and then storage
+        ENVIRONMENT <- paste("ENV", unique(combine[[i]][["locationName"]]), i, sep="_")#create a differente environment ID despite of having the same location.
+        #put environment columns aside to each fieldbook.
+        combine[[i]] <- cbind(ENVIRONMENT, combine[[i]])
       }
-
+      
       #join books. The fieldbook books were previously combined.
       join_books <- data.table::rbindlist(combine,fill = TRUE)
       join_books <- as.data.frame(join_books)
@@ -227,7 +227,7 @@ met_server_sbase <- function(input, output, session, values){
       met_bdata <- join_books
     }
   })
-
+  
   #### Inputs for met analysis #####
   
   #select genotype column
@@ -250,14 +250,14 @@ met_server_sbase <- function(input, output, session, values){
   
   #select repetition column
   output$rep_met_sbase  <- renderUI({
- 
+    
     selectInput('rep_met_sbase', 'Select replications', c(Choose='', select_options(hot_fb_sbase())),
                 selectize=TRUE)
   })
   
   #select traits column
   output$trait_met_sbase <- renderUI({
-
+    
     selectInput('trait_met_sbase', 'Select trait(s)', c(Choose='', select_options(hot_fb_sbase())),
                 selectize=TRUE, multiple = TRUE)
     
@@ -270,7 +270,7 @@ met_server_sbase <- function(input, output, session, values){
     
     sbase_data <- values$hot_bdata
     sbase_data <- sbase_data["trial_table"]
- 
+    
     if(is.null(sbase_data)){
       infoBox(title="Select Fieldbook File", subtitle=
                 paste("Choose at least 3 fieldbook files for MET"), icon = icon("upload", lib = "glyphicon"),
@@ -284,7 +284,7 @@ met_server_sbase <- function(input, output, session, values){
               color = "green",fill = TRUE, width = NULL)
     }
   })
-
+  
   
   output$downloadSbase_met_report <- downloadHandler(
     filename = function() {
@@ -293,27 +293,27 @@ met_server_sbase <- function(input, output, session, values){
     content = function(con) {
       
       shiny::withProgress(message = "Opening single Report...",value= 0,{ #begin progress bar
-      incProgress(1/5, detail = paste("Downloading met report..."))
-      
-      #getting parameters and fieldbook  
-      fieldbook <- as.data.frame(hot_fb_sbase())
-      trait <- input$trait_met_sbase
-      env <- input$env_met_sbase
-      #print(trait)
-      rep <- input$rep_met_sbase
-      genotypes <- input$genotypes_met_sbase
-      
-      incProgress(2/5, detail = paste("Passing parameters..."))
-      
-      #Format of the file
-      format <- paste(input$format_met_sbase,sep="")
-      incProgress(3/5, detail = paste("Formatting on word..."))
-      
-      #Formatting on word
-      try({pepa::repo.met(traits = trait, geno = genotypes, env = env, rep = rep, data = fieldbook, format=format)})
-      file.copy("/usr/local/lib/R/site-library/pepa/rmd/met.docx", con)
-      incProgress(5/5, detail = paste("Formatting on word..."))
-      
+        incProgress(1/5, detail = paste("Downloading met report..."))
+        
+        #getting parameters and fieldbook  
+        fieldbook <- as.data.frame(hot_fb_sbase())
+        trait <- input$trait_met_sbase
+        env <- input$env_met_sbase
+        #print(trait)
+        rep <- input$rep_met_sbase
+        genotypes <- input$genotypes_met_sbase
+        
+        incProgress(2/5, detail = paste("Passing parameters..."))
+        
+        #Format of the file
+        format <- paste(input$format_met_sbase,sep="")
+        incProgress(3/5, detail = paste("Formatting on word..."))
+        
+        #Formatting on word
+        try({pepa::repo.met(traits = trait, geno = genotypes, env = env, rep = rep, data = fieldbook, format=format)})
+        file.copy("/usr/local/lib/R/site-library/pepa/rmd/met.docx", con)
+        incProgress(5/5, detail = paste("Formatting on word..."))
+        
       }) #end progress bar
       
     }
@@ -329,28 +329,28 @@ met_server_sbase <- function(input, output, session, values){
       
       shiny::withProgress(message = "Opening single Report...",value= 0,{ #begin progress bar
         incProgress(1/5, detail = paste("Downloading met report..."))
-      
-      req(input$met_sbase_trialName)
-      
-      incProgress(2/5, detail = paste("Downloading met report..."))
-      fieldbook <- as.data.frame(hot_fb_sbase())
-      trait <- input$trait_met_sbase
-      env <- input$env_met_sbase
-
-      
-      incProgress(3/5, detail = paste("Downloading met report..."))
-      rep <- input$rep_met_sbase
-      genotypes <- input$genotypes_met_sbase
-      format <- paste(input$format_met_sbase, sep="")
-      
-      incProgress(4/5, detail = paste("Downloading met report..."))
-      try({
         
-        pepa::repo.met(traits = trait, geno = genotypes, env = env, rep = rep, data = fieldbook, format=format)
-      })
-      
-      incProgress(5/5, detail = paste("Downloading met report..."))
-      
+        req(input$met_sbase_trialName)
+        
+        incProgress(2/5, detail = paste("Downloading met report..."))
+        fieldbook <- as.data.frame(hot_fb_sbase())
+        trait <- input$trait_met_sbase
+        env <- input$env_met_sbase
+        
+        
+        incProgress(3/5, detail = paste("Downloading met report..."))
+        rep <- input$rep_met_sbase
+        genotypes <- input$genotypes_met_sbase
+        format <- paste(input$format_met_sbase, sep="")
+        
+        incProgress(4/5, detail = paste("Downloading met report..."))
+        try({
+          
+          pepa::repo.met(traits = trait, geno = genotypes, env = env, rep = rep, data = fieldbook, format=format)
+        })
+        
+        incProgress(5/5, detail = paste("Downloading met report..."))
+        
       }) #end progress bar
       
       
