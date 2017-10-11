@@ -28,7 +28,7 @@ met_sbase_ui <- function(type = "tab", title = "The Statistical Analysis of Mult
                                                      
                                                      box(
                                                        #"Ingrese una lista de familias o clones", width = 4, status = "primary", height = "730px",
-                                                       title = "SweetPotato Base Trial", width = NULL,  height = NULL, status = "primary", solidHeader = TRUE, collapsible = TRUE,
+                                                       title = " ", width = NULL,  height = NULL, status = "primary", solidHeader = FALSE, collapsible = TRUE,
                                                        
                                                        #actionButton(inputId= "connect_met_sbase", "Connect to Sweetpotato Base"),
                                                        infoBoxOutput("file_message_met_sbase", width = NULL),
@@ -37,8 +37,6 @@ met_sbase_ui <- function(type = "tab", title = "The Statistical Analysis of Mult
                                                        uiOutput("trialName_met_sbase"),
                                                        uiOutput("studyName_met_sbase"),
                                                        shinysky::shinyalert("alert_met_sbase_done", FALSE, auto.close.after = 8),
-                                                       br(),
-                                                       br(),
                                                        # br(),
                                                        
                                                        br()
@@ -48,7 +46,7 @@ met_sbase_ui <- function(type = "tab", title = "The Statistical Analysis of Mult
                                                                        
                                                                        box(
                                                                          #column(width = 6,
-                                                                         title = "SweetPotato Base Trial", width = 12,  status = "primary", solidHeader = FALSE, collapsible = TRUE,
+                                                                         title = " ", width = 12,  status = "primary", solidHeader = FALSE, collapsible = TRUE,
                                                                          #shiny::selectInput(inputId = "met_met_list_sbase", label = "Select Files from SweetPotato Base", choices = c("omar","benites")),
                                                                          conditionalPanel( condition = "output.show_met_sbase_len",  
                                                                                            
