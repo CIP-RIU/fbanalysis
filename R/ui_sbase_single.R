@@ -19,6 +19,7 @@ single_sbase_ui <- function(type = "tab", title = "Statistical Analysis for One 
                             tabBox(width = 12, #begintab box
                                    tabPanel("Single Analysis", #begin tabset "single analysis sbase"
                                             fluidRow(
+                                              
                                               column(width = 12,
                                                      
                                                      box( # first begin box
@@ -30,70 +31,31 @@ single_sbase_ui <- function(type = "tab", title = "Statistical Analysis for One 
                                                        
                                                        uiOutput("programName_single_sbase"),
                                                        uiOutput("trialName_single_sbase"),
-                                                       uiOutput("studyName_single_sbase")#,
-                                                       
-                                                       #HTML('<hr style="color: purple;">')#,
-                                                       #tags$style(HTML("hr {border-top: 1px solid #000000;}")),
-                                                       # tags$button(
-                                                       #    id = "connect_single_sbase",
-                                                       #   # label = "Connect to SweetPotato Base",
-                                                       #    class = "btn action_button",
-                                                       #    value = "Connect to SweetPotato Base",
-                                                       #
-                                                       #   tags$img(src = "sweetpotato_emoji_png.png",height = "15px")
-                                                       #  ),
-                                                       #shiny::selectInput(inputId = "sel_single_list_sbase", label = "Select Files from SweetPotato Base", choices = c("omar","benites")),
-                                                       #),
+                                                       uiOutput("studyName_single_sbase"),
+                                                       shinysky::shinyalert("alert_fb_done", FALSE, auto.close.after = 8)#,
+                                                   
                                                      ), #end first box
 
                                                    
                                         conditionalPanel( condition = "output.show_single_sbase_params",  ##conditional Panel for Inputs        
-                                                                                                      
-                                                   box( # second begin box
-                                                     title = " ", status = "primary", solidHeader = FALSE,
-                                                     collapsible = FALSE, width = NULL,
-                                                    selectInput(inputId = 'design_single_sbase', label = 'Select statistical design of your experiment', choices =
-                                                                     c("Completely Randomized Design (CRD)",
-#=======
-                                              #column(width = 8,
+                                                                                                   
                                               box(
                                                 #"Ingrese una lista de familias o clones", width = 4, status = "primary", height = "730px",
-                                                title = "SweetPotato Base Trial", width = 4,  height = "468px", status = "primary", solidHeader = TRUE, collapsible = TRUE,
-                                                
-                                                     #actionButton(inputId= "connect_single_sbase", "Connect to Sweetpotato Base"),
-                                                     infoBoxOutput("file_message_single_sbase", width = NULL),
-                                                     br(),
-                                                      uiOutput("programName_single_sbase"),
-                                                     uiOutput("trialName_single_sbase"),
-                                                     uiOutput("studyName_single_sbase"),
-                                                
-                                                      shinysky::shinyalert("alert_fb_done", FALSE, auto.close.after = 8),
-                                                
-                                                     br(),
-                                                    # br(),
-                                                     br()
-                                               ),
-                                       
-
-                                              box(
-                                                #"Ingrese una lista de familias o clones", width = 4, status = "primary", height = "730px",
-                                                title = "Statistical Analysis", width = 8, status = "primary", solidHeader = TRUE, collapsible = TRUE,
+                                                title = " ", width = 12, height="500px"  ,status = "primary", solidHeader = FALSE, collapsible = TRUE,
                                                 
                                                 conditionalPanel( condition = "output.show_single_sbase_len",
                                                 
                                                      selectInput(inputId = 'design_single_sbase', label = 'Select statistical design of your experiment', choices =
                                                                    c("Completely Randomized Design (CRD)",
-
                                                                      "Randomized Complete Block Design (RCBD)",
                                                                      "Augmented Block Design (ABD)",
                                                                      "Alpha Design(0,1) (AD)",
                                                                      "Factorial Two-Way Design in CRD (F2CRD)",
                                                                      "Factorial Two-Way Design in RCBD (F2RCBD)"),
-                                                                 #"Split Plot with Plots in CRD (SPCRD)",
-                                                                 #"Split Plot with Plots in RCBD (SPRCBD)"),
-
-                                                                      selected = "Randomized Complete Block Design (RCBD)",
-                                                                      selectize=FALSE),
+                                                                     #"Split Plot with Plots in CRD (SPCRD)",
+                                                                     #"Split Plot with Plots in RCBD (SPRCBD)"),
+                                                                     selected = "Randomized Complete Block Design (RCBD)",
+                                                                     selectize=FALSE),
                                                  
                                                      shiny::conditionalPanel(
                                                        condition = "input.design_single_sbase == 'Alpha Design(0,1) (AD)'|
@@ -130,41 +92,38 @@ single_sbase_ui <- function(type = "tab", title = "Statistical Analysis for One 
                                                        input.design_single_sbase == 'Factorial Two-Way Design in RCBD (F2RCBD)'",
                                                        uiOutput("genotypes_single_sbase"),
                                                        uiOutput("trait_single_sbase")
-                                                     )#,
-
-
-                                                   ) #end second box
-                                            ), #end conditinal panel for Inputs
+                                                     ),
 
                                                      radioButtons(inputId="format_single_sbase", label="Report format", choices= c("html","word"),
                                                                   selected = "html", inline = TRUE, width = NULL),
-                                                    
-
+                                                     
+                                                     
                                                      shiny::conditionalPanel(condition = "input.format_single_sbase == 'word'",
                                                                              
-                                                             downloadButton(outputId = "downloadSbase_single_report", label = "Download"),
-                                                             tags$head(tags$style(".butt1{background-color:orange;} .butt1{color: black;} .butt1{font-family: Courier New}")) 
+                                                                             downloadButton(outputId = "downloadSbase_single_report", label = "Download"),
+                                                                             tags$head(tags$style(".butt1{background-color:orange;} .butt1{color: black;} .butt1{font-family: Courier New}")) 
                                                      ),
                                                      
                                                      shiny::conditionalPanel(condition = "input.format_single_sbase == 'html'",
                                                                              
-                                                             actionButton(inputId = "single_button_sbase", label= "Analyze", icon = icon("play-circle"),
+                                                                             actionButton(inputId = "single_button_sbase", label= "Analyze", icon = icon("play-circle"),
                                                                                           width = NULL, height = NULL)
                                                                              
-                                                     ),
+                                                      )#,
                                                      
-                                                     br()#,
-                                                
-                                              )
-                                              )
-                                              
-#>>>>>>> 41fddcbb05ed8df1813837ce33eec491d2afbc9f
+                                                     # br()#,
+                                                  ) #end second box
+                                              )#, #end conditinal panel for Inputs
 
-                                            )#, end fluidow
+                                          )
+                                        )
+
+
+                                            #)#, end fluidow
 
                                    )#,#end tab Panel "single analysis"
-                                )
-                              )
+                                
+                              
 
                            ) #end tab box
                           ), #end box
