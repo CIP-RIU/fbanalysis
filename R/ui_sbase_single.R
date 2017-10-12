@@ -41,7 +41,7 @@ single_sbase_ui <- function(type = "tab", title = "Statistical Analysis for One 
                                                                        
                                                                        box(
                                                                          #"Ingrese una lista de familias o clones", width = 4, status = "primary", height = "730px",
-                                                                         title = " ", width = 12, height="500px"  ,status = "primary", solidHeader = FALSE, collapsible = TRUE,
+                                                                         title = " ", width =  NULL, height="500px"  ,status = "primary", solidHeader = FALSE, collapsible = TRUE,
                                                                          
                                                                          conditionalPanel( condition = "output.show_single_sbase_len",
                                                                                            

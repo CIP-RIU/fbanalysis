@@ -36,7 +36,7 @@ met_sbase_ui <- function(type = "tab", title = "The Statistical Analysis of Mult
                                                        uiOutput("programName_met_sbase"),
                                                        uiOutput("trialName_met_sbase"),
                                                        uiOutput("studyName_met_sbase"),
-                                                       shinysky::shinyalert("alert_met_sbase_done", FALSE, auto.close.after = 8),
+                                                       shinysky::shinyalert("alert_met_sbase_done", FALSE, auto.close.after = 1),
                                                        # br(),
                                                        
                                                        br()
