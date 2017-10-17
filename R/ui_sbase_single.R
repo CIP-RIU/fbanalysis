@@ -54,7 +54,7 @@ single_sbase_ui <- function(type = "tab", title = "Statistical Analysis for One 
                                                                                                            "Factorial Two-Way Design in RCBD (F2RCBD)"),
                                                                                                        #"Split Plot with Plots in CRD (SPCRD)",
                                                                                                        #"Split Plot with Plots in RCBD (SPRCBD)"),
-                                                                                                       selected = "Randomized Complete Block Design (RCBD)",
+                                                                                                       selected = "Completely Randomized Design (CRD)",
                                                                                                        selectize=FALSE),
                                                                                            
                                                                                            shiny::conditionalPanel(
