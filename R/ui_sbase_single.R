@@ -32,7 +32,7 @@ single_sbase_ui <- function(type = "tab", title = "Statistical Analysis for One 
                                                        uiOutput("programName_single_sbase"),
                                                        uiOutput("trialName_single_sbase"),
                                                        uiOutput("studyName_single_sbase"),
-                                                       shinysky::shinyalert("alert_fb_done", FALSE, auto.close.after = 8)#,
+                                                       shinysky::shinyalert("alert_single_sbase_done", FALSE, auto.close.after = 8)#,
                                                        
                                                      ), #end first box
                                                      
@@ -56,6 +56,7 @@ single_sbase_ui <- function(type = "tab", title = "Statistical Analysis for One 
                                                                                                        #"Split Plot with Plots in RCBD (SPRCBD)"),
                                                                                                        selected = "Completely Randomized Design (CRD)",
                                                                                                        selectize=FALSE),
+                                                                                           
                                                                                            
                                                                                            shiny::conditionalPanel(
                                                                                              condition = "input.design_single_sbase == 'Alpha Design(0,1) (AD)'|
@@ -109,7 +110,10 @@ single_sbase_ui <- function(type = "tab", title = "Statistical Analysis for One 
                                                                                                                    actionButton(inputId = "single_button_sbase", label= "Analyze", icon = icon("play-circle"),
                                                                                                                                 width = NULL, height = NULL)
                                                                                                                    
-                                                                                           )#,
+                                                                                           ),
+                                                                                           
+                                                                                           shinysky::shinyalert("alert_singleReport_sbase_done", FALSE, auto.close.after = 8)#,
+                                                                                           
                                                                                            
                                                                                            # br()#,
                                                                          ) #end second box

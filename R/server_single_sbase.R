@@ -46,39 +46,21 @@ single_server_base <- function(input, output, session, values){
     
   })
   
-  
-  #hot_bdata <- reactive ({
-  
-  # hot_bdata <-  eventReactive(input$connect_single_sbase,{
-  # 
-  #   validate(
-  #    need(input$connect_single_sbase != "", label = "Please connect to SweetPotato Base")
-  #   )
-  # 
-  #   #if(is.null(sel_fb_temp) || sel_fb_temp == ""){  return()  }
-  #   #if(length(input$connect_single_sbase)>0){
-  # 
-  #    #fb_temp <- readRDS(sel_fb_temp)
-  #     white_list <- brapi::ba_db()
-  #     #establish connection
-  #     sp_base_credentials <- white_list$sweetpotatobase
-  #     trial_table <- brapi::ba_trials(con = sp_base_credentials)
-  # 
-  #     out <- list(sp_base_credentials  = sp_base_credentials , trial_table = trial_table)
-  # 
-  #  #trial_table
-  # 
-  # })
-  
   output$show_single_sbase <- reactive({
     return(!is.null(values$hot_bdata))
   })
   
   output$show_single_sbase_len <- reactive({
+    fb <- hot_fb_sbase()$fb
+    design<-  hot_fb_sbase()$stat_design
+    #fb <- fb$fb 
+    
+    
     return(!is.null(hot_fb_sbase()))
+    #return(!is.null(fb) & length(design)>0)
   })
   
-  
+ 
   outputOptions(output, 'show_single_sbase', suspendWhenHidden=FALSE)
   
   outputOptions(output, 'show_single_sbase_len', suspendWhenHidden=FALSE)
@@ -123,7 +105,7 @@ single_server_base <- function(input, output, session, values){
   output$studyName_single_sbase  <- renderUI({
     
     # req(input$connect_single_sbase)
-    # req(input$single_selProgram_sbase)
+    req(input$single_selProgram_sbase)
     req(input$single_sbase_trialName)
     sel_trialName <- input$single_sbase_trialName
     
@@ -169,7 +151,9 @@ single_server_base <- function(input, output, session, values){
   #get information from sbase 
   hot_fb_sbase <- reactive({
     
+    req(input$single_sbase_trialName)
     req(input$single_sbase_studyName)
+    
     
     #sbase_data <- hot_bdata() #extracting informatin from sbase (credentials and fieldbook) #using button for connecting to SBASE
     sbase_data <- values$hot_bdata
@@ -178,8 +162,57 @@ single_server_base <- function(input, output, session, values){
     credentials <- sbase_data$sp_base_credentials
     
     col_fb_sbase <- sbase_fb %>% dplyr::filter(programName== input$single_selProgram_sbase, trialName == input$single_sbase_trialName, studyName == input$single_sbase_studyName)
-    dt <-  ba_studies_table(credentials , studyDbId = as.character(col_fb_sbase$studyDbId))
+    fb <<-  try(ba_studies_table(credentials , studyDbId = as.character(col_fb_sbase$studyDbId)))
+    #print(fb)
+    design <- try(unique(fb$studyDesign))
     
+    if(str_detect(design,"error")){
+      design <- NULL
+    }
+    
+    out <- list(fb = fb , stat_design = design)
+    
+  })
+  
+  
+  observe({
+
+    # <- hot_fb_sbase()
+     design <- try(hot_fb_sbase()$stat_design) #the statistical design from the SweetPotatoBase
+     nrow_fb <- try(nrow(hot_fb_sbase()$fb))
+     
+     if(str_detect(design,"error")){
+       design <- NULL
+     }
+     x <- input$design_single_sbase #the statistical design from the single env UI
+
+    # Can use character(0) to remove all choices
+    #if (is.null(x)|| length(design)==0){
+    if (is.null(x) || length(design)==0 ){
+     
+      x <- "Completely Randomized Design (CRD)"
+      shinysky::showshinyalert(session, "alert_single_sbase_done", paste("This study does not have data."), styleclass = "danger")
+
+    } else {
+
+      if(design == "CRD")  {x <- "Completely Randomized Design (CRD)"}
+      if(design == "RCBD") {x <- "Randomized Complete Block Design (RCBD)"}
+      #if(design == "ABD")  {choice_design<-"Augmented Block Design (ABD)"}
+      #if(design == "CRD")  {choice_design<-"Alpha Design(0,1) (AD)"}
+      #if(design == "CRD")  {choice_design<-"Factorial Two-Way Design in CRD (F2CRD)"}
+      #if(design == "CRD")  {choice_design<-"Factorial Two-Way Design in RCBD (F2RCBD)"}
+      
+    }
+    x <- x
+
+    # Can also set the label and select items
+    updateSelectInput(session, "design_single_sbase",
+                      label = 'Select statistical design of your experiment',
+                      choices = x,
+                      #"Split Plot with Plots in CRD (SPCRD)",
+                      #"Split Plot with Plots in RCBD (SPRCBD)"),
+                      selected = x
+    )
   })
   
   
@@ -191,32 +224,42 @@ single_server_base <- function(input, output, session, values){
     req(input$single_selProgram_sbase)
     req(input$single_sbase_trialName)
     
-    selectInput('genotypes_single_sbase', 'Select Genotypes', c(Choose='', names(hot_fb_sbase())),
+    selectInput('genotypes_single_sbase', 'Select Genotypes', c(Choose='', names(hot_fb_sbase()$fb)),
                 selectize=TRUE)
     
   })
   
   #select repetition or blocks
   output$rep_single_sbase  <- renderUI({
-    selectInput('rep_single_sbase', 'Select Replications', c(Choose='', names(hot_fb_sbase())),
-                selectize=TRUE)
+    
+    fb <- hot_fb_sbase()
+    fb <- fb$fb 
+    # selectInput('rep_single_sbase', 'Select Replications', c(Choose='', names(hot_fb_sbase()$fb)),
+    #             selectize=TRUE)
+    selectInput('rep_single_sbase', 'Select Replications or Blocks', c(Choose='', names(fb)),
+                 selectize=TRUE)
   })
   
   #select triats
   output$trait_single_sbase <- renderUI({
-    selectInput('trait_single_sbase', 'Select Trait(s)', c(Choose='', names(hot_fb_sbase())),
+    # selectInput('trait_single_sbase', 'Select Trait(s)', c(Choose='', names(hot_fb_sbase()$fb)),
+    #             selectize=TRUE, multiple = TRUE)
+    fb <- hot_fb_sbase()
+    fb <- fb$fb 
+    selectInput('trait_single_sbase', 'Select Trait(s)', c(Choose='', names(fb)),
                 selectize=TRUE, multiple = TRUE)
+    
   })
   
   #select factors
   output$factor_single_sbase  <- renderUI({
-    selectInput('factor_single_sbase', 'Select Factor', c(Choose='', names(hot_fb_sbase())),
+    selectInput('factor_single_sbase', 'Select Factor', c(Choose='', names(hot_fb_sbase()$fb)),
                 selectize=TRUE)
   })
   
   #select block
   output$block_single  <- renderUI({
-    selectInput('block_single_sbase', 'Select Block', c(Choose='', names(hot_fb_sbase())),
+    selectInput('block_single_sbase', 'Select Block', c(Choose='', names(hot_fb_sbase()$fb)),
                 selectize=TRUE)
   })
   
@@ -229,6 +272,8 @@ single_server_base <- function(input, output, session, values){
   output$file_message_single_sbase <- renderInfoBox({
     
     sbase_data <- values$hot_bdata
+    sbase_data <- sbase_data$fb
+    
     sbase_data <- sbase_data["trial_table"]
     
     if(is.null(sbase_data)){
@@ -256,7 +301,13 @@ single_server_base <- function(input, output, session, values){
         
         incProgress(1/5, detail = paste("Downloading Analysis..."))  
         
-        fieldbook <- as.data.frame(hot_fb_sbase())
+        #hot_fb_sbase <- hot_fb_sbase()$fb
+        
+        #fieldbook <- as.data.frame(hot_fb_sbase())
+        fieldbook <- hot_fb_sbase()
+        fieldbook <- as.data.frame(fieldbook$fb)
+        
+        
         trait <- input$trait_single_sbase
         rep <- input$rep_single_sbase
         genotypes <- input$genotypes_single_sbase
@@ -264,8 +315,10 @@ single_server_base <- function(input, output, session, values){
         k <- input$k_single_sbase
         factor_single <- input$factor_single_sbase
         
+        
         format <- paste(input$format_single_sbase, sep="")
         design <- input$design_single_sbase
+        
         
         incProgress(2/5, detail = paste("Downloading Analysis..."))
         
@@ -352,7 +405,12 @@ single_server_base <- function(input, output, session, values){
       
       incProgress(2/5, detail = paste("Processing..."))
       #fieldbook <- as.data.frame(hot_bdata()$trial_table)
-      fieldbook <-  as.data.frame(hot_fb_sbase())
+      
+      #fieldbook <-  as.data.frame(hot_fb_sbase())
+      
+      fieldbook <- hot_fb_sbase()
+      fieldbook <- as.data.frame(fieldbook$fb)
+      
       #saveRDS(fieldbook,"res.rds")
       trait <- input$trait_single_sbase
       rep <- input$rep_single_sbase

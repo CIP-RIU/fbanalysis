@@ -113,7 +113,7 @@ met_server_sbase <- function(input, output, session, values){
   output$studyName_met_sbase  <- renderUI({
     
     # req(input$connect_single_sbase)
-    # req(input$single_selProgram_sbase)
+    req(input$met_selProgram_sbase)
     req(input$met_sbase_trialName)
     sel_trialName <- input$met_sbase_trialName
     
