@@ -113,7 +113,7 @@ met_server_sbase <- function(input, output, session, values){
   output$studyName_met_sbase  <- renderUI({
     
     # req(input$connect_single_sbase)
-    # req(input$single_selProgram_sbase)
+    req(input$met_selProgram_sbase)
     req(input$met_sbase_trialName)
     sel_trialName <- input$met_sbase_trialName
     
@@ -232,7 +232,11 @@ met_server_sbase <- function(input, output, session, values){
   #select genotype column
   output$genotypes_met_sbase  <- renderUI({
     
+<<<<<<< HEAD
     
+=======
+  
+>>>>>>> fcc79cc2e33166677c982e5d9a20f34db7e491d8
     req(input$met_selProgram_sbase)
     req(input$met_sbase_trialName)
     
@@ -327,6 +331,7 @@ met_server_sbase <- function(input, output, session, values){
       #NOTE: To use pepa report package we need R 3.3.0 or more.
       #NOTE Finally, we always need pandoc installer.
       
+<<<<<<< HEAD
       incProgress(1/5, detail = paste("Downloading met report..."))
       
       req(input$met_sbase_trialName)
@@ -343,16 +348,44 @@ met_server_sbase <- function(input, output, session, values){
       
       incProgress(4/5, detail = paste("Downloading met report..."))
       try({
+=======
+        incProgress(1/5, detail = paste("Downloading met report..."))
+        
+        req(input$met_sbase_trialName)
+        
+        incProgress(2/5, detail = paste("Downloading met report..."))
+        fieldbook <- as.data.frame(hot_fb_sbase())
+        print(hot_fb_sbase())
+        genotypes <- input$genotypes_met_sbase
+        trait <- input$trait_met_sbase
+        env <- input$env_met_sbase
+        rep <- input$rep_met_sbase
+        
+        format <- paste(input$format_met_sbase, sep="")
+        
+        incProgress(4/5, detail = paste("Downloading met report..."))
+        try({
+          
+          pepa::repo.met(traits = trait, geno = genotypes, env = env, rep = rep, data = fieldbook, format=format)
+        })
+        
+        incProgress(5/5, detail = paste("Downloading met report..."))
+>>>>>>> fcc79cc2e33166677c982e5d9a20f34db7e491d8
         
         pepa::repo.met(traits = trait, geno = genotypes, env = env, rep = rep, data = fieldbook, format=format)
       })
       
       incProgress(5/5, detail = paste("Downloading met report..."))
       
+<<<<<<< HEAD
     }) #end progress bar
     
     
   })
+=======
+    })
+  
+>>>>>>> fcc79cc2e33166677c982e5d9a20f34db7e491d8
   
   
 } 
