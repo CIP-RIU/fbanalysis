@@ -248,7 +248,7 @@ single_server_base <- function(input, output, session, values){
   
   output$downloadSbase_single_report <- downloadHandler(
     filename = function() {
-      paste("report", '.docx', sep='.')
+      paste("report", 'docx', sep='.')
     },
     content = function(con) {
       
@@ -256,6 +256,7 @@ single_server_base <- function(input, output, session, values){
         
         incProgress(1/5, detail = paste("Downloading Analysis..."))  
         
+        fieldbook <- as.data.frame(hot_fb_sbase())
         trait <- input$trait_single_sbase
         rep <- input$rep_single_sbase
         genotypes <- input$genotypes_single_sbase
@@ -270,13 +271,13 @@ single_server_base <- function(input, output, session, values){
         
         if(design == "Randomized Complete Block Design (RCBD)"){
           try(pepa::repo.rcbd(traits = trait, geno = genotypes, rep = rep, format = format, data = fieldbook))
-          path <- "/usr/local/lib/R/site-library/pepa/rmd/crd.docx"
+          path <- "/usr/local/lib/R/site-library/pepa/rmd/rcbd.docx"
           #file.copy("/usr/local/lib/R/site-library/pepa/rmd/crd.docx", con)
         }
         
         if(design == "Completely Randomized Design (CRD)"){
           try(pepa::repo.crd(traits = trait, geno = genotypes, format = format, data = fieldbook))
-          path <- "/usr/local/lib/R/site-library/pepa/rmd/rcbd.docx"
+          path <- "/usr/local/lib/R/site-library/pepa/rmd/crd.docx"
           #file.copy("/usr/local/lib/R/site-library/pepa/rmd/rcbd.docx", con)
         }
         

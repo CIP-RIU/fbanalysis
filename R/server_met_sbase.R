@@ -69,7 +69,6 @@ met_server_sbase <- function(input, output, session, values){
     
   })
   
-  
   #select program name
   output$programName_met_sbase  <- renderUI({
     
@@ -140,10 +139,6 @@ met_server_sbase <- function(input, output, session, values){
     return(!is.null(values$hot_bdata))
   })
   
-  output$show_met_sbase_len <- reactive({
-    return(!is.null(hot_fb_sbase()))
-  })
-  
   output$show_met_sbase_params <- reactive({
     #return(!is.null(gmtl_data()))
     p <- input$met_sbase_studyName
@@ -159,6 +154,10 @@ met_server_sbase <- function(input, output, session, values){
     
     return(val_logic)
     
+  })
+  
+  output$show_met_sbase_len <- reactive({
+    return(!is.null(hot_fb_sbase()))
   })
   
   outputOptions(output, 'show_met_sbase_params', suspendWhenHidden=FALSE)
@@ -221,9 +220,9 @@ met_server_sbase <- function(input, output, session, values){
       join_books <- data.table::rbindlist(combine,fill = TRUE)
       join_books <- as.data.frame(join_books)
       #write.csv(join_books,"join_books.csv")
-      shinysky::showshinyalert(session, "alert_met_sbase_done", paste("Great!. Perform your MET analysis"), styleclass = "warning")
+      shinysky::showshinyalert(session, "alert_met_sbase_done", paste("Great!. Perform your MET analysis"), styleclass = "success")
       #met_bdata <- readxl::read_excel(path=hot_file , sheet = "Fieldbook")
-      write.csv(join_books,"metdata.csv")
+      #write.csv(join_books,"metdata.csv")
       met_bdata <- join_books
     }
   })
@@ -233,7 +232,7 @@ met_server_sbase <- function(input, output, session, values){
   #select genotype column
   output$genotypes_met_sbase  <- renderUI({
     
-    req(input$connect_met_sbase)
+    
     req(input$met_selProgram_sbase)
     req(input$met_sbase_trialName)
     
@@ -292,10 +291,11 @@ met_server_sbase <- function(input, output, session, values){
     },
     content = function(con) {
       
-      shiny::withProgress(message = "Opening single Report...",value= 0,{ #begin progress bar
+      shiny::withProgress(message = "Opening MET Report...",value= 0,{ #begin progress bar
         incProgress(1/5, detail = paste("Downloading met report..."))
         
         #getting parameters and fieldbook  
+        #print(hot_fb_sbase())
         fieldbook <- as.data.frame(hot_fb_sbase())
         trait <- input$trait_met_sbase
         env <- input$env_met_sbase
@@ -322,40 +322,38 @@ met_server_sbase <- function(input, output, session, values){
   
   #run analysis
   shiny::observeEvent(input$met_sbase_button, {
-    shiny::withProgress(message = "Opening Multi Enviroment Report...",value= 0,{
+    shiny::withProgress(message = "Opening MET Enviroment Report...",value= 0,{
       
       #NOTE: To use pepa report package we need R 3.3.0 or more.
       #NOTE Finally, we always need pandoc installer.
       
-      shiny::withProgress(message = "Opening single Report...",value= 0,{ #begin progress bar
-        incProgress(1/5, detail = paste("Downloading met report..."))
-        
-        req(input$met_sbase_trialName)
-        
-        incProgress(2/5, detail = paste("Downloading met report..."))
-        fieldbook <- as.data.frame(hot_fb_sbase())
-        trait <- input$trait_met_sbase
-        env <- input$env_met_sbase
-        
-        
-        incProgress(3/5, detail = paste("Downloading met report..."))
-        rep <- input$rep_met_sbase
-        genotypes <- input$genotypes_met_sbase
-        format <- paste(input$format_met_sbase, sep="")
-        
-        incProgress(4/5, detail = paste("Downloading met report..."))
-        try({
-          
-          pepa::repo.met(traits = trait, geno = genotypes, env = env, rep = rep, data = fieldbook, format=format)
-        })
-        
-        incProgress(5/5, detail = paste("Downloading met report..."))
-        
-      }) #end progress bar
+      incProgress(1/5, detail = paste("Downloading met report..."))
       
+      req(input$met_sbase_trialName)
       
-    })
+      incProgress(2/5, detail = paste("Downloading met report..."))
+      fieldbook <- as.data.frame(hot_fb_sbase())
+      print(hot_fb_sbase())
+      genotypes <- input$genotypes_met_sbase
+      trait <- input$trait_met_sbase
+      env <- input$env_met_sbase
+      rep <- input$rep_met_sbase
+      
+      format <- paste(input$format_met_sbase, sep="")
+      
+      incProgress(4/5, detail = paste("Downloading met report..."))
+      try({
+        
+        pepa::repo.met(traits = trait, geno = genotypes, env = env, rep = rep, data = fieldbook, format=format)
+      })
+      
+      incProgress(5/5, detail = paste("Downloading met report..."))
+      
+    }) #end progress bar
+    
+    
   })
+  
   
 } 
 
