@@ -232,11 +232,6 @@ met_server_sbase <- function(input, output, session, values){
   #select genotype column
   output$genotypes_met_sbase  <- renderUI({
     
-<<<<<<< HEAD
-    
-=======
-  
->>>>>>> fcc79cc2e33166677c982e5d9a20f34db7e491d8
     req(input$met_selProgram_sbase)
     req(input$met_sbase_trialName)
     
