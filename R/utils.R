@@ -8,7 +8,7 @@ select_options <- function(fieldbook){
   headers <-  setdiff(names(fieldbook), c("BOOK","DATE","PLOT"))
   headers
 }
-
+  
 
 #' Error handler in fieldbook analysis
 #' @param code source code to try

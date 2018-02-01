@@ -11,7 +11,7 @@ droindex_ui <- function(type = "tab", title = "Drought Index", name = "analysis_
   
   shinydashboard::tabItem(tabName = name,
                           h2(title),   
-                          
+                             
                           box(
                             title = " ", status = "primary", solidHeader = TRUE,
                             collapsible = TRUE, width = NULL,
