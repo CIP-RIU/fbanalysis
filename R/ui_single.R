@@ -54,7 +54,8 @@ single_ui <- function(type = "tab", title = "Statistical Analysis for One Enviro
                                                              input.design_single == 'Randomized Complete Block Design (RCBD)'|
                                                              input.design_single == 'Augmented Block Design (ABD)'| 
                                                              input.design_single == 'Factorial Two-Way Design in CRD (F2CRD)'|
-                                                             input.design_single == 'Factorial Two-Way Design in RCBD (F2RCBD)'",#|
+                                                             input.design_single == 'Factorial Two-Way Design in RCBD (F2RCBD)'|
+                                                             input.design_single == 'Split Plot with Plots Design'",
                                                              #input.design_single == 'Split Plot with Plots in CRD (SPCRD)'|
                                                              #input.design_single == 'Split Plot with Plots in RCBD (SPRCBD)'"
                                                              

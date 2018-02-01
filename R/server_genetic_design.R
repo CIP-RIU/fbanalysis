@@ -165,14 +165,12 @@ genetic_server <- function(input, output, session, values){
       
       if(design == "Line by Tester (LxT)"){
         #try(pepa::repo.abd(traits = trait, geno = genotypes, rep = rep, format = format, data = fieldbook))
-        try(pepa::repo.lxt(traits = trait, line = line, tester = tester,rep = rep, scheme = scheme ,data = fieldbook, format = format))
+        try(pepa::repo.lxt(traits = trait, line = line, tester = tester,rep = rep, data = fieldbook, format = format))
       }
       
     })
   })
 
-  
-  
   
 }
 

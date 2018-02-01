@@ -301,6 +301,9 @@ single_server_base <- function(input, output, session, values){
         
         incProgress(1/5, detail = paste("Downloading Analysis..."))  
         
+<<<<<<< HEAD
+        fieldbook <- as.data.frame(hot_fb_sbase())
+=======
         #hot_fb_sbase <- hot_fb_sbase()$fb
         
         #fieldbook <- as.data.frame(hot_fb_sbase())
@@ -308,6 +311,7 @@ single_server_base <- function(input, output, session, values){
         fieldbook <- as.data.frame(fieldbook$fb)
         
         
+>>>>>>> fcc79cc2e33166677c982e5d9a20f34db7e491d8
         trait <- input$trait_single_sbase
         rep <- input$rep_single_sbase
         genotypes <- input$genotypes_single_sbase
