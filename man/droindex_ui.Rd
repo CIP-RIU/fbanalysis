@@ -5,8 +5,7 @@
 \title{UI for Drought Indexes
 Returns user friendly ui}
 \usage{
-droindex_ui(type = "tab",
-  title = "Statistical Analysis for One Environment Trial",
+droindex_ui(type = "tab", title = "Drought Index",
   name = "analysis_droindex")
 }
 \arguments{

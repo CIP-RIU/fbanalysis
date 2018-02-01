@@ -42,14 +42,14 @@ droindex_server <- function(input, output, session, values){
                 selectize=TRUE)
   })
   
-  output$rep_droindex  <- renderUI({
-    selectInput('rep_droindex', 'Select Replications', c(Choose='', select_options(hot_bdata())),
-                selectize=TRUE)
-  })
-  
+  # output$rep_droindex  <- renderUI({
+  #   selectInput('rep_droindex', 'Select Replications', c(Choose='', select_options(hot_bdata())),
+  #               selectize=TRUE)
+  # })
+  # 
   output$trait_droindex <- renderUI({
     selectInput('trait_droindex', 'Select Trait(s)', c(Choose='', select_options(hot_bdata())),
-                selectize=TRUE, multiple = TRUE)
+                selectize=TRUE, multiple = FALSE)
   })
   
   output$factor_droindex  <- renderUI({
@@ -62,10 +62,10 @@ droindex_server <- function(input, output, session, values){
                 selectize=TRUE)
   })
   
-  output$k_droindex  <- renderUI({
-    shiny::numericInput('k_droindex', 'Select Block Size',   value =2, min=2, max = 100)
-  })    
-  
+  # output$k_droindex  <- renderUI({
+  #   shiny::numericInput('k_droindex', 'Select Block Size',   value =2, min=2, max = 100)
+  # })    
+  # 
   output$lvl_stress_droindex  <- renderUI({
     #shiny::numericInput('k_droindex', 'Select Block Size',   value =2, min=2, max = 100)
     #fb <- hot_bdata()
@@ -82,14 +82,12 @@ droindex_server <- function(input, output, session, values){
     req(input$factor_droindex)
     col_factor <- input$factor_droindex
     lvls <- unique(hot_bdata()[ , col_factor])
-    selectInput('sel_lvlcontrol_droindex', 'Select control level', c(Choose='',  lvls), 
+    selectInput('sel_lvlcontrol_droindex', 'Select non-stressed level', c(Choose='',  lvls), 
                 selectize=TRUE)
   })    
   
   
   output$file_message_droindex <- renderInfoBox({
-    
-  
     
     hot_file <- hot_path()
     print(hot_file)
@@ -110,72 +108,64 @@ droindex_server <- function(input, output, session, values){
   })
   
   
-  shiny::observeEvent(input$droindex_button, {
-    shiny::withProgress(message = "Opening single Report...",value= 0,{
-      
-      #NOTE: To use pepa report package we need R 3.3.0 or more.
-      #NOTE Finally, we always need pandoc installer.
-      
+  di_data <- reactive({ 
+  
       design <- input$design_droindex
-      
+  
       fieldbook <- as.data.frame(hot_bdata())
-      #saveRDS(fieldbook,"res.rds")
       trait <- input$trait_droindex
       rep <- input$rep_droindex
       genotypes <- input$genotypes_droindex
-      block <- input$block_droindex
-      k <- input$k_droindex
+      #block <- input$block_droindex
+      #k <- input$k_droindex
       factor_droindex <- input$factor_droindex
       
-      #format <- paste(input$format_droindex,"_document",sep="")
-      format <- paste(input$format_droindex)
+      stress_lvl <- input$sel_lvlstress_droindex
+      control_lvl <- input$sel_lvlcontrol_droindex
+      #format <- paste(input$format_droindex)
+      #print(out)
+      out <- sbformula::DSI.means(trait = trait, geno= genotypes, dfactor = factor_droindex, clabel = control_lvl, slabel = stress_lvl, fb=fieldbook)
       
-      if(design == "Randomized Complete Block Design (RCBD)"){
-        try(pepa::repo.rcbd(traits = trait, geno = genotypes, rep = rep, format = format, data = fieldbook))
-      }
+  })   
       
-      if(design == "Completely Randomized Design (CRD)"){
-        try(pepa::repo.crd(traits = trait, geno = genotypes, format = format, data = fieldbook))
-        #try(pepa::repo.crd(traits = trait, geno = genotypes, rep = rep, format = format, data = fieldbook))
-      }
-      
-      if(design == "Augmented Block Design (ABD)"){
-        #try(pepa::repo.abd(traits = trait, geno = genotypes, format = format, data = fieldbook))
-        try(pepa::repo.abd(traits = trait, geno = genotypes, rep = rep, format = format, data = fieldbook))
-      }
-      
-      if(design == "Alpha Design(0,1) (AD)"){
-        #try(pepa::repo.abd(traits = trait, geno = genotypes, format = format, data = fieldbook))
-        try(pepa::repo.a01d(traits = trait, geno = genotypes, rep = rep, block = block, k = k, data = fieldbook, format = format))
-      }
-      
-      if(design == "Split Plot with Plots in CRD (SPCRD)"){
-        
-        title <- paste("Automatic report for ", design, sep= "")
-        
-        try(pepa::repo.2f(traits = trait, A = genotypes, B = factor_droindex, rep = rep, design = "crd",  title= title, data = fieldbook, format = format))
-      }
-      
-      if(design == "Factorial Two-Way Design in CRD (F2CRD)"){
-        
-        title <- paste("Automatic report for ", design, sep= "")
-        try(pepa::repo.2f(traits = trait, A = genotypes, B = factor_droindex, rep = rep, design = "crd",  title= title, data = fieldbook, format = format))
-      }
-      
-      if(design == "Split Plot with Plots in RCBD (SPRCBD)"){
-        
-        title <- paste("Automatic report for ", design, sep= "")
-        try(pepa::repo.2f(traits = trait, A = genotypes, B = factor_droindex, rep = rep, design = "rcbd", title= title, data = fieldbook, format = format))
-      }
-      
-      if(design == "Factorial Two-Way Design in RCBD (F2RCBD)"){
-        
-        title <- paste("Automatic report for ", design, sep= "")
-        try(pepa::repo.2f(traits = trait, A = genotypes, B = factor_droindex, rep = rep, design = "rcbd", title= title, data = fieldbook, format = format))
-      }
-      
-    })
+  output$tbl <-  DT::renderDataTable({
+    req(input$file_droindex)
+    req(input$genotypes_droindex)
+    req(input$factor_droindex)
+    req(input$sel_lvlstress_droindex)
+    req(input$sel_lvlcontrol_droindex)
+    
+    out <- di_data()  
+    out
+    
   })
+  
+  shiny::observeEvent(input$droindex_button,{
+    
+    #For single Fieldbooks
+    withProgress(message = "Add Drought indeces worksheet into fieldbook file...",value= 0,
+                 {
+                   incProgress(2/15,message = "detection of sheets..")
+                   DF <- di_data()
+                   print("detection of sheets")
+                   hot_file <- hot_path() 
+                   try(wb <- openxlsx::loadWorkbook(hot_file))
+                   sheets <- readxl::excel_sheets(path = hot_file)
+                   
+                   print("after loadworkbook")
+                   
+                   if(is.element("Drought_indeces",sheets)){    
+                     try( openxlsx::removeWorksheet(wb, "Drought_indeces"))
+                   }
+                   incProgress(7/15, message = "Adding worksheet...")
+                   try(openxlsx::addWorksheet(wb = wb,sheetName = "Drought_indeces",gridLines = TRUE))
+                   try(openxlsx::writeDataTable(wb,sheet = "Drought_indeces", x = DF,colNames = TRUE, withFilter = FALSE))
+                   try(openxlsx::saveWorkbook(wb = wb, file = hot_file, overwrite = TRUE) )
+                   print("ejecucion")
+                   try(shell.exec(hot_file))
+                   incProgress(15/15, message = "Exporting fieldbook file...")
+                 })
+  }) 
   
 }
 

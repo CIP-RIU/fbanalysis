@@ -66,7 +66,7 @@ droindex_ui <- function(type = "tab", title = "Drought Index", name = "analysis_
                                                      #   #input.design_droindex == 'Split Plot with Plots in RCBD (SPRCBD)'"
                                                        
                                                        
-                                                       uiOutput("rep_droindex"),
+                                                       #uiOutput("rep_droindex"),
                                                      #),  
                                                      
                                                      # Factor input --------------------------------------------------------
@@ -116,10 +116,15 @@ droindex_ui <- function(type = "tab", title = "Drought Index", name = "analysis_
                                                      uiOutput("lvl_control_droindex"),
                                                      
                                                      
-                                                     radioButtons(inputId="format_droindex", label="Report format", choices= c("html","word"), 
-                                                                  selected = "html", inline = TRUE, width = NULL),
-                                                     actionButton(inputId = "droindex_button", label= "Analyze", icon = icon("play-circle"),
+                                                     #radioButtons(inputId="format_droindex", label="Report format", choices= c("html","word"), 
+                                                     #             selected = "html", inline = TRUE, width = NULL),
+                                                     actionButton(inputId = "droindex_button", label= "Download", icon = icon("play-circle"),
                                                                   width = NULL,height = NULL),
+                                                     
+                                                     br(),
+                                                     br(),
+                                                     br(),
+                                                     DT::dataTableOutput('tbl'),
                                                      
                                                      
                                                      br()#,
