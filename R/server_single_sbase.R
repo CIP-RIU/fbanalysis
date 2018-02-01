@@ -60,7 +60,7 @@ single_server_base <- function(input, output, session, values){
     #return(!is.null(fb) & length(design)>0)
   })
   
- 
+  
   outputOptions(output, 'show_single_sbase', suspendWhenHidden=FALSE)
   
   outputOptions(output, 'show_single_sbase_len', suspendWhenHidden=FALSE)
@@ -176,25 +176,25 @@ single_server_base <- function(input, output, session, values){
   
   
   observe({
-
+    
     # <- hot_fb_sbase()
-     design <- try(hot_fb_sbase()$stat_design) #the statistical design from the SweetPotatoBase
-     nrow_fb <- try(nrow(hot_fb_sbase()$fb))
-     
-     if(str_detect(design,"error")){
-       design <- NULL
-     }
-     x <- input$design_single_sbase #the statistical design from the single env UI
-
+    design <- try(hot_fb_sbase()$stat_design) #the statistical design from the SweetPotatoBase
+    nrow_fb <- try(nrow(hot_fb_sbase()$fb))
+    
+    if(str_detect(design,"error")){
+      design <- NULL
+    }
+    x <- input$design_single_sbase #the statistical design from the single env UI
+    
     # Can use character(0) to remove all choices
     #if (is.null(x)|| length(design)==0){
     if (is.null(x) || length(design)==0 ){
-     
+      
       x <- "Completely Randomized Design (CRD)"
       shinysky::showshinyalert(session, "alert_single_sbase_done", paste("This study does not have data."), styleclass = "danger")
-
+      
     } else {
-
+      
       if(design == "CRD")  {x <- "Completely Randomized Design (CRD)"}
       if(design == "RCBD") {x <- "Randomized Complete Block Design (RCBD)"}
       #if(design == "ABD")  {choice_design<-"Augmented Block Design (ABD)"}
@@ -204,7 +204,7 @@ single_server_base <- function(input, output, session, values){
       
     }
     x <- x
-
+    
     # Can also set the label and select items
     updateSelectInput(session, "design_single_sbase",
                       label = 'Select statistical design of your experiment',
@@ -237,7 +237,7 @@ single_server_base <- function(input, output, session, values){
     # selectInput('rep_single_sbase', 'Select Replications', c(Choose='', names(hot_fb_sbase()$fb)),
     #             selectize=TRUE)
     selectInput('rep_single_sbase', 'Select Replications or Blocks', c(Choose='', names(fb)),
-                 selectize=TRUE)
+                selectize=TRUE)
   })
   
   #select triats
@@ -278,14 +278,14 @@ single_server_base <- function(input, output, session, values){
     
     if(is.null(sbase_data)){
       infoBox(title="Select fieldbook file", subtitle=
-                paste("Connect to SweetPotato Base"), icon = icon("plug"),
-              color = "blue",fill = TRUE, width = NULL)
+                paste("Trying to connect to SweetPotatoBase"), icon = icon("plug"),
+              color = "green",fill = TRUE, width = NULL)
       #
     } else {
       hot_file <- sbase_data
       hot_file <- paste(hot_file, collapse = ", ")
       infoBox(title="GREAT!", subtitle =
-                paste("Now you are connected"),  icon = icon("ok", lib = "glyphicon"),
+                paste("Now you are connected to SweetPotatoBase using BrAPI"),  icon = icon("ok", lib = "glyphicon"),
               color = "green",fill = TRUE, width = NULL)
     }
   })
@@ -301,9 +301,6 @@ single_server_base <- function(input, output, session, values){
         
         incProgress(1/5, detail = paste("Downloading Analysis..."))  
         
-<<<<<<< HEAD
-        fieldbook <- as.data.frame(hot_fb_sbase())
-=======
         #hot_fb_sbase <- hot_fb_sbase()$fb
         
         #fieldbook <- as.data.frame(hot_fb_sbase())
@@ -311,7 +308,6 @@ single_server_base <- function(input, output, session, values){
         fieldbook <- as.data.frame(fieldbook$fb)
         
         
->>>>>>> fcc79cc2e33166677c982e5d9a20f34db7e491d8
         trait <- input$trait_single_sbase
         rep <- input$rep_single_sbase
         genotypes <- input$genotypes_single_sbase
