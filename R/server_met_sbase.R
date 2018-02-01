@@ -43,29 +43,29 @@ met_server_sbase <- function(input, output, session, values){
   observe({
     
     #shiny::withProgress(message = "Connecting to SweetPotatoBase",value= 0,{
-      
-      #NOTE: To use pepa report package we need R 3.3.0 or more.
-      #NOTE Finally, we always need pandoc installer.
-      #ToDo: In case of poor conection print a message and do not show anything
-      
-      #incProgress( 1/5, detail = paste("Connecting to SweetPotatoBase via brapiR..."))
-      
-      # validate(
-      #  need(input$connect_single_sbase != "", label = "Please connect to SweetPotato Base")
-      # )
-      
-      white_list <- brapi::ba_db()
-      #establish connection
-     # incProgress(3/5, detail = paste("Ready for connection..."))
-      sp_base_credentials <- white_list$sweetpotatobase
-      trial_table <- brapi::ba_trials(con = sp_base_credentials)
-      
-      out <- list(sp_base_credentials  = sp_base_credentials , trial_table = trial_table)
-      #incProgress(5/5, detail = paste("Ready for connection..."))
-      
-      
-      values$hot_bdata <- out
-   # })
+    
+    #NOTE: To use pepa report package we need R 3.3.0 or more.
+    #NOTE Finally, we always need pandoc installer.
+    #ToDo: In case of poor conection print a message and do not show anything
+    
+    #incProgress( 1/5, detail = paste("Connecting to SweetPotatoBase via brapiR..."))
+    
+    # validate(
+    #  need(input$connect_single_sbase != "", label = "Please connect to SweetPotato Base")
+    # )
+    
+    white_list <- brapi::ba_db()
+    #establish connection
+    # incProgress(3/5, detail = paste("Ready for connection..."))
+    sp_base_credentials <- white_list$sweetpotatobase
+    trial_table <- brapi::ba_trials(con = sp_base_credentials)
+    
+    out <- list(sp_base_credentials  = sp_base_credentials , trial_table = trial_table)
+    #incProgress(5/5, detail = paste("Ready for connection..."))
+    
+    
+    values$hot_bdata <- out
+    # })
     
   })
   
@@ -232,6 +232,7 @@ met_server_sbase <- function(input, output, session, values){
   #select genotype column
   output$genotypes_met_sbase  <- renderUI({
     
+    
     req(input$met_selProgram_sbase)
     req(input$met_sbase_trialName)
     
@@ -310,7 +311,7 @@ met_server_sbase <- function(input, output, session, values){
         
         #Formatting on word
         try({pepa::repo.met(traits = trait, geno = genotypes, env = env, rep = rep, data = fieldbook, format=format)})
-        file.copy("/usr/local/lib/R/site-library/pepa/rmd/met.docx", con, overwrite =  TRUE)
+        file.copy("/usr/local/lib/R/site-library/pepa/rmd/met.docx", con)
         incProgress(5/5, detail = paste("Formatting on word..."))
         
       }) #end progress bar
@@ -326,7 +327,6 @@ met_server_sbase <- function(input, output, session, values){
       #NOTE: To use pepa report package we need R 3.3.0 or more.
       #NOTE Finally, we always need pandoc installer.
       
-<<<<<<< HEAD
       incProgress(1/5, detail = paste("Downloading met report..."))
       
       req(input$met_sbase_trialName)
@@ -343,44 +343,16 @@ met_server_sbase <- function(input, output, session, values){
       
       incProgress(4/5, detail = paste("Downloading met report..."))
       try({
-=======
-        incProgress(1/5, detail = paste("Downloading met report..."))
-        
-        req(input$met_sbase_trialName)
-        
-        incProgress(2/5, detail = paste("Downloading met report..."))
-        fieldbook <- as.data.frame(hot_fb_sbase())
-        print(hot_fb_sbase())
-        genotypes <- input$genotypes_met_sbase
-        trait <- input$trait_met_sbase
-        env <- input$env_met_sbase
-        rep <- input$rep_met_sbase
-        
-        format <- paste(input$format_met_sbase, sep="")
-        
-        incProgress(4/5, detail = paste("Downloading met report..."))
-        try({
-          
-          pepa::repo.met(traits = trait, geno = genotypes, env = env, rep = rep, data = fieldbook, format=format)
-        })
-        
-        incProgress(5/5, detail = paste("Downloading met report..."))
->>>>>>> fcc79cc2e33166677c982e5d9a20f34db7e491d8
         
         pepa::repo.met(traits = trait, geno = genotypes, env = env, rep = rep, data = fieldbook, format=format)
       })
       
       incProgress(5/5, detail = paste("Downloading met report..."))
       
-<<<<<<< HEAD
     }) #end progress bar
     
     
   })
-=======
-    })
-  
->>>>>>> fcc79cc2e33166677c982e5d9a20f34db7e491d8
   
   
 } 
