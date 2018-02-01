@@ -20,21 +20,21 @@ elston_server_sbase <- function(input, output, session, values){
   
   observe({
     
-    shiny::withProgress(message = "Connecting to SweetPotatoBase",value= 0,{
+    #shiny::withProgress(message = "Connecting to SweetPotatoBase",value= 0,{
      
-      incProgress(1/5, detail = paste("Connecting to SweetPotatoBase via brapiR..."))
+      #incProgress(1/5, detail = paste("Connecting to SweetPotatoBase via brapiR..."))
       
       white_list <- brapi::ba_db()
       #establish connection
-      incProgress(3/5, detail = paste("Ready for connection..."))
+     # incProgress(3/5, detail = paste("Ready for connection..."))
       sp_base_credentials <- white_list$sweetpotatobase
       trial_table <- brapi::ba_trials(con = sp_base_credentials)
       
       out <- list(sp_base_credentials  = sp_base_credentials , trial_table = trial_table)
-      incProgress(5/5, detail = paste("Ready for connection..."))
+     #  incProgress(5/5, detail = paste("Ready for connection..."))
       
       values$hot_bdata <- out
-    })
+    #})
     
   })
  
@@ -190,15 +190,15 @@ elston_server_sbase <- function(input, output, session, values){
     sbase_data <- sbase_data["trial_table"]
     
     if(is.null(sbase_data)){
-      infoBox(title="Select Fieldbook File", subtitle=
-                paste("Choose at least 1 fieldbook files for Elston"), icon = icon("upload", lib = "glyphicon"),
+      infoBox(title="GREAT", subtitle=
+                paste("Now conected to SweetPotatoBase"), icon = icon("upload", lib = "glyphicon"),
               color = "blue",fill = TRUE, width = NULL)
     } else {
       
       hot_file <- sbase_data
       hot_file <- paste("hot_file", collapse = ", ")
       infoBox(title="GREAT!", subtitle =
-                paste("Fieldbooks selected: ", hot_file),  icon = icon("ok", lib = "glyphicon"),
+                paste("Now conected to SweetPotatoBase"),  icon = icon("ok", lib = "glyphicon"),
               color = "green",fill = TRUE, width = NULL)
     }
   })

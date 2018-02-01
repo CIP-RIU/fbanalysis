@@ -42,13 +42,13 @@ met_server_sbase <- function(input, output, session, values){
   
   observe({
     
-    shiny::withProgress(message = "Connecting to SweetPotatoBase",value= 0,{
+    #shiny::withProgress(message = "Connecting to SweetPotatoBase",value= 0,{
       
       #NOTE: To use pepa report package we need R 3.3.0 or more.
       #NOTE Finally, we always need pandoc installer.
       #ToDo: In case of poor conection print a message and do not show anything
       
-      incProgress(1/5, detail = paste("Connecting to SweetPotatoBase via brapiR..."))
+      #incProgress( 1/5, detail = paste("Connecting to SweetPotatoBase via brapiR..."))
       
       # validate(
       #  need(input$connect_single_sbase != "", label = "Please connect to SweetPotato Base")
@@ -56,16 +56,16 @@ met_server_sbase <- function(input, output, session, values){
       
       white_list <- brapi::ba_db()
       #establish connection
-      incProgress(3/5, detail = paste("Ready for connection..."))
+     # incProgress(3/5, detail = paste("Ready for connection..."))
       sp_base_credentials <- white_list$sweetpotatobase
       trial_table <- brapi::ba_trials(con = sp_base_credentials)
       
       out <- list(sp_base_credentials  = sp_base_credentials , trial_table = trial_table)
-      incProgress(5/5, detail = paste("Ready for connection..."))
+      #incProgress(5/5, detail = paste("Ready for connection..."))
       
       
       values$hot_bdata <- out
-    })
+   # })
     
   })
   
@@ -311,7 +311,7 @@ met_server_sbase <- function(input, output, session, values){
         
         #Formatting on word
         try({pepa::repo.met(traits = trait, geno = genotypes, env = env, rep = rep, data = fieldbook, format=format)})
-        file.copy("/usr/local/lib/R/site-library/pepa/rmd/met.docx", con)
+        file.copy("/usr/local/lib/R/site-library/pepa/rmd/met.docx", con, overwrite =  TRUE)
         incProgress(5/5, detail = paste("Formatting on word..."))
         
       }) #end progress bar

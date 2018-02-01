@@ -9,6 +9,7 @@ library(knitr)
 
 library(dplyr)
 library(brapi)
+library(stringr)
 
 tabNameS <- "analysis_aov_sbase"
 

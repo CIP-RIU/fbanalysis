@@ -12,6 +12,7 @@
 #' @author Omar Benites
 #' @export
 
+
 met_server <- function(input, output, session, values){
   
   
@@ -140,7 +141,7 @@ met_server <- function(input, output, session, values){
       hot_file <- basename(hot_file)
       hot_file <- paste(hot_file, collapse = ", ")
       infoBox(title="GREAT!", subtitle =
-                paste("Fieldbooks selected: ", hot_file),  icon = icon("ok", lib = "glyphicon"),
+                paste("Now you are connected to SweetPotatoBase", hot_file),  icon = icon("ok", lib = "glyphicon"),
               color = "green",fill = TRUE, width = NULL)
     }
   })
