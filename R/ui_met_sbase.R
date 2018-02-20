@@ -55,8 +55,10 @@ met_sbase_ui <- function(type = "tab", title = "The Statistical Analysis of Mult
                                                                                            uiOutput("rep_met_sbase"),
                                                                                            uiOutput("trait_met_sbase"),
                                                                                            
-                                                                                           radioButtons(inputId="format_met_sbase", label="Report format", choices= c("html","word"), 
-                                                                                                        selected = "html",  width = NULL),
+                                                                                           # radioButtons(inputId="format_met_sbase", label="Report format", choices= c("html","word"), 
+                                                                                           #              selected = "html",  width = NULL),
+                                                                                           radioButtons(inputId="format_met_sbase", label="Report format", choices= c("word"),
+                                                                                                        selected = "word",  width = NULL),
                                                                                            
                                                                                            shiny::conditionalPanel(condition = "input.format_met_sbase == 'word'",
                                                                                                                    

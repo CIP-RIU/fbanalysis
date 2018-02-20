@@ -15,3 +15,4 @@ This function give item option for shinySelectize in ANOVA ui
 \author{
 Omar Benites
 }
+

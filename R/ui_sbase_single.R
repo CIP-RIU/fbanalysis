@@ -95,9 +95,11 @@ single_sbase_ui <- function(type = "tab", title = "Statistical Analysis for One 
                                                                                              uiOutput("trait_single_sbase")
                                                                                            ),
                                                                                            
-                                                                                           radioButtons(inputId="format_single_sbase", label="Report format", choices= c("html","word"),
-                                                                                                        selected = "html", inline = TRUE, width = NULL),
+                                                                                           # radioButtons(inputId="format_single_sbase", label="Report format", choices= c("html","word"),
+                                                                                           #              selected = "html", inline = TRUE, width = NULL),
                                                                                            
+                                                                                           radioButtons(inputId="format_single_sbase", label="Report format", choices= c("word"),
+                                                                                                        selected = "html", inline = TRUE, width = NULL),
                                                                                            
                                                                                            shiny::conditionalPanel(condition = "input.format_single_sbase == 'word'",
                                                                                                                    

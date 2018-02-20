@@ -275,19 +275,27 @@ single_server_base <- function(input, output, session, values){
     sbase_data <- sbase_data$fb
     
     sbase_data <- sbase_data["trial_table"]
+    print(sbase_data)
+    #shiny::withProgress(message = "Checking connection to SweetPotatoBase",value= 0,{
+
+    #  incProgress(2/5, detail = paste("Validating..."))
     
-    if(is.null(sbase_data)){
+    if(!is.null(sbase_data)){
       infoBox(title="Select fieldbook file", subtitle=
-                paste("Trying to connect to SweetPotatoBase"), icon = icon("plug"),
-              color = "green",fill = TRUE, width = NULL)
+                paste("Now you are NOT connected to SweetPotatoBase. Check whether the database is under maintenance"), icon = icon("plug"),
+              color = "yellow", fill = TRUE, width = NULL)
       #
     } else {
       hot_file <- sbase_data
-      hot_file <- paste(hot_file, collapse = ", ")
+      #hot_file <- paste(hot_file, collapse = ", ")
       infoBox(title="GREAT!", subtitle =
                 paste("Now you are connected to SweetPotatoBase using BrAPI"),  icon = icon("ok", lib = "glyphicon"),
               color = "green",fill = TRUE, width = NULL)
     }
+      #incProgress(5/5, detail = paste("Validating"))
+    
+    #})
+    
   })
   
   
@@ -335,53 +343,57 @@ single_server_base <- function(input, output, session, values){
         }
         
         
-        if(design == "Augmented Block Design (ABD)"){
-          #try(pepa::repo.abd(traits = trait, geno = genotypes, format = format, data = fieldbook))
-          try(pepa::repo.abd(traits = trait, geno = genotypes, rep = rep, format = format, data = fieldbook))
-          path <- "/usr/local/lib/R/site-library/pepa/rmd/abd.docx"
-          #file.copy("/usr/local/lib/R/site-library/pepa/rmd/abd.docx", con)
-        }
+        # if(design == "Augmented Block Design (ABD)"){
+        #   #try(pepa::repo.abd(traits = trait, geno = genotypes, format = format, data = fieldbook))
+        #   try(pepa::repo.abd(traits = trait, geno = genotypes, rep = rep, format = format, data = fieldbook))
+        #   path <- "/usr/local/lib/R/site-library/pepa/rmd/abd.docx"
+        #   #file.copy("/usr/local/lib/R/site-library/pepa/rmd/abd.docx", con)
+        # }
+        # 
+        # 
+        # if(design == "Alpha Design(0,1) (AD)"){
+        #   #try(pepa::repo.abd(traits = trait, geno = genotypes, format = format, data = fieldbook))
+        #   try(pepa::repo.a01d(traits = trait, geno = genotypes, rep = rep, block = block, k = k, data = fieldbook, format = format))
+        #   path <- "/usr/local/lib/R/site-library/pepa/rmd/a01d.docx"
+        #   #file.copy("/usr/local/lib/R/site-library/pepa/rmd/a01d.docx", con)
+        # }
+        # 
+        # 
+        # if(design == "Split Plot with Plots in CRD (SPCRD)"){
+        #   title <- paste("Automatic report for ", design, sep= "")
+        #   try(pepa::repo.2f(traits = trait, A = genotypes, B = factor_single, rep = rep, design = "crd",  title= title, data = fieldbook, format = format))
+        #   path <- "/usr/local/lib/R/site-library/pepa/rmd/2fcrd.docx"
+        #   #file.copy("/usr/local/lib/R/site-library/pepa/rmd/2fcrd.docx", con)
+        # }
+        # 
+        # 
+        # if(design == "Factorial Two-Way Design in CRD (F2CRD)"){
+        #   title <- paste("Automatic report for ", design, sep= "")
+        #   try(pepa::repo.2f(traits = trait, A = genotypes, B = factor_single, rep = rep, design = "crd",  title= title, data = fieldbook, format = format))
+        #   path <- "/usr/local/lib/R/site-library/pepa/rmd/2fcrd.docx"
+        #   #file.copy("/usr/local/lib/R/site-library/pepa/rmd/2fcrd.docx", con)
+        # }
+        # 
+        # 
+        # if(design == "Split Plot with Plots in RCBD (SPRCBD)"){
+        #   title <- paste("Automatic report for ", design, sep= "")
+        #   try(pepa::repo.2f(traits = trait, A = genotypes, B = factor_single, rep = rep, design = "rcbd", title= title, data = fieldbook, format = format))
+        #   path <- "/usr/local/lib/R/site-library/pepa/rmd/2frcbd.docx"
+        #   #file.copy("/usr/local/lib/R/site-library/pepa/rmd/2frcbd.docx", con)
+        # }
+        # 
+        # 
+        # if(design == "Factorial Two-Way Design in RCBD (F2RCBD)"){
+        #   
+        #   title <- paste("Automatic report for ", design, sep= "")
+        #   try(pepa::repo.2f(traits = trait, A = genotypes, B = factor_single, rep = rep, design = "rcbd", title= title, data = fieldbook, format = format))
+        #   path <- "/usr/local/lib/R/site-library/pepa/rmd/2frcbd.docx"
+        #   #file.copy("/usr/local/lib/R/site-library/pepa/rmd/2frcbd.docx", con)
+        # }
+        # 
         
-        
-        if(design == "Alpha Design(0,1) (AD)"){
-          #try(pepa::repo.abd(traits = trait, geno = genotypes, format = format, data = fieldbook))
-          try(pepa::repo.a01d(traits = trait, geno = genotypes, rep = rep, block = block, k = k, data = fieldbook, format = format))
-          path <- "/usr/local/lib/R/site-library/pepa/rmd/a01d.docx"
-          #file.copy("/usr/local/lib/R/site-library/pepa/rmd/a01d.docx", con)
-        }
-        
-        
-        if(design == "Split Plot with Plots in CRD (SPCRD)"){
-          title <- paste("Automatic report for ", design, sep= "")
-          try(pepa::repo.2f(traits = trait, A = genotypes, B = factor_single, rep = rep, design = "crd",  title= title, data = fieldbook, format = format))
-          path <- "/usr/local/lib/R/site-library/pepa/rmd/2fcrd.docx"
-          #file.copy("/usr/local/lib/R/site-library/pepa/rmd/2fcrd.docx", con)
-        }
-        
-        
-        if(design == "Factorial Two-Way Design in CRD (F2CRD)"){
-          title <- paste("Automatic report for ", design, sep= "")
-          try(pepa::repo.2f(traits = trait, A = genotypes, B = factor_single, rep = rep, design = "crd",  title= title, data = fieldbook, format = format))
-          path <- "/usr/local/lib/R/site-library/pepa/rmd/2fcrd.docx"
-          #file.copy("/usr/local/lib/R/site-library/pepa/rmd/2fcrd.docx", con)
-        }
-        
-        
-        if(design == "Split Plot with Plots in RCBD (SPRCBD)"){
-          title <- paste("Automatic report for ", design, sep= "")
-          try(pepa::repo.2f(traits = trait, A = genotypes, B = factor_single, rep = rep, design = "rcbd", title= title, data = fieldbook, format = format))
-          path <- "/usr/local/lib/R/site-library/pepa/rmd/2frcbd.docx"
-          #file.copy("/usr/local/lib/R/site-library/pepa/rmd/2frcbd.docx", con)
-        }
-        
-        
-        if(design == "Factorial Two-Way Design in RCBD (F2RCBD)"){
-          
-          title <- paste("Automatic report for ", design, sep= "")
-          try(pepa::repo.2f(traits = trait, A = genotypes, B = factor_single, rep = rep, design = "rcbd", title= title, data = fieldbook, format = format))
-          path <- "/usr/local/lib/R/site-library/pepa/rmd/2frcbd.docx"
-          #file.copy("/usr/local/lib/R/site-library/pepa/rmd/2frcbd.docx", con)
-        }
+        print(trait)
+        print(design)
         
         file.copy(path , con)
         
@@ -424,6 +436,10 @@ single_server_base <- function(input, output, session, values){
       #format <- paste(input$format_single,"_document",sep="")
       format <- paste(input$format_single_sbase)
       
+      print(trait)
+      print(design)
+      
+      
       
       incProgress(4/5, detail = paste("Formatting in ", format, sep=""))
       
@@ -436,38 +452,38 @@ single_server_base <- function(input, output, session, values){
         #try(pepa::repo.crd(traits = trait, geno = genotypes, rep = rep, format = format, data = fieldbook))
       }
       
-      if(design == "Augmented Block Design (ABD)"){
-        #try(pepa::repo.abd(traits = trait, geno = genotypes, format = format, data = fieldbook))
-        try(pepa::repo.abd(traits = trait, geno = genotypes, rep = rep, format = format, data = fieldbook))
-      }
-      
-      if(design == "Alpha Design(0,1) (AD)"){
-        #try(pepa::repo.abd(traits = trait, geno = genotypes, format = format, data = fieldbook))
-        try(pepa::repo.a01d(traits = trait, geno = genotypes, rep = rep, block = block, k = k, data = fieldbook, format = format))
-      }
-      
-      if(design == "Split Plot with Plots in CRD (SPCRD)"){
-        
-        title <- paste("Automatic report for ", design, sep= "")
-        try(pepa::repo.2f(traits = trait, A = genotypes, B = factor_single, rep = rep, design = "crd",  title= title, data = fieldbook, format = format))
-      }
-      
-      if(design == "Factorial Two-Way Design in CRD (F2CRD)"){
-        
-        title <- paste("Automatic report for ", design, sep= "")
-        try(pepa::repo.2f(traits = trait, A = genotypes, B = factor_single, rep = rep, design = "crd",  title= title, data = fieldbook, format = format))
-      }
-      
-      if(design == "Split Plot with Plots in RCBD (SPRCBD)"){
-        
-        title <- paste("Automatic report for ", design, sep= "")
-        try(pepa::repo.2f(traits = trait, A = genotypes, B = factor_single, rep = rep, design = "rcbd", title= title, data = fieldbook, format = format))
-      }
-      
-      if(design == "Factorial Two-Way Design in RCBD (F2RCBD)"){
-        title <- paste("Automatic report for ", design, sep= "")
-        try(pepa::repo.2f(traits = trait, A = genotypes, B = factor_single, rep = rep, design = "rcbd", title= title, data = fieldbook, format = format))
-      }
+      # if(design == "Augmented Block Design (ABD)"){
+      #   #try(pepa::repo.abd(traits = trait, geno = genotypes, format = format, data = fieldbook))
+      #   try(pepa::repo.abd(traits = trait, geno = genotypes, rep = rep, format = format, data = fieldbook))
+      # }
+      # 
+      # if(design == "Alpha Design(0,1) (AD)"){
+      #   #try(pepa::repo.abd(traits = trait, geno = genotypes, format = format, data = fieldbook))
+      #   try(pepa::repo.a01d(traits = trait, geno = genotypes, rep = rep, block = block, k = k, data = fieldbook, format = format))
+      # }
+      # 
+      # if(design == "Split Plot with Plots in CRD (SPCRD)"){
+      #   
+      #   title <- paste("Automatic report for ", design, sep= "")
+      #   try(pepa::repo.2f(traits = trait, A = genotypes, B = factor_single, rep = rep, design = "crd",  title= title, data = fieldbook, format = format))
+      # }
+      # 
+      # if(design == "Factorial Two-Way Design in CRD (F2CRD)"){
+      #   
+      #   title <- paste("Automatic report for ", design, sep= "")
+      #   try(pepa::repo.2f(traits = trait, A = genotypes, B = factor_single, rep = rep, design = "crd",  title= title, data = fieldbook, format = format))
+      # }
+      # 
+      # if(design == "Split Plot with Plots in RCBD (SPRCBD)"){
+      #   
+      #   title <- paste("Automatic report for ", design, sep= "")
+      #   try(pepa::repo.2f(traits = trait, A = genotypes, B = factor_single, rep = rep, design = "rcbd", title= title, data = fieldbook, format = format))
+      # }
+      # 
+      # if(design == "Factorial Two-Way Design in RCBD (F2RCBD)"){
+      #   title <- paste("Automatic report for ", design, sep= "")
+      #   try(pepa::repo.2f(traits = trait, A = genotypes, B = factor_single, rep = rep, design = "rcbd", title= title, data = fieldbook, format = format))
+      # }
       
       incProgress(5/5, detail = paste("Formatting in ", format, sep="")) #end progress bar
       
