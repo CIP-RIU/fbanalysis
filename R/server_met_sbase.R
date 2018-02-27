@@ -314,8 +314,8 @@ met_server_sbase <- function(input, output, session, values){
         
         
         
-        #file.copy("/usr/local/lib/R/site-library/pepa/rmd/met.docx", con) #shiny server CIP-RIU
-        file.copy("/home/hidap/R/x86_64-pc-linux-gnu-library/3.4/pepa/rmd/met.docx", con) #shiny server BTI-SweetPotatoBase
+        file.copy("/usr/local/lib/R/site-library/pepa/rmd/met.docx", con, overwrite = TRUE) #shiny server CIP-RIU
+        #file.copy("/home/hidap/R/x86_64-pc-linux-gnu-library/3.4/pepa/rmd/met.docx", con) #shiny server BTI-SweetPotatoBase
         
         incProgress(5/5, detail = paste("Formatting on word..."))
         

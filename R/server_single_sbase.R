@@ -398,7 +398,7 @@ single_server_base <- function(input, output, session, values){
         print(trait)
         print(design)
         
-        file.copy(path , con)
+        file.copy(path , con, overwrite = TRUE)
         
         incProgress(4/5, detail = paste("Formattting in ", "MS Word",sep= ""))
         incProgress(5/5, detail = paste("Downloading Analysis..."))
