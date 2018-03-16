@@ -22,4 +22,3 @@ Returns user friendly ui for selection criteria and organoleptics
 \author{
 Omar Benites
 }
-

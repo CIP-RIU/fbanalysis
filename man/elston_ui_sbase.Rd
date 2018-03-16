@@ -23,4 +23,3 @@ Returns user friendly ui for elston index
 \author{
 Omar Benites
 }
-
