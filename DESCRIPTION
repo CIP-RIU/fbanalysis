@@ -19,7 +19,11 @@ Imports:
     openxlsx,
     pvs,
     shinysky,
-    rlist
+    rlist,
+    DT,
+    brapi,
+    dplyr,
+    sbformula
 Suggests:
     traittools,
     testthat
