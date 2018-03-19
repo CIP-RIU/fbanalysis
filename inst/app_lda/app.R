@@ -19,7 +19,7 @@ server <- function(input, output, session,values) {
 
 ui <- dashboardPage(skin = "yellow",
                     dashboardHeader(title = "Linear discriminant analysis"),
-                    dashboardSidebar(width = 200,
+                    dashboardSidebar(width = 600,
                                      menuItem("Resources",
                                               sidebarMenu(id = "menu",
                                                           menuSubItem("ANOVA", icon = icon("star"),

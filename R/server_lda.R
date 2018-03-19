@@ -72,31 +72,36 @@ lda_server <- function(input, output, session, values){
   
   output$x12 = DT::renderDataTable({
     
-    treatment <- c(input$factor_lda, input$trait_lda)
-    factor <- input$factor_lda
+    req(input$factor_lda)
+    req(input$trait_lda)
     
-    temp2 <- temp1[treatment]
-    temp2 <- na.omit(temp2)
+    fb <- as.data.frame(hot_bdata())
+    treatment <- c(input$factor_lda, input$trait_lda)
+    factor_lda <- input$factor_lda
+
+    fb <- fb[treatment]
+    fb <- na.omit(fb) #remove cases with NA values
+    fb[,factor_lda] <- ordered(fb[, factor_lda]) #order the levels of the factor. It must be do it.
+    
     # 4.3. Generate a Train and Test data set
-    #set.seed(1)
-    intrain <- sample(nrow(temp2), round(0.50*nrow(temp2)))
-    train <- temp2[intrain, ]
-    test <- temp2[-intrain, ]
+    set.seed(1)
+    intrain <- sample(nrow(fb), round(0.50*nrow(fb)))
+    train <- fb[intrain, ]
+    test <<- fb[-intrain, ]
     
     # 4.4. Calculating the variable importance.
-    formula <- as.formula(paste( ordered(factor),  "~.", sep=" ")  )
-    
+    formula <- as.formula(paste(factor_lda,  "~.", sep=" ")  )
+  
     model <- randomForest(formula, data = train)
     pred <- predict(model, newdata = test)
-    (ct <- table(temp2[,factor], pred))
-    sum(diag(prop.table(ct)))
+    # ct <- table(fb[,factor], pred)
+    # sum(diag(prop.table(ct)))
     gini <- data.frame(model$importance)
     gini$trait <- rownames(gini)
     gini[sort.int(gini$MeanDecreaseGini, decreasing = T, index.return = T)$ix, ]
     
     gini_table <- gini[sort.int(gini$MeanDecreaseGini, decreasing = T, index.return = T)$ix, ]
-
-      df <- gini_table
+    df <- gini_table
         
   })
   
