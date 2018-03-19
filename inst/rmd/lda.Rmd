@@ -1,0 +1,135 @@
+---
+title: "`r params$title`"
+subtitle: '`r params$subtitle`'
+author: '`r params$author`'
+date: '`r format(Sys.time(), "%B %d, %Y")`'
+output: 
+  html_document:
+    theme: united
+    toc: true
+    toc_depth: 3
+  pdf_document:
+    toc: true
+    toc_depth: 3
+    highlight: zenburn
+  word_document:
+    highlight: "tango"
+    toc: true
+    toc_depth: 3
+params: 
+  traits: "no data"
+  geno: "no data"
+  factor: "no data"
+  data: "no data"
+  maxp: "no data"
+  title: "no data"
+  subtitle: "no data"
+  author: "no data"
+---
+  
+  ```{r, echo = FALSE}
+library(knitr)
+
+traits <- params$traits
+geno <- params$geno
+factor <- params$factor
+data <- params$data
+maxp <- params$maxp
+
+data[, geno] <- as.character(data[, geno])
+data[, factor] <- as.factor(data[,factor]) 
+```
+
+# 1. Linear Discriminant Analysis
+
+The Linear Discriminant Analysis (`LDA`) is a dimensionality reduction techinique based on supervised learning or classification. This technique consist on finding a linear combination of features which characterizes or separates two or more classes of objects or events. The resulting combination may be used as a linear classifier, or, more commonly, for dimensionality reduction before later classification.
+
+The components of the model are:
+
+* X: a quantitative variable(s) that represent an attribute, feature or predictor.
+* Y: a cualitative variable which has the set of classes or labels.
+* Find a a good predictor function $f$ for the class $Y$ of any sample of the same distribution given only an observation of $X$. It is represent by:
+
+$$
+    f:X{\rightarrow}Y 
+$$
+Where 
+ 
+* $X = \left(x_{ij})\right$ that represent the ${ith}$ observation of the $jth$ attribute or predictor. 
+* $Y = \left(y_{j})\right$ that represent the {jth} class or label.
+
+
+
+
+# 2. Model evaluation and Selection
+
+```{r, echo = FALSE}
+model_data <- na.omit(data) #Omitir NAs#
+set.seed(1)
+intrain <- sample(nrow(model_data), round(0.50*nrow(model_data)))
+train <- model_data[intrain, ]
+test <- model_data[-intrain, ]
+library(MASS)
+#5.3. Calcular el valor de prediccion de tramamiento con un grupo de variables a elegir 
+formula <- as.formula(paste(factor, paste(traits, collapse=" + "), sep=" ~ "))
+lda1cv <- lda(formula, data= model_data, CV = T)
+#lda1cv <- lda(as.factor(FACTOR)~ SD_110DAP + TTFW + CR_90DAP, data=temp2, CV = T)
+as1 <- sum(diag(prop.table(table(model_data[,factor], lda1cv$class))))
+lda1train <- lda(formula, data=model_data, subset = intrain, CV = F)
+as2 <- sum(diag(prop.table(table(test[,factor], predict(lda1train, model_data[-intrain, ])$class))))
+
+```
+
+# 2.1 Cross-Validation
+
+K-fold cross validation taken to its extreme, with K equal to N, the number of data points in the set.
+
+```{r, echo = FALSE}
+as1
+```
+
+# 2.2 Percentage of correct predicted values
+
+```{r, echo = FALSE}
+as2
+```
+
+
+# 3. Plotting Linear Discriminant Analysis
+
+```{r, echo = FALSE, fig.height = 10, fig.width = 12, warning=FALSE}
+#datos <- na.omit(data)
+myColors <- colors()[c(258, 144, 75)]
+factor_levels <- levels(data[,factor])
+#print(factor_levels)
+model_data [, factor] <- factor(model_data[,factor], levels = factor_levels)
+
+names(myColors) <- levels(model_data[,factor])
+colScale <- scale_colour_manual(name = "Treat",values = myColors)
+#Treatment contraction names must be the same used in Module 8.1 – Abiotic Stress protocol.
+
+# 6.3. Generate a Train and Test data set
+set.seed(1)
+intrain <- sample(nrow(model_data), round(0.50*nrow(model_data)))
+train <- model_data[intrain, ]
+test <- model_data[-intrain, ]
+
+library(gridExtra)
+library(ggplot2)
+# 6.4. Plotting the discrimination coefficients in a bi-dimensional graph. Note that what is written in red must be replaced for the respective selected traits
+#lda2train <- lda(as.factor(TREAT)~ DSI_a + SD_Slp + ChCI_Slp + CR_Slp, data=dallpc, CV = F)
+modelo <- as.formula(paste(factor, paste(traits, collapse=" + "), sep=" ~ "))
+lda2train <- lda(modelo, data= model_data, CV = F)
+prop.lda =  lda2train$svd^2/sum(lda2train$svd^2)
+plda <- predict(object = lda2train, newdata = model_data )
+dataset = data.frame(Factor_col = model_data[,factor], lda = plda$x)
+p1.1 <- ggplot(dataset) + geom_point(aes(lda.LD1, lda.LD2, colour = Factor_col), size = 2) + xlim(-4, 4) + ylim(-5, 1) +
+  labs(x = paste("LD1 (",  ")", sep=""),
+       y = paste("LD2 (",  ")", sep="")) +
+  #ggtitle('Linear Discriminant analysis\nTraits: DSI, SD_Slp, ChCI_Slp, CR_Slp') +
+  ggtitle('Linear Discriminant analysis\nTraits: DSI, SD_Slp, ChISPAD_Slp, CR_Slp') +
+  theme(plot.title = element_text(hjust = 0.5, size = 10))
+grid.arrange(p1.1 + colScale)
+
+```
+

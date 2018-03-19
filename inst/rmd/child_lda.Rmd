@@ -1,0 +1,100 @@
+`r i = {{i}}`
+
+# {{i+1}}. Analysis for trait `r traits[i]`
+
+```{r, echo = FALSE}
+nt <- nlevels(as.factor(data[, geno]))
+model <- aov(data[, traits[i]] ~ data[, geno])
+model$terms[[2]] <- traits[i]
+at <- anova(model)
+rownames(at)[1] <- geno
+```
+
+## {{i+1}}.1. ANOVA
+
+You have fitted a linear model for a CRD. The ANOVA table for your model is:
+
+```{r, echo = FALSE}
+at
+```
+
+The coefficient of variation for this experiment is `r format(agricolae::cv.model(model), digits = 4)`%.
+The p-value for genotypes is `r format(at[1, 5], digits = 4)`
+`r if(at[1, 5] < 0.05) {"which is significant at the 5% level."} else {"which is not significant at the 5% level."}`
+
+## {{i+1}}.2. Lineal Discriminant Analysis Plotting
+
+Plot for linear discriminant analysis 
+
+```{r, echo = FALSE, fig.height = 5, fig.width = 10}
+temp1 <- data.frame(read_excel("D:\\HIDAP_DOCUMENTATION_AND_EXAMPLES\\Drought Report\\PTDrought022216_ICA (1).xlsx", na = "NA"))
+#temp1 <- data.frame(read_excel("PTDrought022217_ICA.xlsx", 1, na = "NA"))
+#dallpc <- na.omit(dallpc) #Omitir NAs#
+dallpc <- na.omit(temp1) #Omitir NAs#
+
+#6.2. Generating colors and Categorical order
+# http://research.stowers.org/mcm/efg/R/Color/Chart/index.htm #see this link to choose colors
+myColors <- colors()[c(258, 144, 75)]
+dallpc$FACTOR <- factor(dallpc$FACTOR, levels=c("NI", "REC", "TD"))
+names(myColors) <- levels(dallpc$FACTOR)
+colScale <- scale_colour_manual(name = "Treat",values = myColors)
+#Treatment contraction names must be the same used in Module 8.1 – Abiotic Stress protocol.
+
+# 6.3. Generate a Train and Test data set
+set.seed(1)
+intrain <- sample(nrow(temp2), round(0.50*nrow(temp2)))
+train <- temp2[intrain, ]
+test <- temp2[-intrain, ]
+
+library(gridExtra)
+library(ggplot2)
+# 6.4. Plotting the discrimination coefficients in a bi-dimensional graph. Note that what is written in red must be replaced for the respective selected traits
+#lda2train <- lda(as.factor(TREAT)~ DSI_a + SD_Slp + ChCI_Slp + CR_Slp, data=dallpc, CV = F)
+lda2train <- lda(as.factor(FACTOR)~ DSI + SD_Slp + ChISPAD_Slp + CR_Slp, data=dallpc, CV = F)
+prop.lda =  lda2train$svd^2/sum(lda2train$svd^2)
+plda <- predict(object = lda2train, newdata = dallpc)
+dataset = data.frame(Stress = dallpc[,"FACTOR"], lda = plda$x)
+p1.1 <- ggplot(dataset) + geom_point(aes(lda.LD1, lda.LD2, colour = Stress), size = 2) + xlim(-4, 4) + ylim(-5, 1) +
+  labs(x = paste("LD1 (",  ")", sep=""),
+       y = paste("LD2 (",  ")", sep="")) +
+  #ggtitle('Linear Discriminant analysis\nTraits: DSI, SD_Slp, ChCI_Slp, CR_Slp') +
+  ggtitle('Linear Discriminant analysis\nTraits: DSI, SD_Slp, ChISPAD_Slp, CR_Slp') +
+  theme(plot.title = element_text(hjust = 0.5, size = 10))
+grid.arrange(p1.1 + colScale)
+
+```
+
+Any trend in the residuals in the left plot would violate the assumption of independence while a trend in the variability of the residuals --for instance a funnel shape-- suggests heterogeneity of variances. Departures from the theoretical normal line on the right plot are symptoms of lack of normality.
+
+## {{i+1}}.3. Genotype means
+
+`r if(at[1, 5] < 0.05) {"Below are the sorted means for each genotype with letters indicating if there are significant differences using the multiple comparisons method of Tukey at the 5% level."} else {"The means of your genotypes are:"}`
+
+```{r, echo = FALSE}
+if (at[1, 5] < 0.05)
+  agricolae::HSD.test(data[, traits[i]], data[, geno], at[2, 1], at[2, 3])$groups else
+    tapply(data[, traits[i]], data[, geno], mean, na.rm = TRUE)
+```
+
+`r if(nt < 10) {"It is always good to have some visualization of the data. Because the number of genotypes in your experiment is not so big, we can plot the data for each genotypes:"}`
+
+```{r, echo = FALSE}
+if (nt < 10) msdplot(traits[i], geno, data, conf = 1)
+```
+
+## {{i+1}}.4. Variance components
+
+Below are the variance components for this model, under the assumption that genotypes are random. Here the model is fitted using REML.
+
+```{r, echo = FALSE}
+y <- data[, traits[i]]
+fg <- data[, geno]
+ff <- as.formula(y ~ (1|fg))
+model <- lme4::lmer(ff)
+vc <- data.frame(lme4::VarCorr(model))
+vc[1, 1] <- geno
+rownames(vc) <- vc[, 1]
+vc <- vc[, c(4, 5)]
+colnames(vc) <- c("Variance", "Std.Dev.")
+vc
+```
