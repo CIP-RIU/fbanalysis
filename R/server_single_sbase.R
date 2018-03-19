@@ -197,8 +197,8 @@ single_server_base <- function(input, output, session, values){
       
       if(design == "CRD")  {x <- "Completely Randomized Design (CRD)"}
       if(design == "RCBD") {x <- "Randomized Complete Block Design (RCBD)"}
-      #if(design == "ABD")  {choice_design<-"Augmented Block Design (ABD)"}
-      #if(design == "CRD")  {choice_design<-"Alpha Design(0,1) (AD)"}
+      if(design == "ABD")  {x <-"Augmented Block Design (ABD)"}
+      if(design == "Alpha")   {x <-"Alpha design"}
       #if(design == "CRD")  {choice_design<-"Factorial Two-Way Design in CRD (F2CRD)"}
       #if(design == "CRD")  {choice_design<-"Factorial Two-Way Design in RCBD (F2RCBD)"}
       
@@ -346,20 +346,20 @@ single_server_base <- function(input, output, session, values){
         }
         
         
-        # if(design == "Augmented Block Design (ABD)"){
-        #   #try(pepa::repo.abd(traits = trait, geno = genotypes, format = format, data = fieldbook))
-        #   try(pepa::repo.abd(traits = trait, geno = genotypes, rep = rep, format = format, data = fieldbook))
-        #   path <- "/usr/local/lib/R/site-library/pepa/rmd/abd.docx"
-        #   #file.copy("/usr/local/lib/R/site-library/pepa/rmd/abd.docx", con)
-        # }
+        if(design == "Augmented Block Design (ABD)"){
+          #try(pepa::repo.abd(traits = trait, geno = genotypes, format = format, data = fieldbook))
+          try(pepa::repo.abd(traits = trait, geno = genotypes, rep = rep, format = format, data = fieldbook))
+          path <- "/usr/local/lib/R/site-library/pepa/rmd/abd.docx"
+          #file.copy("/usr/local/lib/R/site-library/pepa/rmd/abd.docx", con)
+        }
         # 
         # 
-        # if(design == "Alpha Design(0,1) (AD)"){
-        #   #try(pepa::repo.abd(traits = trait, geno = genotypes, format = format, data = fieldbook))
-        #   try(pepa::repo.a01d(traits = trait, geno = genotypes, rep = rep, block = block, k = k, data = fieldbook, format = format))
-        #   path <- "/usr/local/lib/R/site-library/pepa/rmd/a01d.docx"
-        #   #file.copy("/usr/local/lib/R/site-library/pepa/rmd/a01d.docx", con)
-        # }
+        if(design == "Alpha design"){
+          #try(pepa::repo.abd(traits = trait, geno = genotypes, format = format, data = fieldbook))
+          try(pepa::repo.a01d(traits = trait, geno = genotypes, rep = rep, block = block, k = k, data = fieldbook, format = format))
+          path <- "/usr/local/lib/R/site-library/pepa/rmd/a01d.docx"
+          #file.copy("/usr/local/lib/R/site-library/pepa/rmd/a01d.docx", con)
+        }
         # 
         # 
         # if(design == "Split Plot with Plots in CRD (SPCRD)"){
