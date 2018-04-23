@@ -4,8 +4,7 @@
 \alias{lda_ui}
 \title{UI for Linear Discriminant Analysis in HiDAP}
 \usage{
-lda_ui(type = "tab",
-  title = "Statistical Analysis for One Environment Trial",
+lda_ui(type = "tab", title = "Linear Discriminant Analysis",
   name = "analysis_lda")
 }
 \arguments{
@@ -21,3 +20,4 @@ Returns user friendly ui
 \author{
 Omar Benites
 }
+

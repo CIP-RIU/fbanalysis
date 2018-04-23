@@ -236,7 +236,12 @@ single_server_base <- function(input, output, session, values){
     fb <- fb$fb 
     # selectInput('rep_single_sbase', 'Select Replications', c(Choose='', names(hot_fb_sbase()$fb)),
     #             selectize=TRUE)
-    selectInput('rep_single_sbase', 'Select Replications or Blocks', c(Choose='', names(fb)),
+    label_string <- 'Select Replications or Blocks'
+    if(input$design_single_sbase=="Alpha design"){label_string <- "Select Replications"}
+    
+    
+    #selectInput('rep_single_sbase', 'Select Replications or Blocks', c(Choose='', names(fb)),
+    selectInput('rep_single_sbase', label = label_string , c(Choose='', names(fb)),
                 selectize=TRUE)
   })
   
@@ -258,7 +263,7 @@ single_server_base <- function(input, output, session, values){
   })
   
   #select block
-  output$block_single  <- renderUI({
+  output$block_single_sbase  <- renderUI({
     selectInput('block_single_sbase', 'Select Block', c(Choose='', names(hot_fb_sbase()$fb)),
                 selectize=TRUE)
   })

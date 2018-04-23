@@ -49,7 +49,7 @@ single_sbase_ui <- function(type = "tab", title = "Statistical Analysis for One 
                                                                                                          c("Completely Randomized Design (CRD)",
                                                                                                            "Randomized Complete Block Design (RCBD)",
                                                                                                            "Augmented Block Design (ABD)",
-                                                                                                           "Alpha Design(0,1) (AD)",
+                                                                                                           "Alpha design",
                                                                                                            "Factorial Two-Way Design in CRD (F2CRD)",
                                                                                                            "Factorial Two-Way Design in RCBD (F2RCBD)"),
                                                                                                        #"Split Plot with Plots in CRD (SPCRD)",
@@ -59,7 +59,7 @@ single_sbase_ui <- function(type = "tab", title = "Statistical Analysis for One 
                                                                                            
                                                                                            
                                                                                            shiny::conditionalPanel(
-                                                                                             condition = "input.design_single_sbase == 'Alpha Design(0,1) (AD)'|
+                                                                                             condition = "input.design_single_sbase == 'Alpha design'|
                                                                                              input.design_single_sbase == 'Randomized Complete Block Design (RCBD)'|
                                                                                              input.design_single_sbase == 'Augmented Block Design (ABD)'|
                                                                                              input.design_single_sbase == 'Factorial Two-Way Design in CRD (F2CRD)'|
@@ -79,13 +79,13 @@ single_sbase_ui <- function(type = "tab", title = "Statistical Analysis for One 
                                                                                            
                                                                                            
                                                                                            shiny::conditionalPanel(
-                                                                                             condition = "input.design_single_sbase == 'Alpha Design(0,1) (AD)'",
+                                                                                             condition = "input.design_single_sbase == 'Alpha design'",
                                                                                              uiOutput("block_single_sbase"),
                                                                                              uiOutput("k_single_sbase")
                                                                                            ),
                                                                                            
                                                                                            shiny::conditionalPanel(
-                                                                                             condition = "input.design_single_sbase == 'Alpha Design(0,1) (AD)'|
+                                                                                             condition = "input.design_single_sbase == 'Alpha design'|
                                                                                              input.design_single_sbase == 'Completely Randomized Design (CRD)'|
                                                                                              input.design_single_sbase == 'Randomized Complete Block Design (RCBD)'|
                                                                                              input.design_single_sbase == 'Augmented Block Design (ABD)'|
@@ -114,13 +114,27 @@ single_sbase_ui <- function(type = "tab", title = "Statistical Analysis for One 
                                                                                                                    
                                                                                            ),
                                                                                            
-                                                                                           shinysky::shinyalert("alert_singleReport_sbase_done", FALSE, auto.close.after = 8)#,
-                                                                                           
+                                                                                           shinysky::shinyalert("alert_singleReport_sbase_done", FALSE, auto.close.after = 8),
+                                                                                           br(),
+                                                                                           br(),
+                                                                                           br(),
+                                                                                           br(),
+                                                                                           br(),
+                                                                                           br(),
+                                                                                           br(),
+                                                                                           br()
                                                                                            
                                                                                            # br()#,
                                                                          ) #end second box
-                                                                       )#, #end conditinal panel for Inputs
-                                                                       
+                                                                       ), #end conditinal panel for Inputs
+                                                                       br(),
+                                                                       br(),
+                                                                       br(),
+                                                                       br(),
+                                                                       br(),
+                                                                       br(),
+                                                                       br(),
+                                                                       br()
                                                                        )
                                                                        )
                                               
