@@ -337,16 +337,18 @@ single_server_base <- function(input, output, session, values){
         
         if(design == "Randomized Complete Block Design (RCBD)"){
           try(pepa::repo.rcbd(traits = trait, geno = genotypes, rep = rep, format = format, data = fieldbook))
-          path <- "/usr/local/lib/R/site-library/pepa/rmd/rcbd.docx" #shiny server CIP-RIU
+          #path <- "/usr/local/lib/R/site-library/pepa/rmd/rcbd.docx" # former shiny server CIP-RIU
           #path <- "/home/hidap/R/x86_64-pc-linux-gnu-library/3.4/pepa/rmd/rcbd.docx" #shiny server BTI-SweetPotatoBase
+          path<- "~/R/x86_64-pc-linux-gnu-library/3.4/pepa/rmd/crd.docx" #rsconnect cip
           
           #file.copy("/usr/local/lib/R/site-library/pepa/rmd/crd.docx", con)
         }
         
         if(design == "Completely Randomized Design (CRD)"){
           try(pepa::repo.crd(traits = trait, geno = genotypes, format = format, data = fieldbook))
-          path <- "/usr/local/lib/R/site-library/pepa/rmd/crd.docx" #shiny server CIP-RIU
+          #path <- "/usr/local/lib/R/site-library/pepa/rmd/crd.docx" #shiny server CIP-RIU
           #path <- "/home/hidap/R/x86_64-pc-linux-gnu-library/3.4/pepa/rmd/crd.docx" #shiny server BTI-SweetPotatoBase
+          path<- "~/R/x86_64-pc-linux-gnu-library/3.4/pepa/rmd/crd.docx" #rsconnect cip
           #file.copy("/usr/local/lib/R/site-library/pepa/rmd/rcbd.docx", con)
         }
         
@@ -354,7 +356,9 @@ single_server_base <- function(input, output, session, values){
         if(design == "Augmented Block Design (ABD)"){
           #try(pepa::repo.abd(traits = trait, geno = genotypes, format = format, data = fieldbook))
           try(pepa::repo.abd(traits = trait, geno = genotypes, rep = rep, format = format, data = fieldbook))
-          path <- "/usr/local/lib/R/site-library/pepa/rmd/abd.docx"
+          #path <- "/usr/local/lib/R/site-library/pepa/rmd/abd.docx" # # former shiny server CIP-RIU
+          path<- "~/R/x86_64-pc-linux-gnu-library/3.4/pepa/rmd/abd.docx" #rsconnect cip
+           
           #file.copy("/usr/local/lib/R/site-library/pepa/rmd/abd.docx", con)
         }
         # 
@@ -362,7 +366,8 @@ single_server_base <- function(input, output, session, values){
         if(design == "Alpha design"){
           #try(pepa::repo.abd(traits = trait, geno = genotypes, format = format, data = fieldbook))
           try(pepa::repo.a01d(traits = trait, geno = genotypes, rep = rep, block = block, k = k, data = fieldbook, format = format))
-          path <- "/usr/local/lib/R/site-library/pepa/rmd/a01d.docx"
+          path<- "~/R/x86_64-pc-linux-gnu-library/3.4/pepa/rmd/a01d.docx"
+          #path <- "/usr/local/lib/R/site-library/pepa/rmd/a01d.docx"
           #file.copy("/usr/local/lib/R/site-library/pepa/rmd/a01d.docx", con)
         }
         # 
@@ -404,6 +409,7 @@ single_server_base <- function(input, output, session, values){
         print(design)
         
         file.copy(path , con, overwrite = TRUE)
+        print("paso file copy")
         
         incProgress(4/5, detail = paste("Formattting in ", "MS Word",sep= ""))
         incProgress(5/5, detail = paste("Downloading Analysis..."))

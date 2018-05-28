@@ -21,4 +21,3 @@ Server for Drought Index
 \author{
 Omar Benites
 }
-

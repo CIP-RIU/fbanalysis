@@ -18,4 +18,3 @@ detect what it wrong in their data.
 \author{
 Omar Benites
 }
-
