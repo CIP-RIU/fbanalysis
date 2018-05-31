@@ -358,7 +358,7 @@ single_server_base <- function(input, output, session, values){
         
         
         if(design == "Completely Randomized Design (CRD)"){
-          try(pepa::repo.crd(traits = trait, geno = genotypes, format = format, data = fieldbook))
+          try(pepa::repo.crd(traits = trait, geno = genotypes, format = format, data = fieldbook, server =TRUE))
           #path <- "/usr/local/lib/R/site-library/pepa/rmd/crd.docx" #shiny server CIP-RIU
           #path <- "/home/hidap/R/x86_64-pc-linux-gnu-library/3.4/pepa/rmd/crd.docx" #shiny server BTI-SweetPotatoBase
           #format2 <- paste(format, "_document", sep = "")
@@ -459,7 +459,7 @@ single_server_base <- function(input, output, session, values){
         # Sys.chmod(con, mode = "0777", use_umask = TRUE)#permissions
         # file.copy(path , con, overwrite = TRUE)
         
-       
+        Sys.chmod(path, mode = "0777", use_umask = TRUE)
         
         print(paste0(serverFileDir, servName))
         # file.copy(paste0(serverFileDir, servName) , con, overwrite = TRUE)
