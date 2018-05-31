@@ -364,7 +364,7 @@ single_server_base <- function(input, output, session, values){
           #format2 <- paste(format, "_document", sep = "")
           
           dirfiles <- system.file(package = "pepa")
-          path<- file.path(dirfiles, "/rmd/crd.docx")
+          path<- file.path(dirfiles, "rmd/crd.docx")
           
           print("RUTA BUSCADA")
           print(path)
