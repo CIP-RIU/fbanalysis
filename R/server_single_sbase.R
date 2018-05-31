@@ -415,13 +415,8 @@ single_server_base <- function(input, output, session, values){
         #   #file.copy("/usr/local/lib/R/site-library/pepa/rmd/2frcbd.docx", con)
         # }
         # 
-        
-        # print(trait)
-        # print(design)
-        # print(format)
-        # print(getwd())
-        # print(fileDOCX)
-        # print(tempReport)
+        Sys.chmod(path, mode = "0777", use_umask = TRUE) #permissions
+        Sys.chmod(con, mode = "0777", use_umask = TRUE)#permissions
         file.copy(path , con, overwrite = TRUE)
         #file.copy(fileDOCX, tempReport, overwrite = TRUE)
         #print("paso file copy")
@@ -436,6 +431,9 @@ single_server_base <- function(input, output, session, values){
       
     }
   )
+  
+  
+  
   
   
   # shiny::observeEvent(input$single_button_sbase, {
