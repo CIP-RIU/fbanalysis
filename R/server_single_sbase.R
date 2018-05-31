@@ -346,13 +346,45 @@ single_server_base <- function(input, output, session, values){
           #file.copy("/usr/local/lib/R/site-library/pepa/rmd/crd.docx", con)
         }
         
+        
+        
+        servName = "crd.docx"
+        serverFileDir <-"https://research.cip.cgiar.org/gtdms/hidap/hidap_sbase_reports/files/"
+        serverService <-"https://research.cip.cgiar.org/gtdms/hidap/hidap_sbase_reports/getFileUpload.php"
+        
+        # uploadDate  <- as.character(Sys.time(), "%Y%m%d%H%M%S")
+        # ranStr <-  stri_rand_strings(1, 15,  '[a-zA-Z0-9]')
+        # servName = paste(date, ranStr, sep="-")
+        
+        
         if(design == "Completely Randomized Design (CRD)"){
           try(pepa::repo.crd(traits = trait, geno = genotypes, format = format, data = fieldbook))
           #path <- "/usr/local/lib/R/site-library/pepa/rmd/crd.docx" #shiny server CIP-RIU
           #path <- "/home/hidap/R/x86_64-pc-linux-gnu-library/3.4/pepa/rmd/crd.docx" #shiny server BTI-SweetPotatoBase
           #format2 <- paste(format, "_document", sep = "")
+          
           dirfiles <- system.file(package = "pepa")
           path<- file.path(dirfiles, "/rmd/crd.docx")
+          
+          
+          
+          
+          params <- list(
+            dataRequest = "uploadFile",
+            fileServerName = servName,
+            filedata=upload_file(path, "text/csv")
+          )
+          
+          var <- POST(serverService, body=params)
+          code <- content(var, "text")
+          
+          
+
+          if (code == "200")
+            print("uploaded")
+          else
+            print("Not uploaded")
+            # message <- paste0(message, fileName, " was successfully shared <br>")
           
           #path<- "~/R/x86_64-pc-linux-gnu-library/3.4/pepa/rmd/crd.docx" #rsconnect cip
           #format2 <- paste("word", "_document", sep = "")
@@ -415,9 +447,15 @@ single_server_base <- function(input, output, session, values){
         #   #file.copy("/usr/local/lib/R/site-library/pepa/rmd/2frcbd.docx", con)
         # }
         # 
-        Sys.chmod(path, mode = "0777", use_umask = TRUE) #permissions
-        Sys.chmod(con, mode = "0777", use_umask = TRUE)#permissions
-        file.copy(path , con, overwrite = TRUE)
+        # Sys.chmod(path, mode = "0777", use_umask = TRUE) #permissions
+        # Sys.chmod(con, mode = "0777", use_umask = TRUE)#permissions
+        # file.copy(path , con, overwrite = TRUE)
+        
+       
+        
+        print(paste0(serverFileDir, servName))
+        # file.copy(paste0(serverFileDir, servName) , con, overwrite = TRUE)
+        download.file(paste0(serverFileDir, servName), con, method = "curl")
         #file.copy(fileDOCX, tempReport, overwrite = TRUE)
         #print("paso file copy")
         
