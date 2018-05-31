@@ -363,7 +363,14 @@ single_server_base <- function(input, output, session, values){
           #path <- "/home/hidap/R/x86_64-pc-linux-gnu-library/3.4/pepa/rmd/crd.docx" #shiny server BTI-SweetPotatoBase
           #format2 <- paste(format, "_document", sep = "")
           
+          print("Workind Directory")
+          print(getwd())
+          
+          
+          
           dirfiles <- system.file(package = "pepa")
+          print("dirfiles")
+          print(dirfiles)
           path<- file.path(dirfiles, "rmd/crd.docx")
           
           print("RUTA BUSCADA")
