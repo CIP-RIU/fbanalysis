@@ -358,7 +358,7 @@ single_server_base <- function(input, output, session, values){
         
         
         if(design == "Completely Randomized Design (CRD)"){
-          try(pepa::repo.crd(traits = trait, geno = genotypes, format = format, data = fieldbook, server =TRUE))
+         
           #path <- "/usr/local/lib/R/site-library/pepa/rmd/crd.docx" #shiny server CIP-RIU
           #path <- "/home/hidap/R/x86_64-pc-linux-gnu-library/3.4/pepa/rmd/crd.docx" #shiny server BTI-SweetPotatoBase
           #format2 <- paste(format, "_document", sep = "")
@@ -371,10 +371,13 @@ single_server_base <- function(input, output, session, values){
           dirfiles <- system.file(package = "pepa")
           print("dirfiles")
           print(dirfiles)
-          path<- file.path(dirfiles, "rmd/crd.docx")
+          #path<-  #file.path(dirfiles, "rmd/crd.docx")
+          path<- fbglobal::get_base_dir()
           
           print("RUTA BUSCADA")
           print(path)
+          
+          try(pepa::repo.crd(traits = trait, geno = genotypes, format = format, data = fieldbook, server =TRUE, server_file_name = path))
           
           
           params <- list(
