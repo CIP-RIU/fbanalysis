@@ -308,7 +308,7 @@ single_server_base <- function(input, output, session, values){
     # filename = function() {
     #   paste("report", Sys.Date(), 'docx', sep='.')
     # },
-    filename =  paste("report",'docx', sep='.'),
+    filename =  paste0("report", "_", as.character(Sys.time(), "%Y%m%d%H%M%S"), '.docx'),
     content = function(con) {
     #content = function(file) {  
       
@@ -316,9 +316,6 @@ single_server_base <- function(input, output, session, values){
         
         incProgress(1/5, detail = paste("Downloading Analysis..."))  
         
-        #hot_fb_sbase <- hot_fb_sbase()$fb
-        
-        #fieldbook <- as.data.frame(hot_fb_sbase())
         fieldbook <- hot_fb_sbase()
         fieldbook <- as.data.frame(fieldbook$fb)
         
@@ -339,51 +336,39 @@ single_server_base <- function(input, output, session, values){
         
         if(design == "Randomized Complete Block Design (RCBD)"){
           try(pepa::repo.rcbd(traits = trait, geno = genotypes, rep = rep, format = format, data = fieldbook))
-          #path <- "/usr/local/lib/R/site-library/pepa/rmd/rcbd.docx" # former shiny server CIP-RIU
-          #path <- "/home/hidap/R/x86_64-pc-linux-gnu-library/3.4/pepa/rmd/rcbd.docx" #shiny server BTI-SweetPotatoBase
           path<- "~/R/x86_64-pc-linux-gnu-library/3.4/pepa/rmd/rcbd.docx" #rsconnect cip
-          #tempReport <- file.path(tempdir(), "rcbd.docx")
-          #file.copy("/usr/local/lib/R/site-library/pepa/rmd/crd.docx", con)
+ 
         }
-        
-        
-        
-        servName = "crd.docx"
-        serverFileDir <-"https://research.cip.cgiar.org/gtdms/hidap/hidap_sbase_reports/files/"
-        serverService <-"https://research.cip.cgiar.org/gtdms/hidap/hidap_sbase_reports/getFileUpload.php"
-        
-        # uploadDate  <- as.character(Sys.time(), "%Y%m%d%H%M%S")
-        # ranStr <-  stri_rand_strings(1, 15,  '[a-zA-Z0-9]')
-        # servName = paste(date, ranStr, sep="-")
+    
+      
         
         
         if(design == "Completely Randomized Design (CRD)"){
          
-          #path <- "/usr/local/lib/R/site-library/pepa/rmd/crd.docx" #shiny server CIP-RIU
-          #path <- "/home/hidap/R/x86_64-pc-linux-gnu-library/3.4/pepa/rmd/crd.docx" #shiny server BTI-SweetPotatoBase
-          #format2 <- paste(format, "_document", sep = "")
           
-          print("Workind Directory")
-          print(getwd())
+          #servName =   "crd.docx"
+          servName =   "crd"
+          serverFileDir <-"https://research.cip.cgiar.org/gtdms/hidap/hidap_sbase_reports/files/"
+          serverService <-"https://research.cip.cgiar.org/gtdms/hidap/hidap_sbase_reports/getFileUpload.php"
           
+          uploadDate  <- as.character(Sys.time(), "%Y%m%d%H%M%S")
+          ranStr <-  stri_rand_strings(1, 15,  '[a-zA-Z0-9]')
+          servName <- paste(uploadDate, ranStr, servName , sep= "-") #nombre sin extensions!!!!
           
+          #dirfiles <- system.file(package = "pepa")
+        
+          dirName <- fbglobal::get_base_dir()
+          path <- paste0(dirName, servName, ".docx")
           
-          dirfiles <- system.file(package = "pepa")
-          print("dirfiles")
-          print(dirfiles)
-          #path<-  #file.path(dirfiles, "rmd/crd.docx")
-          path2<- fbglobal::get_base_dir()
-          path <- paste0(path2, "crd.docx")
-          
-          print("RUTA BUSCADA dsa")
           print(path)
           
-          try(pepa::repo.crd(traits = trait, geno = genotypes, format = format, data = fieldbook, server =TRUE, server_file_name = path2))
-          
+          try(pepa::repo.crd(traits = trait, geno = genotypes, format = format, data = fieldbook, server =TRUE, server_dir_name = dirName, 
+                             server_file_name = servName
+                             ))
           
           params <- list(
             dataRequest = "uploadFile",
-            fileServerName = servName,
+            fileServerName = paste0(servName, ".docx"),
             filedata=upload_file(path, "text/csv")
           )
           
@@ -396,14 +381,7 @@ single_server_base <- function(input, output, session, values){
             print("uploaded")
           else
             print("Not uploaded")
-            # message <- paste0(message, fileName, " was successfully shared <br>")
-          
-          #path<- "~/R/x86_64-pc-linux-gnu-library/3.4/pepa/rmd/crd.docx" #rsconnect cip
-          #format2 <- paste("word", "_document", sep = "")
-          #dirfiles <- system.file(package = "pepa")
-          #fileDOCX <- paste(dirfiles, "/rmd/crd.Rmd", sep = "")
-          #tempReport <- file.path(tempdir(), "crd.Rmd")
-          #file.copy("/usr/local/lib/R/site-library/pepa/rmd/rcbd.docx", con)
+  
         }
         
         
@@ -411,7 +389,7 @@ single_server_base <- function(input, output, session, values){
           try(pepa::repo.abd(traits = trait, geno = genotypes, rep = rep, format = format, data = fieldbook))
           #try(pepa::repo.abd(traits = trait, geno = genotypes, rep = rep, format = format, data = fieldbook))
           #path <- "/usr/local/lib/R/site-library/pepa/rmd/abd.docx" # # former shiny server CIP-RIU
-          path<- "~/R/x86_64-pc-linux-gnu-library/3.4/pepa/rmd/abd.docx" #rsconnect cip
+          #path<- "~/R/x86_64-pc-linux-gnu-library/3.4/pepa/rmd/abd.docx" #rsconnect cip
           #tempReport <- file.path(tempdir(), "abd.docx") 
           #file.copy("/usr/local/lib/R/site-library/pepa/rmd/abd.docx", con)
         }
@@ -420,7 +398,7 @@ single_server_base <- function(input, output, session, values){
         if(design == "Alpha design"){
           #try(pepa::repo.abd(traits = trait, geno = genotypes, format = format, data = fieldbook))
           try(pepa::repo.a01d(traits = trait, geno = genotypes, rep = rep, block = block, k = k, data = fieldbook, format = format))
-          path<- "~/R/x86_64-pc-linux-gnu-library/3.4/pepa/rmd/a01d.docx"
+          #path<- "~/R/x86_64-pc-linux-gnu-library/3.4/pepa/rmd/a01d.docx"
           #tempReport <- file.path(tempdir(), "a01d.docx")
           #path <- "/usr/local/lib/R/site-library/pepa/rmd/a01d.docx"
           #file.copy("/usr/local/lib/R/site-library/pepa/rmd/a01d.docx", con)
@@ -459,21 +437,15 @@ single_server_base <- function(input, output, session, values){
         #   #file.copy("/usr/local/lib/R/site-library/pepa/rmd/2frcbd.docx", con)
         # }
         # 
-        # Sys.chmod(path, mode = "0777", use_umask = TRUE) #permissions
-        # Sys.chmod(con, mode = "0777", use_umask = TRUE)#permissions
-        # file.copy(path , con, overwrite = TRUE)
+
         
         Sys.chmod(path, mode = "0777", use_umask = TRUE)
         
-        print(paste0(serverFileDir, servName))
+        #print(paste0(serverFileDir, servName, ".docx"))
+        print(servName)
         # file.copy(paste0(serverFileDir, servName) , con, overwrite = TRUE)
-        download.file(paste0(serverFileDir, servName), con, method = "curl")
-        #file.copy(fileDOCX, tempReport, overwrite = TRUE)
-        #print("paso file copy")
-        
-        #try(pepa::repo.crd(traits = trait, geno = genotypes, format = format, data = fieldbook, server = TRUE))
-        
-        
+        download.file(paste0(serverFileDir, servName, ".docx"), con, method = "curl")
+
         incProgress(4/5, detail = paste("Formattting in ", "MS Word",sep= ""))
         incProgress(5/5, detail = paste("Downloading Analysis..."))
         
