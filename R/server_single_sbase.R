@@ -374,7 +374,7 @@ single_server_base <- function(input, output, session, values){
           #path<-  #file.path(dirfiles, "rmd/crd.docx")
           path<- fbglobal::get_base_dir()
           
-          print("RUTA BUSCADA")
+          print("RUTA BUSCADA dsa")
           print(path)
           
           try(pepa::repo.crd(traits = trait, geno = genotypes, format = format, data = fieldbook, server =TRUE, server_file_name = path))
