@@ -366,7 +366,8 @@ single_server_base <- function(input, output, session, values){
           dirfiles <- system.file(package = "pepa")
           path<- file.path(dirfiles, "/rmd/crd.docx")
           
-          
+          print("RUTA BUSCADA")
+          print(path)
           
           
           params <- list(
