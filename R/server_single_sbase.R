@@ -309,8 +309,8 @@ single_server_base <- function(input, output, session, values){
     #   paste("report", Sys.Date(), 'docx', sep='.')
     # },
     filename =  paste("report",'docx', sep='.'),
-    #content = function(con) {
-    content = function(file) {  
+    content = function(con) {
+    #content = function(file) {  
       
       shiny::withProgress(message = "Opening single Report...",value= 0,{
         
@@ -341,7 +341,7 @@ single_server_base <- function(input, output, session, values){
           try(pepa::repo.rcbd(traits = trait, geno = genotypes, rep = rep, format = format, data = fieldbook))
           #path <- "/usr/local/lib/R/site-library/pepa/rmd/rcbd.docx" # former shiny server CIP-RIU
           #path <- "/home/hidap/R/x86_64-pc-linux-gnu-library/3.4/pepa/rmd/rcbd.docx" #shiny server BTI-SweetPotatoBase
-          path<- "~/R/x86_64-pc-linux-gnu-library/3.4/pepa/rmd/crd.docx" #rsconnect cip
+          path<- "~/R/x86_64-pc-linux-gnu-library/3.4/pepa/rmd/rcbd.docx" #rsconnect cip
           #tempReport <- file.path(tempdir(), "rcbd.docx")
           #file.copy("/usr/local/lib/R/site-library/pepa/rmd/crd.docx", con)
         }
@@ -350,7 +350,11 @@ single_server_base <- function(input, output, session, values){
           try(pepa::repo.crd(traits = trait, geno = genotypes, format = format, data = fieldbook))
           #path <- "/usr/local/lib/R/site-library/pepa/rmd/crd.docx" #shiny server CIP-RIU
           #path <- "/home/hidap/R/x86_64-pc-linux-gnu-library/3.4/pepa/rmd/crd.docx" #shiny server BTI-SweetPotatoBase
-          path<- "~/R/x86_64-pc-linux-gnu-library/3.4/pepa/rmd/crd.docx" #rsconnect cip
+          #format2 <- paste(format, "_document", sep = "")
+          dirfiles <- system.file(package = "pepa")
+          path<- file.path(dirfiles, "/rmd/crd.docx")
+          
+          #path<- "~/R/x86_64-pc-linux-gnu-library/3.4/pepa/rmd/crd.docx" #rsconnect cip
           #format2 <- paste("word", "_document", sep = "")
           #dirfiles <- system.file(package = "pepa")
           #fileDOCX <- paste(dirfiles, "/rmd/crd.Rmd", sep = "")
