@@ -305,10 +305,12 @@ single_server_base <- function(input, output, session, values){
   
   
   output$downloadSbase_single_report <- downloadHandler(
-    filename = function() {
-      paste("report", 'docx', sep='.')
-    },
-    content = function(con) {
+    # filename = function() {
+    #   paste("report", Sys.Date(), 'docx', sep='.')
+    # },
+    filename =  paste("report",'docx', sep='.'),
+    #content = function(con) {
+    content = function(file) {  
       
       shiny::withProgress(message = "Opening single Report...",value= 0,{
         
@@ -340,15 +342,19 @@ single_server_base <- function(input, output, session, values){
           #path <- "/usr/local/lib/R/site-library/pepa/rmd/rcbd.docx" # former shiny server CIP-RIU
           #path <- "/home/hidap/R/x86_64-pc-linux-gnu-library/3.4/pepa/rmd/rcbd.docx" #shiny server BTI-SweetPotatoBase
           path<- "~/R/x86_64-pc-linux-gnu-library/3.4/pepa/rmd/crd.docx" #rsconnect cip
-          
+          tempReport <- file.path(tempdir(), "rcbd.docx")
           #file.copy("/usr/local/lib/R/site-library/pepa/rmd/crd.docx", con)
         }
         
         if(design == "Completely Randomized Design (CRD)"){
-          try(pepa::repo.crd(traits = trait, geno = genotypes, format = format, data = fieldbook))
+          #try(pepa::repo.crd(traits = trait, geno = genotypes, format = format, data = fieldbook))
           #path <- "/usr/local/lib/R/site-library/pepa/rmd/crd.docx" #shiny server CIP-RIU
           #path <- "/home/hidap/R/x86_64-pc-linux-gnu-library/3.4/pepa/rmd/crd.docx" #shiny server BTI-SweetPotatoBase
-          path<- "~/R/x86_64-pc-linux-gnu-library/3.4/pepa/rmd/crd.docx" #rsconnect cip
+          #path<- "~/R/x86_64-pc-linux-gnu-library/3.4/pepa/rmd/crd.docx" #rsconnect cip
+          #format2 <- paste("word", "_document", sep = "")
+          dirfiles <- system.file(package = "pepa")
+          fileDOCX <- paste(dirfiles, "/rmd/crd.Rmd", sep = "")
+          tempReport <- file.path(tempdir(), "crd.Rmd")
           #file.copy("/usr/local/lib/R/site-library/pepa/rmd/rcbd.docx", con)
         }
         
@@ -358,7 +364,7 @@ single_server_base <- function(input, output, session, values){
           try(pepa::repo.abd(traits = trait, geno = genotypes, rep = rep, format = format, data = fieldbook))
           #path <- "/usr/local/lib/R/site-library/pepa/rmd/abd.docx" # # former shiny server CIP-RIU
           path<- "~/R/x86_64-pc-linux-gnu-library/3.4/pepa/rmd/abd.docx" #rsconnect cip
-           
+          tempReport <- file.path(tempdir(), "abd.docx") 
           #file.copy("/usr/local/lib/R/site-library/pepa/rmd/abd.docx", con)
         }
         # 
@@ -367,6 +373,7 @@ single_server_base <- function(input, output, session, values){
           #try(pepa::repo.abd(traits = trait, geno = genotypes, format = format, data = fieldbook))
           try(pepa::repo.a01d(traits = trait, geno = genotypes, rep = rep, block = block, k = k, data = fieldbook, format = format))
           path<- "~/R/x86_64-pc-linux-gnu-library/3.4/pepa/rmd/a01d.docx"
+          tempReport <- file.path(tempdir(), "a01d.docx")
           #path <- "/usr/local/lib/R/site-library/pepa/rmd/a01d.docx"
           #file.copy("/usr/local/lib/R/site-library/pepa/rmd/a01d.docx", con)
         }
@@ -407,9 +414,16 @@ single_server_base <- function(input, output, session, values){
         
         print(trait)
         print(design)
+        print(format)
+        print(getwd())
+        print(fileDOCX)
+        print(tempReport)
+        #file.copy(path , con, overwrite = TRUE)
+        file.copy(fileDOCX, tempReport, overwrite = TRUE)
+        #print("paso file copy")
         
-        file.copy(path , con, overwrite = TRUE)
-        print("paso file copy")
+        try(pepa::repo.crd(traits = trait, geno = genotypes, format = format, data = fieldbook, server = TRUE, server_dir= tempReport))
+        
         
         incProgress(4/5, detail = paste("Formattting in ", "MS Word",sep= ""))
         incProgress(5/5, detail = paste("Downloading Analysis..."))
@@ -420,92 +434,92 @@ single_server_base <- function(input, output, session, values){
   )
   
   
-  shiny::observeEvent(input$single_button_sbase, {
-    shiny::withProgress(message = "Opening single Report...",value= 0,{ #begin progress bar
-      
-      #NOTE: To use pepa report package we need R 3.3.0 or more.
-      #NOTE Finally, we always need pandoc installer.
-      incProgress(3/5, detail = paste("Analyzing..."))
-      
-      design <- input$design_single_sbase
-      
-      incProgress(2/5, detail = paste("Processing..."))
-      #fieldbook <- as.data.frame(hot_bdata()$trial_table)
-      
-      #fieldbook <-  as.data.frame(hot_fb_sbase())
-      
-      fieldbook <- hot_fb_sbase()
-      fieldbook <- as.data.frame(fieldbook$fb)
-      
-      #saveRDS(fieldbook,"res.rds")
-      trait <- input$trait_single_sbase
-      rep <- input$rep_single_sbase
-      genotypes <- input$genotypes_single_sbase
-      block <- input$block_single_sbase
-      k <- input$k_single_sbase
-      factor_single <- input$factor_single_sbase
-      
-      incProgress(3/5, detail = paste("Passing parameters..."))
-      
-      #format <- paste(input$format_single,"_document",sep="")
-      format <- paste(input$format_single_sbase)
-      
-      print(trait)
-      print(design)
-      
-      
-      
-      incProgress(4/5, detail = paste("Formatting in ", format, sep=""))
-      
-      if(design == "Randomized Complete Block Design (RCBD)"){
-        try(pepa::repo.rcbd(traits = trait, geno = genotypes, rep = rep, format = format, data = fieldbook))
-      }
-      
-      if(design == "Completely Randomized Design (CRD)"){
-        try(pepa::repo.crd(traits = trait, geno = genotypes, format = format, data = fieldbook))
-        #try(pepa::repo.crd(traits = trait, geno = genotypes, rep = rep, format = format, data = fieldbook))
-      }
-      
-      # if(design == "Augmented Block Design (ABD)"){
-      #   #try(pepa::repo.abd(traits = trait, geno = genotypes, format = format, data = fieldbook))
-      #   try(pepa::repo.abd(traits = trait, geno = genotypes, rep = rep, format = format, data = fieldbook))
-      # }
-      # 
-      # if(design == "Alpha Design(0,1) (AD)"){
-      #   #try(pepa::repo.abd(traits = trait, geno = genotypes, format = format, data = fieldbook))
-      #   try(pepa::repo.a01d(traits = trait, geno = genotypes, rep = rep, block = block, k = k, data = fieldbook, format = format))
-      # }
-      # 
-      # if(design == "Split Plot with Plots in CRD (SPCRD)"){
-      #   
-      #   title <- paste("Automatic report for ", design, sep= "")
-      #   try(pepa::repo.2f(traits = trait, A = genotypes, B = factor_single, rep = rep, design = "crd",  title= title, data = fieldbook, format = format))
-      # }
-      # 
-      # if(design == "Factorial Two-Way Design in CRD (F2CRD)"){
-      #   
-      #   title <- paste("Automatic report for ", design, sep= "")
-      #   try(pepa::repo.2f(traits = trait, A = genotypes, B = factor_single, rep = rep, design = "crd",  title= title, data = fieldbook, format = format))
-      # }
-      # 
-      # if(design == "Split Plot with Plots in RCBD (SPRCBD)"){
-      #   
-      #   title <- paste("Automatic report for ", design, sep= "")
-      #   try(pepa::repo.2f(traits = trait, A = genotypes, B = factor_single, rep = rep, design = "rcbd", title= title, data = fieldbook, format = format))
-      # }
-      # 
-      # if(design == "Factorial Two-Way Design in RCBD (F2RCBD)"){
-      #   title <- paste("Automatic report for ", design, sep= "")
-      #   try(pepa::repo.2f(traits = trait, A = genotypes, B = factor_single, rep = rep, design = "rcbd", title= title, data = fieldbook, format = format))
-      # }
-      
-      incProgress(5/5, detail = paste("Formatting in ", format, sep="")) #end progress bar
-      
-      
-    })
-  })
-  
-  
+  # shiny::observeEvent(input$single_button_sbase, {
+  #   shiny::withProgress(message = "Opening single Report...",value= 0,{ #begin progress bar
+  #     
+  #     #NOTE: To use pepa report package we need R 3.3.0 or more.
+  #     #NOTE Finally, we always need pandoc installer.
+  #     incProgress(3/5, detail = paste("Analyzing..."))
+  #     
+  #     design <- input$design_single_sbase
+  #     
+  #     incProgress(2/5, detail = paste("Processing..."))
+  #     #fieldbook <- as.data.frame(hot_bdata()$trial_table)
+  #     
+  #     #fieldbook <-  as.data.frame(hot_fb_sbase())
+  #     
+  #     fieldbook <- hot_fb_sbase()
+  #     fieldbook <- as.data.frame(fieldbook$fb)
+  #     
+  #     #saveRDS(fieldbook,"res.rds")
+  #     trait <- input$trait_single_sbase
+  #     rep <- input$rep_single_sbase
+  #     genotypes <- input$genotypes_single_sbase
+  #     block <- input$block_single_sbase
+  #     k <- input$k_single_sbase
+  #     factor_single <- input$factor_single_sbase
+  #     
+  #     incProgress(3/5, detail = paste("Passing parameters..."))
+  #     
+  #     #format <- paste(input$format_single,"_document",sep="")
+  #     format <- paste(input$format_single_sbase)
+  #     
+  #     print(trait)
+  #     print(design)
+  #     
+  #     
+  #     
+  #     incProgress(4/5, detail = paste("Formatting in ", format, sep=""))
+  #     
+  #     if(design == "Randomized Complete Block Design (RCBD)"){
+  #       try(pepa::repo.rcbd(traits = trait, geno = genotypes, rep = rep, format = format, data = fieldbook))
+  #     }
+  #     
+  #     if(design == "Completely Randomized Design (CRD)"){
+  #       try(pepa::repo.crd(traits = trait, geno = genotypes, format = format, data = fieldbook))
+  #       #try(pepa::repo.crd(traits = trait, geno = genotypes, rep = rep, format = format, data = fieldbook))
+  #     }
+  #     
+  #     # if(design == "Augmented Block Design (ABD)"){
+  #     #   #try(pepa::repo.abd(traits = trait, geno = genotypes, format = format, data = fieldbook))
+  #     #   try(pepa::repo.abd(traits = trait, geno = genotypes, rep = rep, format = format, data = fieldbook))
+  #     # }
+  #     # 
+  #     # if(design == "Alpha Design(0,1) (AD)"){
+  #     #   #try(pepa::repo.abd(traits = trait, geno = genotypes, format = format, data = fieldbook))
+  #     #   try(pepa::repo.a01d(traits = trait, geno = genotypes, rep = rep, block = block, k = k, data = fieldbook, format = format))
+  #     # }
+  #     # 
+  #     # if(design == "Split Plot with Plots in CRD (SPCRD)"){
+  #     #   
+  #     #   title <- paste("Automatic report for ", design, sep= "")
+  #     #   try(pepa::repo.2f(traits = trait, A = genotypes, B = factor_single, rep = rep, design = "crd",  title= title, data = fieldbook, format = format))
+  #     # }
+  #     # 
+  #     # if(design == "Factorial Two-Way Design in CRD (F2CRD)"){
+  #     #   
+  #     #   title <- paste("Automatic report for ", design, sep= "")
+  #     #   try(pepa::repo.2f(traits = trait, A = genotypes, B = factor_single, rep = rep, design = "crd",  title= title, data = fieldbook, format = format))
+  #     # }
+  #     # 
+  #     # if(design == "Split Plot with Plots in RCBD (SPRCBD)"){
+  #     #   
+  #     #   title <- paste("Automatic report for ", design, sep= "")
+  #     #   try(pepa::repo.2f(traits = trait, A = genotypes, B = factor_single, rep = rep, design = "rcbd", title= title, data = fieldbook, format = format))
+  #     # }
+  #     # 
+  #     # if(design == "Factorial Two-Way Design in RCBD (F2RCBD)"){
+  #     #   title <- paste("Automatic report for ", design, sep= "")
+  #     #   try(pepa::repo.2f(traits = trait, A = genotypes, B = factor_single, rep = rep, design = "rcbd", title= title, data = fieldbook, format = format))
+  #     # }
+  #     
+  #     incProgress(5/5, detail = paste("Formatting in ", format, sep="")) #end progress bar
+  #     
+  #     
+  #   })
+  # })
+  # 
+  # 
   
   
 }
