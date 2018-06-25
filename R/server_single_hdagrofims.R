@@ -39,7 +39,7 @@ single_hdagrofims_server <- function(input, output, session, values){
   })
   
   output$genotypes_single_agrofims  <- renderUI({
-    selectInput('genotypes_single_agrofims', 'Select Genotypes', c(Choose='', names(hot_fb_agrofims()) ), 
+    selectInput('genotypes_single_agrofims', 'Select Treatments', c(Choose='', names(hot_fb_agrofims()) ), 
                 selectize=TRUE)
   })
   
