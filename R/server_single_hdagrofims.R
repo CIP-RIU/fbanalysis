@@ -54,12 +54,12 @@ single_hdagrofims_server <- function(input, output, session, values){
   })
   
   output$factor_single_agrofims  <- renderUI({ #factor 1
-    selectInput('factor_single_agrofims', 'Select Treatment Factor 1', c(Choose='', names(hot_fb_agrofims()) ),
+    selectInput('factor_single_agrofims', 'Select Treatment Factor A', c(Choose='', names(hot_fb_agrofims()) ),
                 selectize=TRUE)
   })
   
   output$factor2_single_agrofims  <- renderUI({ #factor 2
-    selectInput('factor_single_agrofims2', 'Select Treatment Factor 2', c(Choose='', names(hot_fb_agrofims()) ),
+    selectInput('factor_single_agrofims2', 'Select Treatment Factor B', c(Choose='', names(hot_fb_agrofims()) ),
                 selectize=TRUE)
   })
   
@@ -394,12 +394,6 @@ single_hdagrofims_server <- function(input, output, session, values){
     }
   )
   
-  
-  
-  
-  
-  
-  
-  
+
 }
 
