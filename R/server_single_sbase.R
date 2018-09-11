@@ -352,7 +352,8 @@ single_server_base <- function(input, output, session, values){
           
           print(path)
           
-          try(pepa::repo.rcbd(traits = trait, geno = genotypes, rep = rep, format = format, data = fieldbook, server =TRUE, server_dir_name = dirName, 
+          try(pepa::repo.rcbd(traits = trait, geno = genotypes, rep = rep, format = format, dfr=fieldbook,
+                              server =TRUE, server_dir_name = dirName, 
                               server_file_name = servName))
           #path<- "~/R/x86_64-pc-linux-gnu-library/3.4/pepa/rmd/rcbd.docx" #rsconnect cip
  
@@ -397,7 +398,8 @@ single_server_base <- function(input, output, session, values){
           
           print(path)
           
-          try(pepa::repo.crd(traits = trait, geno = genotypes, format = format, data = fieldbook, server =TRUE, server_dir_name = dirName, 
+          try(pepa::repo.crd(traits = trait, geno = genotypes, format = format, 
+                             dfr = fieldbook, server =TRUE, server_dir_name = dirName, 
                              server_file_name = servName
                              ))
           
@@ -440,7 +442,7 @@ single_server_base <- function(input, output, session, values){
           
           
           
-          try(pepa::repo.abd(traits = trait, geno = genotypes, rep = rep, format = format, data = fieldbook, server =TRUE, server_dir_name = dirName, 
+          try(pepa::repo.abd(traits = trait, geno = genotypes, rep = rep, format = format, dfr = fieldbook, server =TRUE, server_dir_name = dirName, 
                              server_file_name = servName))
           
           
@@ -494,7 +496,7 @@ single_server_base <- function(input, output, session, values){
           
           
           #try(pepa::repo.abd(traits = trait, geno = genotypes, format = format, data = fieldbook))
-          try(pepa::repo.a01d(traits = trait, geno = genotypes, rep = rep, block = block, k = k, data = fieldbook, format = format, server =TRUE, server_dir_name = dirName, 
+          try(pepa::repo.a01d(traits = trait, geno = genotypes, rep = rep, block = block, k = k, dfr = fieldbook, format = format, server =TRUE, server_dir_name = dirName, 
                               server_file_name = servName))
           
           #path<- "~/R/x86_64-pc-linux-gnu-library/3.4/pepa/rmd/a01d.docx"
