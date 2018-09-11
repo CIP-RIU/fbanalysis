@@ -79,7 +79,7 @@ met_server_sbase <- function(input, output, session, values){
     sbase_data <- values$hot_bdata
     sbase_data <- sbase_data$trial_table
     
-    program_name <- sbase_data  %>% select(programName)
+    program_name <- sbase_data  %>% dplyr::select(programName)
     program_name <- program_name %>% unique()
     
     selectInput('met_selProgram_sbase', 'Select program', multiple=TRUE, c(Choose='', program_name), selectize=TRUE)
@@ -100,9 +100,9 @@ met_server_sbase <- function(input, output, session, values){
     sbase_data <- values$hot_bdata
     sbase_data <- sbase_data$trial_table
     
-    sbase_data <- sbase_data %>% filter(programName == sel_programName)
+    sbase_data <- sbase_data %>% dplyr::filter(programName == sel_programName)
     
-    trial_name <- sbase_data %>% select(trialName)
+    trial_name <- sbase_data %>% dplyr::select(trialName)
     trial_name <- trial_name[[1]] %>% unique()
     
     selectInput('met_sbase_trialName', 'Select trial',  multiple=TRUE, c(Choose='', trial_name), selectize=TRUE)
@@ -124,9 +124,9 @@ met_server_sbase <- function(input, output, session, values){
     sbase_data <- sbase_data$trial_table
     
     
-    sbase_data <- sbase_data %>% filter(trialName == sel_trialName)
+    sbase_data <- sbase_data %>% dplyr::filter(trialName == sel_trialName)
     
-    study_name <- sbase_data %>% select(studyName)
+    study_name <- sbase_data %>% dplyr::select(studyName)
     study_name <- study_name[[1]] %>% unique()
     
     selectInput('met_sbase_studyName', 'Select study',  multiple=TRUE, c(Choose='', study_name), selectize=TRUE)
@@ -183,9 +183,9 @@ met_server_sbase <- function(input, output, session, values){
     
     #Vector with all the studies selected by users
     sel_multi_study <-  sbase_trial_table %>%  
-      filter(programName %in% program) %>% 
-      filter(trialName %in% trial) %>% 
-      filter(studyName %in% study)
+      dplyr::filter(programName %in% program) %>% 
+      dplyr::filter(trialName %in% trial) %>% 
+      dplyr::filter(studyName %in% study)
     
     #id of selected studies
     id_study <- sel_multi_study$studyDbId
