@@ -5,7 +5,8 @@
 \title{UI for Data Transformation in HiDAP
 Returns user friendly ui}
 \usage{
-dtr_ui(type = "tab", title = "Data Transformation", name = "analysis_dtr")
+dtr_ui(type = "tab", title = "Data Transformation",
+  name = "analysis_dtr")
 }
 \arguments{
 \item{type}{type of UI element, deault is a tab in a shinydashboard}

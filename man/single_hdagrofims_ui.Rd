@@ -5,8 +5,7 @@
 \title{UI for Single Environment Analysis for HIDAP-AgroFIMS
 Returns user friendly ui}
 \usage{
-single_hdagrofims_ui(type = "tab",
-  title = "Statistical Analysis for One Environment Trial",
+single_hdagrofims_ui(type = "tab", title = "Single Fieldbook Analysis",
   name = "analysis_single")
 }
 \arguments{

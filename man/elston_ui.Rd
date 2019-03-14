@@ -5,7 +5,8 @@
 \title{UI for Elston Analysis in HiDAP
 Returns user friendly ui for elston index}
 \usage{
-elston_ui(type = "tab", title = "Elston Index for Ranking and Selection",
+elston_ui(type = "tab",
+  title = "Elston Index for Ranking and Selection",
   name = "analysis_elston")
 }
 \arguments{
