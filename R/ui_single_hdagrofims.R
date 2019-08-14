@@ -33,12 +33,14 @@ single_hdagrofims_ui <- function(type = "tab", title = "Single Fieldbook Analysi
                                                      selectInput(inputId = 'design_single_agrofims', 
                                                                  label = 'Statistical design of your experiment', 
                                                                  choices = 
-                                                                   c("Completely Randomized Design (CRD)",
+                                                                   c(
+                                                                     "Completely Randomized Design (CRD)",
                                                                      "Randomized Complete Block Design (RCBD)",
-                                                                     #"Augmented Block Design (ABD)",
-                                                                     #"Alpha Design(0,1) (AD)",
                                                                      "Factorial with CRD",
-                                                                     "Factorial with RCBD"),
+                                                                     "Factorial with RCBD",
+                                                                     "Split Plot Design" ,
+                                                                     "Split-Split Plot Design"
+                                                                     ),
                                                                      #"Split Plot Design"),
                                                                      #"Split Plot with Three Factors",
                                                                      #"Factorial Two-Way Design in CRD (F2CRD)",

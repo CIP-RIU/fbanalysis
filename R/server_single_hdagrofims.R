@@ -33,10 +33,65 @@ single_hdagrofims_server <- function(input, output, session, values){
     inFile <- hot_path_agrofims()
     if(is.null(inFile)) return(NULL)
     file.rename(inFile$datapath, paste(inFile$datapath, ".xlsx", sep=""))
-    out<- readxl::read_excel(paste(inFile$datapath, ".xlsx", sep=""),sheet = "Fieldbook") 
+    out<- readxl::read_excel(paste(inFile$datapath, ".xlsx", sep=""),sheet = "Crop_measurements") 
     names(out)
     out
   })
+  
+  hot_metadata <- reactive({
+    
+      inFile <- hot_path_agrofims()
+      if(is.null(inFile)) return(NULL)
+      file.rename(inFile$datapath, paste(inFile$datapath, ".xlsx", sep=""))
+      out<- readxl::read_excel(paste(inFile$datapath, ".xlsx", sep=""),sheet = "Metadata") 
+      out
+    
+  })
+  
+  ###Update Design (select Input)  ------------------------------------------------------------------
+  
+  # observe({
+  #   
+  #   # <- hot_fb_sbase()
+  #   design <- try(hot_metadata()$stat_design) #the statistical design from the SweetPotatoBase
+  #   nrow_fb <- try(nrow(hot_fb_sbase()$fb))
+  #   
+  #   if(str_detect(design,"error")){
+  #     design <- NULL
+  #   }
+  #   x <- input$design_single_sbase #the statistical design from the single env UI
+  #   
+  #   # Can use character(0) to remove all choices
+  #   #if (is.null(x)|| length(design)==0){
+  #   if (is.null(x) || length(design)==0 ){
+  #     
+  #     x <- "Completely Randomized Design (CRD)"
+  #     shinysky::showshinyalert(session, "alert_single_sbase_done", paste("This study does not have data."), styleclass = "danger")
+  #     
+  #   } else {
+  #     
+  #     if(design == "CRD")  {x <- "Completely Randomized Design (CRD)"}
+  #     if(design == "RCBD") {x <- "Randomized Complete Block Design (RCBD)"}
+  #     if(design == "ABD")  {x <-"Augmented Block Design (ABD)"}
+  #     if(design == "Alpha")   {x <-"Alpha design"}
+  #     #if(design == "CRD")  {choice_design<-"Factorial Two-Way Design in CRD (F2CRD)"}
+  #     #if(design == "CRD")  {choice_design<-"Factorial Two-Way Design in RCBD (F2RCBD)"}
+  #     
+  #   }
+  #   x <- x
+  #   
+  #   # Can also set the label and select items
+  #   updateSelectInput(session, "design_single_sbase",
+  #                     label = 'Select statistical design of your experiment',
+  #                     choices = x,
+  #                     #"Split Plot with Plots in CRD (SPCRD)",
+  #                     #"Split Plot with Plots in RCBD (SPRCBD)"),
+  #                     selected = x
+  #   )
+  # })
+  
+  ## end update design select  ------------------------------------------------------------------
+  
   
   output$trt_single_agrofims  <- renderUI({ #genotypes
     selectInput('trt_single_agrofims', 'Select Treatments', c(Choose='', names(hot_fb_agrofims()) ), 
@@ -57,12 +112,6 @@ single_hdagrofims_server <- function(input, output, session, values){
     selectInput('factor_single_agrofims', 'Select Factors', c(Choose='', names(hot_fb_agrofims()) ),
                 selectize=TRUE,multiple = TRUE)
   })
-  
-  # output$factor2_single_agrofims  <- renderUI({ #factor 2
-  #   selectInput('factor_single_agrofims2', 'Select Treatment Factor B', c(Choose='', names(hot_fb_agrofims()) ),
-  #               selectize=TRUE)
-  # })
-  
   
   output$block_single_agrofims  <- renderUI({ #block
     selectInput('block_single_agrofims', 'Select Block', c(Choose='', names(hot_fb_agrofims()) ),
@@ -123,12 +172,14 @@ single_hdagrofims_server <- function(input, output, session, values){
         
         fieldbook <- hot_fb_agrofims()
         fieldbook <- as.data.frame(fieldbook)
+        names(fieldbook) <-  stringr::str_replace_all(string= names(fieldbook) , pattern =  "[[:space:]]", replacement = "_")
+        
         
         if(is.null(input$trait_single_agrofims)){
           shinyalert("Oops!", "Select trait(s) to perform analysis", type = "error")
         } else{
         
-        trait <-  str_replace_all(input$trait_single_agrofims, string = "[:blank:]", "_")
+        trait <-  stringr::str_replace_all(string= input$trait_single_agrofims, pattern =  "[[:space:]]", replacement = "_")
         pos<- match(input$trait_single_agrofims,names(fieldbook))
         names(fieldbook)[pos]<- trait #str_replace_all(input$trait_single_agrofims, string = " ", "_")
         
@@ -139,13 +190,16 @@ single_hdagrofims_server <- function(input, output, session, values){
         trt <- input$trt_single_agrofims
         #block <- input$block_single_agrofims
         k <- input$k_single_agrofims #
-        factors <- input$factor_single_agrofims # factor 1
+        #factors <- input$factor_single_agrofims # factor 1
+        factors<- stringr::str_replace_all(string= input$factor_single_agrofims, pattern =  "[[:space:]]", replacement = "_")
+        
         #factor2_single <- input$factor_single_agrofims2 #factor 2
         
         ###Split plot inputs ####
         
         
         mplot<- input$main_plot_factor
+        
         subplot<- input$sub_plot_factor
         subsubplot<- input$subsub_plot_factor
         
