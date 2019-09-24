@@ -32,8 +32,26 @@ single_hdagrofims_server <- function(input, output, session, values){
    
     inFile <- hot_path_agrofims()
     if(is.null(inFile)) return(NULL)
-    file.rename(inFile$datapath, paste(inFile$datapath, ".xlsx", sep=""))
-    out<- readxl::read_excel(paste(inFile$datapath, ".xlsx", sep=""),sheet = "Crop_measurements") 
+    
+    print("paso 0")
+    print(inFile$datapath)
+    print(inFile$name)
+    print("paso 1")
+    try({file.copy(from = inFile$datapath, to = file.path("/home/obenites/AGROFIMS/hagrofims/inst/hidap_agrofims/kdx2agro/"))})
+    #Import Marie's library
+    reticulate::source_python("/home/obenites/agrofims_modules/kdsmart_integration/kdxtoagro.py")
+    print("paso 2")
+    kdx2agrofims(zip_name="/home/obenites/AGROFIMS/hagrofims/inst/hidap_agrofims/kdx2agro/PURI1567089918,celine_aubert,2019-09-04_102712[1] - Copy.zip", 
+                 excel_name= "/home/obenites/AGROFIMS/hagrofims/inst/hidap_agrofims/kdx2agro/CRD_rice.xlsx")
+    print("paso 3")
+    out <- readxl::read_excel("/home/obenites/AGROFIMS/hagrofims/inst/hidap_agrofims/kdx2agro/CRD_rice.xlsx",
+                              sheet = "Crop_measurements") 
+    print("paso 4")
+    print(out)
+    
+    ## STABLE CODE
+    #file.rename(inFile$datapath, paste(inFile$datapath, ".xlsx", sep=""))
+    #out<- readxl::read_excel(paste(inFile$datapath, ".xlsx", sep=""),sheet = "Crop_measurements") 
     names(out)
     out
   })

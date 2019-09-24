@@ -24,7 +24,7 @@ single_hdagrofims_ui <- function(type = "tab", title = "Single Fieldbook Analysi
                                                      useShinyalert(),
                                                      #shinyFiles::shinyFilesButton('file_single_agrofims', 'Select File', 'Select a file',FALSE),
                                                      
-                                                     fileInput('file_single_agrofims', 'Choose fieldbook file', accept = c(".xlsx")),  
+                                                     fileInput('file_single_agrofims', 'Choose fieldbook file', accept = c(".zip")),  
                                                                
                                                      infoBoxOutput("file_message_single_agrofims", width = NULL),
                                                      #selectInput('trait_single', 'Select Trait', c(Choose='', single_select_options()   ), selectize=TRUE),

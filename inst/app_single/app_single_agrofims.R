@@ -9,6 +9,7 @@ library(pepa)
 library(readxl)
 library(knitr)
 library(stringi)
+library(reticulate)
 
 tabNameS <- "analysis_aov"
 
