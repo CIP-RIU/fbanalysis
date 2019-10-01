@@ -47,7 +47,7 @@ single_hdagrofims_ui <- function(type = "tab", title = "Single Fieldbook Analysi
                                                                      #"Factorial Two-Way Design in RCBD (F2RCBD)"),
                                                                  #"Split Plot with Plots in CRD (SPCRD)",
                                                                  #"Split Plot with Plots in RCBD (SPRCBD)"),
-                                                                 selected = "Randomized Complete Block Design (RCBD)",
+                                                                 selected = "Completely Randomized Design (CRD)",
                                                                  selectize=FALSE),
                                                      
                                                     
@@ -103,7 +103,13 @@ single_hdagrofims_ui <- function(type = "tab", title = "Single Fieldbook Analysi
                                                        uiOutput("rep_single_agrofims")
                                                      ),  
                                                      
-                                                                                                        
+                                                      #New code
+                                                     # shinyWidgets::awesomeRadio(inputId = "type_single_agrogims",label = "Radio buttons", 
+                                                     #   choices = c("Simple", "Subsample"), selected = "Simple",
+                                                     #   inline = TRUE, checkbox = TRUE
+                                                     # ),
+                                                      #
+                                                                                                      
                                                        uiOutput("trait_single_agrofims"),
                                                     
                                                      shiny::conditionalPanel(
@@ -117,7 +123,7 @@ single_hdagrofims_ui <- function(type = "tab", title = "Single Fieldbook Analysi
                                                      
                                                       # 
                                                      downloadButton(outputId = "downloadagrofims_single_report", label = "Download"),
-                                                     
+                                                     downloadLink(outputId = "downloadagrofims_single_rowdata", label = "Download raw data"),
                                                      
                                                      br()#,
                                                      # shiny::wellPanel(
