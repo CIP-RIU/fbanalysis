@@ -47,12 +47,15 @@ single_hdagrofims_server <- function(input, output, session, values){
     #reticulate::source_python("/home/obenites/agrofims_modules/kdsmart_integration/kdxtoagro.py")
     reticulate::source_python("/home/obenites/AGROFIMS/hagrofims/inst/hidap_agrofims/kdx2agro/import-kdxfiles/kdxfiles/kdxtoagro.py")
     #kdx2agrofims(zip_name="/home/obenites/AGROFIMS/hagrofims/inst/hidap_agrofims/kdx2agro/PURI1567089918,celine_aubert,2019-09-04_102712[1] - Copy.zip", 
+    
+    #cd <- getwd()
+    #setwd("/home/obenites/AGROFIMS/kdsmart/")
     kdx2agrofims(zip_name=paste0("/home/obenites/AGROFIMS/hagrofims/inst/hidap_agrofims/kdx2agro/import-kdxfiles/kdxfiles/",inFile$name), 
                  excel_name = get_agrofims_file( "/home/obenites/AGROFIMS/kdsmart/", file_name = strsplit(inFile$name,split = ",")[[1]][1])
                  #excel_name= "/home/obenites/AGROFIMS/hagrofims/inst/hidap_agrofims/kdx2agro/CRD_rice.xlsx")
                  #excel_name= "/home/obenites/AGROFIMS/kdsmart/"
     )
-    
+    #setwd(cd)
     
     print("paso 3")
     
@@ -213,7 +216,7 @@ single_hdagrofims_server <- function(input, output, session, values){
   output$file_message_single_agrofims <- renderInfoBox({
     
     hot_file <- hot_path_agrofims()
-    p1 <<- hot_path_agrofims()
+    #p1 <<- hot_path_agrofims()
     fb_fill <- hot_fb_agrofims()
     #print(hot_file)
     if(is.null(hot_file) || nrow(fb_fill)==0){
@@ -545,18 +548,18 @@ single_hdagrofims_server <- function(input, output, session, values){
   )
   
   output$downloadagrofims_single_rowdata <- downloadHandler(
-    filename = paste("rowdata.xlsx") , #function() paste0(input$uniqueId,"-",input$fieldbookId, ".xlsx") ,#paste0(FbFileName(),".xlsx"),#"fileNameBook.xlsx",
+    filename = paste("RowData.xlsx") , #function() paste0(input$uniqueId,"-",input$fieldbookId, ".xlsx") ,#paste0(FbFileName(),".xlsx"),#"fileNameBook.xlsx",
     content = function(file) {
     
      inFile<-  hot_path_agrofims()
       
-     fp<- get_agrofims_file( "/home/obenites/AGROFIMS/hagrofims/inst/hidap_agrofims/", file_name = strsplit(inFile$name,split = ",")[[1]][1])
+     fp<- paste0("/home/obenites/AGROFIMS/hagrofims/inst/hidap_agrofims/", file_name = strsplit(inFile$name,split = ",")[[1]][1], ".xlsx")
      print("--1--")
      print(fp)
      #Sys.chmod(path, mode = "0777", use_umask = TRUE)
      #getOption('timeout')
      #options(timeout=1000000000000)
-     file.copy(fp[2], file)
+     file.copy(fp, file)
      #download.file(url = paste0(fp), con, method = "curl")
      
        

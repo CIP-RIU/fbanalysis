@@ -292,7 +292,7 @@ trend_hdagrofims_server <- function(input, output, session, values){
   output$file_message_trend_agrofims <- renderInfoBox({
     
     hot_file <- hot_path_agrofims()
-    p1 <<- hot_path_agrofims()
+    #p1 <<- hot_path_agrofims()
     #print(hot_file)
     if(is.null(hot_file)){
       shinydashboard::infoBox(title="Select fieldbook file", subtitle=
@@ -317,7 +317,7 @@ trend_hdagrofims_server <- function(input, output, session, values){
         
         shiny::incProgress(1/5, detail = paste("Downloading Analysis..."))  
        
-        aa1 <<- hot_fb_agrofims()
+        #aa1 <<- hot_fb_agrofims()
         #aa1 <<- input$stat_trend_agrofims 
         #bb1 <<- hot_fbsample_agrofims()
         
@@ -330,7 +330,7 @@ trend_hdagrofims_server <- function(input, output, session, values){
           
           #Field book data
           fb <- hot_fbsample_agrofims()
-          bb1<<- fb
+          #bb1<<- fb
           
           fb <- as.data.frame(fb,stringsAsFactors=FALSE)
           #Factor inputs

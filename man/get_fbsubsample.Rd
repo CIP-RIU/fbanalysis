@@ -4,7 +4,8 @@
 \alias{get_fbsubsample}
 \title{Get Fieldbook with subsample data according to the traits}
 \usage{
-get_fbsubsample(fb, design = "Completely Randomized Design (CRD)", trait)
+get_fbsubsample(fb, design = "Completely Randomized Design (CRD)", trait,
+  trend = FALSE, trend_col = NULL)
 }
 \arguments{
 \item{fb}{data.frame. Field book data}

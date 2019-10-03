@@ -4,7 +4,7 @@
 \alias{clean_fb}
 \title{Fieldbook cleaner for AGROFIMS DATA}
 \usage{
-clean_fb(fb)
+clean_fb(fb, trend = FALSE)
 }
 \arguments{
 \item{fb}{data.frame. Field book data}
