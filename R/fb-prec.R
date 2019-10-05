@@ -91,6 +91,9 @@ get_fbsubsample <- function(fb, design="Completely Randomized Design (CRD)", tra
       
       #gather_cols <- names(fb_sub)[stringr::str_detect(string = names(fb_sub), trait)]
       ## Transpose data from previous data :fb_sub
+    
+      #gather_cols <- names(fb_sub)[stringr::str_detect(string = names(fb_sub), trait)]
+      ## Transpose data from previous data :fb_sub
       fb_sub <- fb_sub %>% tidyr::gather_("SUBSAMPLE",trait, gather_cols)
       if(trend){
          fb_sub <- fb_sub %>% tidyr::separate(col = "SUBSAMPLE",into =c("DATE", "SUBSAMPLE"), sep=":")
@@ -101,6 +104,8 @@ get_fbsubsample <- function(fb, design="Completely Randomized Design (CRD)", tra
          ncol_fb_sub<- c(1:(ncol_fb_sub-2), ncol_fb_sub, ncol_fb_sub-1)
          fb_sub<- fb_sub[,ncol_fb_sub]
       }
+      
+      
       fb_sub <- fb_sub %>% dplyr::mutate(SUBSAMPLE=gsub(".*__","",fb_sub$SUBSAMPLE))                            
       fb_sub[,trait] <- as.numeric(fb_sub[,trait])
    } 

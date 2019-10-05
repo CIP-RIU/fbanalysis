@@ -330,6 +330,7 @@ trend_hdagrofims_server <- function(input, output, session, values){
           
           #Field book data
           fb <- hot_fbsample_agrofims()
+          #saveRDS(fb, file ="/home/obenites/HIDAP_SB_1.0.0/fbanalysis/tests/testthat/dataset/trend_data_1.rds")
           #bb1<<- fb
           
           fb <- as.data.frame(fb,stringsAsFactors=FALSE)
