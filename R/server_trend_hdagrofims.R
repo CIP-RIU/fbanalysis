@@ -45,7 +45,7 @@ trend_hdagrofims_server <- function(input, output, session, values){
     })
     #Import Marie's library
     #reticulate::source_python("/home/obenites/agrofims_modules/kdsmart_integration/kdxtoagro.py")
-    reticulate::source_python("/home/obenites/AGROFIMS/hagrofims/inst/hidap_agrofims/kdx2agro/import-kdxfiles/kdxfiles/kdxtoagro.py")
+    reticulate::source_python("/home/obenites/AGROFIMS/hagrofims/inst/hidap_agrofims/kdx2agro/import-kdxfiles/kdxfiles/kdxtoagro2.py")
     #kdx2agrofims(zip_name="/home/obenites/AGROFIMS/hagrofims/inst/hidap_agrofims/kdx2agro/PURI1567089918,celine_aubert,2019-09-04_102712[1] - Copy.zip", 
     kdx2agrofims(zip_name=paste0("/home/obenites/AGROFIMS/hagrofims/inst/hidap_agrofims/kdx2agro/import-kdxfiles/kdxfiles/",inFile$name), 
                  excel_name = get_agrofims_file( "/home/obenites/AGROFIMS/kdsmart/", file_name = strsplit(inFile$name,split = ",")[[1]][1])

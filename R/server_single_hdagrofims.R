@@ -45,7 +45,7 @@ single_hdagrofims_server <- function(input, output, session, values){
     })
     #Import Marie's library
     #reticulate::source_python("/home/obenites/agrofims_modules/kdsmart_integration/kdxtoagro.py")
-    reticulate::source_python("/home/obenites/AGROFIMS/hagrofims/inst/hidap_agrofims/kdx2agro/import-kdxfiles/kdxfiles/kdxtoagro.py")
+    reticulate::source_python("/home/obenites/AGROFIMS/hagrofims/inst/hidap_agrofims/kdx2agro/import-kdxfiles/kdxfiles/kdxtoagro2.py")
     #kdx2agrofims(zip_name="/home/obenites/AGROFIMS/hagrofims/inst/hidap_agrofims/kdx2agro/PURI1567089918,celine_aubert,2019-09-04_102712[1] - Copy.zip", 
     
     #cd <- getwd()
@@ -98,7 +98,7 @@ single_hdagrofims_server <- function(input, output, session, values){
   
   hot_traits <- reactive({
     traits <- names(hot_fb_agrofims()[,stringr::str_detect(names(hot_fb_agrofims()),"__")])
-    traits <- stringr::str_replace_all(traits,pattern = "__[:digit:]+","") %>% unique()
+    #traits <- stringr::str_replace_all(traits,pattern = "__[:digit:]+","") %>% unique()
     traits
   })
   
@@ -175,7 +175,7 @@ single_hdagrofims_server <- function(input, output, session, values){
   
   output$trait_single_agrofims <- renderUI({ #trait
     #selectInput('trait_single_agrofims', 'Select Trait(s)', c(Choose='', names(hot_fb_agrofims())),
-    selectInput('trait_single_agrofims', 'Select Trait(s)', c(Choose='', hot_traits()),
+    selectInput('trait_single_agrofims', 'Select Trait(s)', c(Choose='', names(hot_fb_agrofims())),   #hot_traits()  ),
                 selectize=TRUE, multiple = FALSE)
   })
   

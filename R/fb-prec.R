@@ -24,6 +24,8 @@ clean_fb <- function(fb, trend= FALSE){
    names(fb) <-  stringr::str_replace_all(string= names(fb) , pattern =  "[[:space:]]", replacement = "_")
    #Change // for "_" to readable traits
    names(fb) <- gsub("([//])","_", names(fb))
+   #names(fb) <- gsub("\\(","", names(fb))
+   #names(fb) <- gsub("\\)","", names(fb))
    ### END FOR TEST
    print("paso 4")
    fb<- fb %>% as.data.frame(stringsAsFactors=FALSE)
