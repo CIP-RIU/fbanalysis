@@ -42,7 +42,7 @@ single_hdagrofims_server <- function(input, output, session, values){
       file.rename(from = paste0("/home/obenites/AGROFIMS/hagrofims/inst/hidap_agrofims/kdx2agro/import-kdxfiles/kdxfiles/0.zip"),
                   to = paste0("/home/obenites/AGROFIMS/hagrofims/inst/hidap_agrofims/kdx2agro/import-kdxfiles/kdxfiles/",inFile$name))
       
-    })
+    
     #Import Marie's library
     #reticulate::source_python("/home/obenites/agrofims_modules/kdsmart_integration/kdxtoagro.py")
     reticulate::source_python("/home/obenites/AGROFIMS/hagrofims/inst/hidap_agrofims/kdx2agro/import-kdxfiles/kdxfiles/kdxtoagro2.py")
@@ -68,6 +68,7 @@ single_hdagrofims_server <- function(input, output, session, values){
     ### END FOR DEPLOYRMENT #####
     fb <- clean_fb(fb)
     
+    })
     #### FOR TES #####
     #fb <- readxl::read_excel("/home/obenites/HIDAP_SB_1.0.0/fbanalysis/inst/app_trend/PURI1567089918.xlsx",
     #                           sheet = "Crop_measurements")
@@ -97,14 +98,26 @@ single_hdagrofims_server <- function(input, output, session, values){
   })
   
   hot_traits <- reactive({
-    traits <- names(hot_fb_agrofims()[,stringr::str_detect(names(hot_fb_agrofims()),"__")])
-    #traits <- stringr::str_replace_all(traits,pattern = "__[:digit:]+","") %>% unique()
+    
+    if(class(hot_fb_agrofims())=="try-error"){
+      traits <- c("")
+    }else {
+      traits <- names(hot_fb_agrofims()[,stringr::str_detect(names(hot_fb_agrofims()),"__")])
+    }
     traits
+    #traits <- stringr::str_replace_all(traits,pattern = "__[:digit:]+","") %>% unique()
+
   })
   
   hot_treatment <- reactive({
-    treatment <- names(hot_fb_agrofims()[,!stringr::str_detect(names(hot_fb_agrofims()),"__")])
+    
+    if(class(hot_fb_agrofims())=="try-error"){
+      treatment <- c("")
+    }else {
+      treatment <- names(hot_fb_agrofims()[,!stringr::str_detect(names(hot_fb_agrofims()),"__")]) #hot_treatment()
+    }
     treatment
+
   })
   
   hot_metadata <- reactive({
@@ -114,6 +127,16 @@ single_hdagrofims_server <- function(input, output, session, values){
       file.rename(inFile$datapath, paste(inFile$datapath, ".xlsx", sep=""))
       out<- readxl::read_excel(paste(inFile$datapath, ".xlsx", sep=""),sheet = "Metadata") 
       out
+    
+  })
+  
+  hot_rep <- reactive({
+    if(class(hot_fb_agrofims())=="try-error"){
+      treatment <- c("")
+    }else {
+      treatment <- names(hot_fb_agrofims()[,!stringr::str_detect(names(hot_fb_agrofims()),"__")]) #hot_treatment()
+    }
+    treatment
     
   })
   
@@ -163,9 +186,10 @@ single_hdagrofims_server <- function(input, output, session, values){
   
   
   output$trt_single_agrofims  <- renderUI({ #genotypes
-    #selectInput('trt_single_agrofims', 'Select Treatments', c(Choose='', names(hot_fb_agrofims()) ), 
+    #selectInput('trt_single_agrofims', 'Select Treatments', c(Choose='', names(hot_fb_agrofims()) ),
     selectInput('trt_single_agrofims', 'Select Treatments', c(Choose='', hot_treatment()), selected = "TREATMENT",
                   selectize=TRUE)
+   
   })
   
   output$rep_single_agrofims  <- renderUI({ #repetition
@@ -218,12 +242,24 @@ single_hdagrofims_server <- function(input, output, session, values){
     hot_file <- hot_path_agrofims()
     #p1 <<- hot_path_agrofims()
     fb_fill <- hot_fb_agrofims()
-    #print(hot_file)
-    if(is.null(hot_file) || nrow(fb_fill)==0){
+    print("-hot file message--")
+    print(fb_fill)
+    print(class(fb_fill))
+    
+    if(is.null(hot_file)){
+    #if(class(fb_fill())=="try-error"){
       shinydashboard::infoBox(title="Select fieldbook file", subtitle=
                 paste("Choose your fieldbook file"), icon = icon("upload", lib = "glyphicon"),
               color = "blue",fill = TRUE, width = NULL)
-    } else {
+    # } {
+    #   shinydashboard::infoBox(title="Error", subtitle=
+    #                             paste("We could not match the excel file in the database. Please upload the correct file"), icon = icon("upload", lib = "glyphicon"),
+    #                           color = "red",fill = TRUE, width = NULL)
+    } else if(class(fb_fill)=="try-error") {
+        shinydashboard::infoBox(title="Error", subtitle=
+                                  paste("We could not match the KDSmart with the excel file into the database. Please check for the correct name or the content of the KDSmart file"), icon = icon("warning-sign", lib = "glyphicon"),
+                                color = "red",fill = TRUE, width = NULL)
+    }  else {
       hot_file <- hot_file$name
       #hot_file <- paste(hot_file, collapse = ", ")
       shinydashboard::infoBox(title="GREAT!", subtitle = paste(" Fieldbook selected: ", hot_file),  
