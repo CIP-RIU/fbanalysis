@@ -162,7 +162,7 @@ single_server_base <- function(input, output, session, values){
     credentials <- sbase_data$sp_base_credentials
     
     col_fb_sbase <- sbase_fb %>% dplyr::filter(programName== input$single_selProgram_sbase, trialName == input$single_sbase_trialName, studyName == input$single_sbase_studyName)
-    fb <<-  try(ba_studies_table(credentials , studyDbId = as.character(col_fb_sbase$studyDbId)))
+    fb <-  try(ba_studies_table(credentials , studyDbId = as.character(col_fb_sbase$studyDbId)))
     #print(fb)
     design <- try(unique(fb$studyDesign))
     
@@ -398,7 +398,7 @@ single_server_base <- function(input, output, session, values){
           
           print(path)
           
-          try(pepa::repo.crd(traits = trait, geno = genotypes, format = format, 
+          try(pepa::repo.crd(traits = trait, trt = genotypes, format = format, 
                              dfr = fieldbook, server =TRUE, server_dir_name = dirName, 
                              server_file_name = servName
                              ))

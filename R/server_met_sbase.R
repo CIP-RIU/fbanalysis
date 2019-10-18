@@ -309,13 +309,50 @@ met_server_sbase <- function(input, output, session, values){
         format <- paste(input$format_met_sbase,sep="")
         incProgress(3/5, detail = paste("Formatting on word..."))
         
+        servName =   "met"
+        serverFileDir <-"https://research.cip.cgiar.org/gtdms/hidap/hidap_sbase_reports/files/"
+        serverService <-"https://research.cip.cgiar.org/gtdms/hidap/hidap_sbase_reports/getFileUpload.php"
+        
+        uploadDate  <- as.character(Sys.time(), "%Y%m%d%H%M%S")
+        ranStr <-  stri_rand_strings(1, 15,  '[a-zA-Z0-9]')
+        servName <- paste(uploadDate, ranStr, servName , sep= "-") #nombre sin extensions!!!!
+        
+        #dirfiles <- system.file(package = "pepa")
+        
+        dirName <- fbglobal::get_base_dir()
+        path <- paste0(dirName, servName, ".docx")
+        
+        print(path)
+        
+        
         #Formatting on word
-        try({pepa::repo.met(traits = trait, geno = genotypes, env = env, rep = rep, data = fieldbook, format=format)})
+        try({pepa::repo.met(traits = trait, geno = genotypes, env = env, rep = rep, dfr = fieldbook, format=format,
+                            server =TRUE, server_dir_name = dirName,server_file_name = servName)})
+        
+        
+        params <- list(
+          dataRequest = "uploadFile",
+          fileServerName = paste0(servName, ".docx"),
+          filedata=upload_file(path, "text/csv")
+        )
+        
+        var <- POST(serverService, body=params)
+        code <- content(var, "text")
         
         
         
-        file.copy("/usr/local/lib/R/site-library/pepa/rmd/met.docx", con, overwrite = TRUE) #shiny server CIP-RIU
-        #file.copy("/home/hidap/R/x86_64-pc-linux-gnu-library/3.4/pepa/rmd/met.docx", con) #shiny server BTI-SweetPotatoBase
+        if (code == "200")
+          print("uploaded")
+        else
+          print("Not uploaded")
+        
+        
+        Sys.chmod(path, mode = "0777", use_umask = TRUE)
+        
+        #print(paste0(serverFileDir, servName, ".docx"))
+        print(servName)
+        # file.copy(paste0(serverFileDir, servName) , con, overwrite = TRUE)
+        download.file(paste0(serverFileDir, servName, ".docx"), con, method = "curl")
         
         incProgress(5/5, detail = paste("Formatting on word..."))
         
@@ -349,7 +386,7 @@ met_server_sbase <- function(input, output, session, values){
       incProgress(4/5, detail = paste("Downloading met report..."))
       try({
         
-        pepa::repo.met(traits = trait, geno = genotypes, env = env, rep = rep, data = fieldbook, format=format)
+        pepa::repo.met(traits = trait, geno =  genotypes, env = env, rep = rep, dfr = fieldbook, format=format)
       })
       
       incProgress(5/5, detail = paste("Downloading met report..."))
